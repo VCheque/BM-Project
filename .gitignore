@@ -1,0 +1,17 @@
+# Ignore everything
+*
+
+# Allow Python files
+!*.py
+
+# Allow Excel files
+!*.xlsx
+
+# Allow PDF files
+!*.pdf
+
+# Allow README files
+!README.md
+
+# Allow .gitignore file
+!.gitignore
