@@ -1289,14 +1289,39 @@ with tabs[7]:
         forecast_horizon = st.slider(T("forecast_horizon"), 1, 10, 5, key="forecast_h",
                                       help=T("forecast_horizon"))
     with pred_col2:
-        forecast_indicator = st.selectbox(T("forecast_indicator"), [
-            "Contas Bancárias", "Cartões Bancários", "ATMs", "POS",
-            "Mobile Banking", "Internet Banking",
-            "Transações ATM (Volume)", "Transações ATM (Valor)",
-            "Transações POS (Volume)", "Transações POS (Valor)",
-            "Transações Mobile Banking (Volume)", "Transações Mobile Banking (Valor)",
-            "Transações Internet Banking (Volume)", "Transações Internet Banking (Valor)",
-        ], key="forecast_indicator",
+        group_amounts = "Valores" if st.session_state.lang == "PT" else "Amounts"
+        group_volumes = "Volumes"
+        group_stock = "Stock/Acesso" if st.session_state.lang == "PT" else "Stock/Access"
+        forecast_group = single_choice_toggle(
+            "Prioridade" if st.session_state.lang == "PT" else "Priority",
+            [group_amounts, group_volumes, group_stock],
+            key="forecast_group",
+        )
+
+        grouped_indicators = {
+            group_amounts: [
+                "Transações ATM (Valor)",
+                "Transações POS (Valor)",
+                "Transações Mobile Banking (Valor)",
+                "Transações Internet Banking (Valor)",
+            ],
+            group_volumes: [
+                "Transações ATM (Volume)",
+                "Transações POS (Volume)",
+                "Transações Mobile Banking (Volume)",
+                "Transações Internet Banking (Volume)",
+            ],
+            group_stock: [
+                "Contas Bancárias",
+                "Cartões Bancários",
+                "ATMs",
+                "POS",
+                "Mobile Banking",
+                "Internet Banking",
+            ],
+        }
+        forecast_indicator = st.selectbox(T("forecast_indicator"), grouped_indicators[forecast_group], 
+            key="forecast_indicator",
             help=T("forecast_indicator")
         )
 
