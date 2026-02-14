@@ -323,13 +323,15 @@ def inclusion_method_note(year: int) -> str:
         return (
             f"Para calcular os Indicadores de Inclusão Financeira em {year}, usamos o Censo 2017 "
             "e extrapolamos a população elegível por coorte etária (progressão do tempo), sem ajuste de "
-            "nascimentos, mortes ou migração. Esta é uma decisão metodológica do autor para o v1. "
+            "nascimentos, mortes ou migração. Decisão de negócio: adotar uma base elegível para refletir "
+            "melhor o mercado potencial de inclusão financeira. "
             f"Cenário selecionado: {label}."
         )
     return (
         f"To calculate Financial Inclusion Indicators for {year}, we use Census 2017 and extrapolate the "
         "eligible population using age-cohort progression over time, without explicit birth/death/migration "
-        "adjustments. This is an author-defined methodological decision for v1. "
+        "adjustments. Business decision: use an eligibility-based denominator to better reflect the "
+        "potential market for financial inclusion. "
         f"Selected scenario: {label}."
     )
 
@@ -414,7 +416,7 @@ with tabs[0]:
         census_filtered.sort_values('Population_Total', ascending=True),
         y='Province', x='Population_Total', orientation='h',
         color='Population_Total', color_continuous_scale='YlOrRd',
-        text=[f"{v:,.0f}" for v in census_filtered.sort_values('Population_Total', ascending=True)['Population_Total']],
+        text=[format_compact(v) for v in census_filtered.sort_values('Population_Total', ascending=True)['Population_Total']],
     )
     fig_pop.update_layout(
         xaxis_title=T("value"), yaxis_title=T("province"),
@@ -1186,7 +1188,7 @@ with tabs[4]:
             fig_annual.add_trace(go.Bar(
                 x=annual_merged[T("year")], y=annual_merged[T("volume")],
                 name=T("volume"), yaxis='y', marker_color='#636EFA',
-                text=[f"{v:,.0f}" for v in annual_merged[T("volume")]], textposition='outside'))
+                text=[format_compact(v) for v in annual_merged[T("volume")]], textposition='outside'))
             fig_annual.add_trace(go.Scatter(
                 x=annual_merged[T("year")], y=annual_merged[T("value")],
                 name=f"{T('value')} (MZN)", yaxis='y2', mode='lines+markers',
@@ -1531,7 +1533,7 @@ with tabs[7]:
                 fig_fc.add_trace(go.Bar(
                     x=hist_yr['Ano'], y=hist_yr['Valor'],
                     name=hist_label, marker_color='#636EFA',
-                    text=[f"{v:,.0f}" for v in hist_yr['Valor']],
+                    text=[format_compact(v) for v in hist_yr['Valor']],
                     textposition='outside'
                 ))
 
@@ -1551,7 +1553,7 @@ with tabs[7]:
                         x=pred_yr['Ano'], y=pred_yr['Valor'],
                         mode='lines+markers', name=pred_label,
                         marker_color='#EF553B', line=dict(width=3, dash='dash'),
-                        text=[f"{v:,.0f}" for v in pred_yr['Valor']],
+                        text=[format_compact(v) for v in pred_yr['Valor']],
                         textposition='top center'
                     ))
 

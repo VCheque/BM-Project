@@ -94,9 +94,9 @@ _TRANSLATIONS = {
     # Methodology
     "methodology": {
         "PT": (
-            "📐 **Metodologia** — As previsões são calculadas através de **regressão polinomial de grau 2** "
-            "aplicada à série temporal mensal de cada indicador. Para indicadores de *stock* (contas, cartões, ATMs, POS), "
-            "utiliza-se o valor de fim de período; para indicadores de *fluxo* (transações), utiliza-se a soma anual. "
+            "As previsões são calculadas através de regressão polinomial de grau 2 aplicada à série temporal mensal "
+            "de cada indicador. Para indicadores de stock (contas, cartões, ATMs, POS), utiliza-se o valor de "
+            "fim de período; para indicadores de fluxo (transações), utiliza-se a soma anual. "
             "A banda de confiança a 95% (±1,96σ) reflecte a dispersão dos resíduos do modelo."
         ),
         "EN": (
