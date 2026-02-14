@@ -647,20 +647,20 @@ with tabs[1]:
         ov_k3.metric(T("atm_per_100k"), f"{curr_atm_total / total_pop_sel * 100_000:.1f}")
         st.caption(T("census_note_short"))
 
-    st.subheader(T("gender_distribution"))
+    st.subheader(f"{T('gender_distribution')} ({selected_year})")
     g_col1, g_col2 = st.columns(2)
     with g_col1:
         gen_acc = f_acc_snap.groupby('Gender', observed=False)['Total_Accounts'].sum().reset_index()
         gen_acc.columns = [T("gender_label"), T("total_accounts")]
         st.plotly_chart(px.pie(gen_acc, values=T("total_accounts"), names=T("gender_label"),
-                               title=T("accounts_by_gender"), hole=0.4), use_container_width=True)
+                               title=f"{T('accounts_by_gender')} ({selected_year})", hole=0.4), use_container_width=True)
     with g_col2:
         gen_card = f_card_snap.groupby('Gender', observed=False)['Total_Cards'].sum().reset_index()
         gen_card.columns = [T("gender_label"), T("total_cards")]
         st.plotly_chart(px.pie(gen_card, values=T("total_cards"), names=T("gender_label"),
-                               title=T("cards_by_gender"), hole=0.4), use_container_width=True)
+                               title=f"{T('cards_by_gender')} ({selected_year})", hole=0.4), use_container_width=True)
 
-    st.subheader(f"{T('accounts_distribution')} {title_suffix}")
+    st.subheader(f"{T('accounts_distribution')} {title_suffix} ({selected_year})")
     prov_summary = f_acc_snap.groupby(geo_axis)['Total_Accounts'].sum().sort_values(ascending=False).reset_index()
     prov_summary.columns = [geo_axis_label, T("total_accounts")]
     st.plotly_chart(px.bar(prov_summary, x=geo_axis_label, y=T("total_accounts"), color=geo_axis_label), use_container_width=True)
@@ -702,14 +702,20 @@ with tabs[2]:
         share_mzn_label = "Quota MZN (%)" if st.session_state.lang == "PT" else "MZN Share (%)"
         a3.metric(share_mzn_label, f"{meticais_share:.1f}%")
 
-        st.subheader(T("monthly_trend_accounts"))
+        st.subheader(f"{T('monthly_trend_accounts')} ({selected_year})")
         month_acc = f_acc.groupby('Month', observed=False)['Total_Accounts'].sum().reset_index()
         month_acc.columns = [T("month"), T("total_accounts")]
-        fig_month_acc = px.line(month_acc, x=T("month"), y=T("total_accounts"), markers=True)
+        fig_month_acc = px.line(
+            month_acc,
+            x=T("month"),
+            y=T("total_accounts"),
+            markers=True,
+            title=f"{T('monthly_trend_accounts')} ({selected_year})",
+        )
         fig_month_acc.update_layout(yaxis=dict(rangemode='tozero'))
         st.plotly_chart(fig_month_acc, use_container_width=True)
 
-        st.subheader(T("accounts_by_age"))
+        st.subheader(f"{T('accounts_by_age')} ({selected_year})")
         age_buckets = ["0-16", "17-21", "22-60", "+60"]
         age_acc_detail = f_acc_snap[f_acc_snap["Age"].isin(age_buckets)]
         if age_acc_detail.empty:
@@ -730,7 +736,7 @@ with tabs[2]:
                 use_container_width=True,
             )
 
-        st.subheader(f"{T('currency_distribution')} {title_suffix}")
+        st.subheader(f"{T('currency_distribution')} {title_suffix} ({selected_year})")
         curr_data = f_acc_snap.groupby([geo_axis, 'Account_Currency'])['Total_Accounts'].sum().reset_index()
         curr_data.columns = [geo_axis_label, T("currency_label"), T("total_accounts")]
         st.plotly_chart(px.bar(curr_data, x=geo_axis_label, y=T("total_accounts"), color=T("currency_label"), barmode='group'), use_container_width=True)
@@ -757,14 +763,20 @@ with tabs[2]:
         share_debit_label = "Quota Débito (%)" if st.session_state.lang == "PT" else "Debit Share (%)"
         c3.metric(share_debit_label, f"{debit_share:.1f}%")
 
-        st.subheader(T("monthly_trend_cards"))
+        st.subheader(f"{T('monthly_trend_cards')} ({selected_year})")
         month_card = f_card.groupby('Month', observed=False)['Total_Cards'].sum().reset_index()
         month_card.columns = [T("month"), T("total_cards")]
-        fig_month_card = px.line(month_card, x=T("month"), y=T("total_cards"), markers=True)
+        fig_month_card = px.line(
+            month_card,
+            x=T("month"),
+            y=T("total_cards"),
+            markers=True,
+            title=f"{T('monthly_trend_cards')} ({selected_year})",
+        )
         fig_month_card.update_layout(yaxis=dict(rangemode='tozero'))
         st.plotly_chart(fig_month_card, use_container_width=True)
 
-        st.subheader(T("product_adoption_age"))
+        st.subheader(f"{T('product_adoption_age')} ({selected_year})")
         age_buckets = ["0-16", "17-21", "22-60", "+60"]
         age_card_detail = f_card_snap[f_card_snap["Age"].isin(age_buckets)]
         if age_card_detail.empty:
@@ -785,7 +797,7 @@ with tabs[2]:
                 use_container_width=True,
             )
 
-        st.subheader(f"{T('card_type')} {title_suffix}")
+        st.subheader(f"{T('card_type')} {title_suffix} ({selected_year})")
         card_type_geo = f_card_snap.groupby([geo_axis, 'Card_Type'])['Total_Cards'].sum().reset_index()
         card_type_geo.columns = [geo_axis_label, T("card_type_label"), T("total_cards")]
         st.plotly_chart(px.bar(card_type_geo, x=geo_axis_label, y=T("total_cards"), color=T("card_type_label"), barmode='group'), use_container_width=True)
@@ -815,11 +827,17 @@ with tabs[3]:
     with col_i1:
         atm_sum = f_atm_snap.groupby(geo_axis)['ATMs_Number'].sum().reset_index()
         atm_sum.columns = [geo_axis_label, T("num_atms")]
-        st.plotly_chart(px.bar(atm_sum, x=geo_axis_label, y=T("num_atms"), title=T("atm_distribution")), use_container_width=True)
+        st.plotly_chart(
+            px.bar(atm_sum, x=geo_axis_label, y=T("num_atms"), title=f"{T('atm_distribution')} ({selected_year})"),
+            use_container_width=True,
+        )
     with col_i2:
         pos_sum = f_pos_snap.groupby(geo_axis)['POSs_Number'].sum().reset_index()
         pos_sum.columns = [geo_axis_label, T("num_pos")]
-        st.plotly_chart(px.bar(pos_sum, x=geo_axis_label, y=T("num_pos"), title=T("pos_distribution")), use_container_width=True)
+        st.plotly_chart(
+            px.bar(pos_sum, x=geo_axis_label, y=T("num_pos"), title=f"{T('pos_distribution')} ({selected_year})"),
+            use_container_width=True,
+        )
 
 # ==========================================
 # PAGE 5: USAGE (toggle Digital/Transactions)
@@ -880,8 +898,14 @@ with tabs[4]:
         m_mob.rename(columns={'Month': T("month"), 'Value': T("value")}, inplace=True)
         m_net.rename(columns={'Month': T("month"), 'Value': T("value")}, inplace=True)
         comp_dig = pd.concat([m_mob, m_net])
-        fig_comp_dig = px.line(comp_dig, x=T("month"), y=T("value"), color='Canal', markers=True,
-                               title=f"{T('monthly_comparison')}: {digital_metric}")
+        fig_comp_dig = px.line(
+            comp_dig,
+            x=T("month"),
+            y=T("value"),
+            color='Canal',
+            markers=True,
+            title=f"{T('monthly_comparison')}: {digital_metric} ({selected_year})",
+        )
         fig_comp_dig.update_layout(yaxis=dict(rangemode='tozero'))
         st.plotly_chart(fig_comp_dig, use_container_width=True)
 
@@ -1026,13 +1050,22 @@ with tabs[4]:
 
         col_v1, col_v2 = st.columns(2)
         with col_v1:
-            fig_vol_m = px.bar(vol_monthly, x=T("month"), y=T("volume"),
-                               title=f"{T('vol_monthly_title')} — {txn_title}")
+            fig_vol_m = px.bar(
+                vol_monthly,
+                x=T("month"),
+                y=T("volume"),
+                title=f"{T('vol_monthly_title')} — {txn_title} ({selected_year})",
+            )
             fig_vol_m.update_layout(yaxis=dict(rangemode='tozero'))
             st.plotly_chart(fig_vol_m, use_container_width=True)
         with col_v2:
-            fig_val_m = px.line(val_monthly, x=T("month"), y=T("value"), markers=True,
-                                title=f"{T('val_monthly_title')} — {txn_title}")
+            fig_val_m = px.line(
+                val_monthly,
+                x=T("month"),
+                y=T("value"),
+                markers=True,
+                title=f"{T('val_monthly_title')} — {txn_title} ({selected_year})",
+            )
             fig_val_m.update_layout(yaxis=dict(rangemode='tozero'))
             st.plotly_chart(fig_val_m, use_container_width=True)
 
