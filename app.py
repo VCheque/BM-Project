@@ -321,9 +321,9 @@ def inclusion_method_note(year: int) -> str:
     label = st.session_state.get("fi_denominator", denominator_options[0])
     if st.session_state.lang == "PT":
         return (
-            f"Para calcular os Indicadores de Inclusão Financeira em {year}, usamos o Censo 2017 "
-            "e extrapolamos a população elegível por coorte etária (progressão do tempo), sem ajuste de "
-            "nascimentos, mortes ou migração. Decisão de negócio: adotar uma base elegível para refletir "
+            f"Para calcular os Indicadores de Inclusão Financeira em {year}, é utilizado o Censo 2017 "
+            "e é extrapolada a população elegível por coorte etária (progressão do tempo), sem ajuste de "
+            "nascimentos, mortes ou migração. Decisão de negócio: adopta-se uma base elegível para reflectir "
             "melhor o mercado potencial de inclusão financeira. "
             f"Cenário selecionado: {label}."
         )
@@ -977,11 +977,6 @@ with tabs[4]:
             "one person may appear in more than one platform."
         )
         st.info(mobile_context_pt if st.session_state.lang == "PT" else mobile_context_en)
-        st.caption(
-            "Fontes: Banco de Moçambique (interligação de carteiras móveis), Vodacom M-Pesa, mKesh/Tmcel e BCI Conta Móvel."
-            if st.session_state.lang == "PT"
-            else "Sources: Bank of Mozambique (mobile wallet interoperability), Vodacom M-Pesa, mKesh/Tmcel, and BCI Conta Móvel."
-        )
         common_metrics = sorted(set(mob_df['Metric'].unique()) & set(net_df['Metric'].unique()))
         if not common_metrics:
             common_metrics = sorted(mob_df['Metric'].unique())
@@ -1492,9 +1487,9 @@ with tabs[7]:
     )
     if forecast_indicator in STOCK_INDICATORS:
         stock_note = (
-            "ℹ️ Decisão de negócio: para indicadores de stock, consideramos o fim de período. "
+            "ℹ️ Decisão de negócio: para indicadores de stock, é considerado o fim de período. "
             "Racional: o stock representa posição num ponto no tempo; somar os 12 meses inflaciona o resultado. "
-            "Regra aplicada: usamos o valor reportado em Dezembro como referência anual."
+            "Regra aplicada: é utilizado o valor reportado em Dezembro como referência anual."
             if st.session_state.lang == "PT"
             else "ℹ️ Business rule: for stock indicators, we use end-of-period values. "
             "Rationale: stock is a point-in-time position, so summing all 12 months would overstate results. "
@@ -1503,8 +1498,8 @@ with tabs[7]:
         st.caption(stock_note)
     else:
         flow_note = (
-            "ℹ️ Decisão de negócio: para indicadores de fluxo, usamos soma anual. "
-            "Racional: fluxo mede atividade acumulada no período. "
+            "ℹ️ Para indicadores de fluxo, é considerada a soma anual. "
+            "Racional: fluxo mede actividade acumulada no período. "
             "Regra aplicada: agregamos os 12 meses do ano."
             if st.session_state.lang == "PT"
             else "ℹ️ Business rule: for flow indicators, we use annual aggregation. "
