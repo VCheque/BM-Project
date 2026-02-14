@@ -1566,27 +1566,81 @@ with tabs[7]:
                     "N/A" if model_meta["holdout_mape"] is None else f"{model_meta['holdout_mape']:.2f}%"
                 )
                 r2_label = "N/A" if r2 is None else f"{r2:.3f}"
-                st.info(
-                    f"**Model:** {model_meta['model_label']} · "
-                    f"**Holdout MAPE:** {holdout_label} · "
-                    f"**R²:** {r2_label} · "
-                    f"**{T('indicator')}:** {tipo_label} · "
-                    f"**Data points:** {len(monthly_series)}"
-                )
+                current_v = hist_yr.iloc[-1]["Valor"] if not hist_yr.empty else None
+                projected_v = pred_yr.iloc[-1]["Valor"] if not pred_yr.empty else None
+                change_pct = 0.0
+                if current_v is not None and projected_v is not None and current_v > 0:
+                    change_pct = ((projected_v - current_v) / current_v) * 100
+                avg_annual_abs = 0.0
+                avg_annual_pct = None
+                if current_v is not None and projected_v is not None and forecast_horizon > 0:
+                    avg_annual_abs = (projected_v - current_v) / forecast_horizon
+                    if current_v > 0:
+                        avg_annual_pct = (((projected_v / current_v) ** (1 / forecast_horizon)) - 1) * 100
+
+                if change_pct > 3:
+                    trend_pt, trend_en = "aumento", "increase"
+                elif change_pct < -3:
+                    trend_pt, trend_en = "redução", "decline"
+                else:
+                    trend_pt, trend_en = "estabilidade", "stability"
 
                 if model_meta["holdout_mape"] is not None:
-                    if model_meta["holdout_mape"] <= 8:
-                        st.success(T("model_good"))
-                    elif model_meta["holdout_mape"] <= 15:
-                        st.warning(T("model_moderate"))
+                    mape = model_meta["holdout_mape"]
+                    if mape <= 8:
+                        conf_pt, conf_en = "elevada", "high"
+                    elif mape <= 15:
+                        conf_pt, conf_en = "moderada", "moderate"
                     else:
-                        st.error(T("model_weak"))
-                elif r2 is not None and r2 >= 0.8:
-                    st.success(T("model_good"))
-                elif r2 is not None and r2 >= 0.5:
-                    st.warning(T("model_moderate"))
+                        conf_pt, conf_en = "baixa", "low"
+                elif r2 is not None:
+                    if r2 >= 0.8:
+                        conf_pt, conf_en = "elevada", "high"
+                    elif r2 >= 0.5:
+                        conf_pt, conf_en = "moderada", "moderate"
+                    else:
+                        conf_pt, conf_en = "baixa", "low"
                 else:
-                    st.error(T("model_weak"))
+                    conf_pt, conf_en = "moderada", "moderate"
+
+                if st.session_state.lang == "PT":
+                    r2_sentence = f"O ajuste histórico é forte (R²={r2:.0%}). " if (r2 is not None and r2 >= 0.75) else ""
+                    avg_pct_label = (
+                        f"{avg_annual_pct:+.1f}%"
+                        if avg_annual_pct is not None
+                        else "N/A"
+                    )
+                    summary = (
+                        f"Para o indicador {forecast_indicator}, a projecção aponta para {trend_pt} "
+                        f"no horizonte de {forecast_horizon} anos, com confiança {conf_pt}. "
+                        f"Em média, a variação anual estimada é de {avg_pct_label} "
+                        f"({format_compact(avg_annual_abs)} por ano). "
+                        f"{r2_sentence}"
+                    )
+                else:
+                    r2_sentence = f"Historical fit is strong (R²={r2:.0%}). " if (r2 is not None and r2 >= 0.75) else ""
+                    avg_pct_label = (
+                        f"{avg_annual_pct:+.1f}%"
+                        if avg_annual_pct is not None
+                        else "N/A"
+                    )
+                    summary = (
+                        f"For {forecast_indicator}, the projection indicates an expected {trend_en} "
+                        f"over the {forecast_horizon}-year horizon, with {conf_en} confidence. "
+                        f"Average estimated annual change is {avg_pct_label} "
+                        f"({format_compact(avg_annual_abs)} per year). "
+                        f"{r2_sentence}"
+                    )
+
+                st.info(summary)
+                with st.expander("Detalhes técnicos" if st.session_state.lang == "PT" else "Technical details"):
+                    st.write(
+                        f"**Model:** {model_meta['model_label']} · "
+                        f"**Holdout MAPE:** {holdout_label} · "
+                        f"**R²:** {r2_label} · "
+                        f"**{T('indicator')}:** {tipo_label} · "
+                        f"**Data points:** {len(monthly_series)}"
+                    )
     else:
         st.warning(T("insufficient_data"))
 
