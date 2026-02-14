@@ -3,6 +3,8 @@
 
 # Allow Python files
 !*.py
+!dashboard/
+!dashboard/*.py
 
 # Allow Excel files
 !*.xlsx
@@ -12,6 +14,10 @@
 
 # Allow README files
 !README.md
+
+# Allow deployment/runtime manifests
+!requirements.txt
+!*.geojson
 
 # Allow .gitignore file
 !.gitignore
