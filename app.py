@@ -401,7 +401,6 @@ with tabs[0]:
 
     gap_df = pd.DataFrame(gap_rows).sort_values(T("accounts_per_capita"), ascending=False)
 
-    st.subheader(T("penetration_map"))
     map_rows = []
     for _, row in gap_df.iterrows():
         province_name = row[T("province")]
@@ -419,6 +418,8 @@ with tabs[0]:
     map_df = pd.DataFrame(map_rows)
     moz_geojson, moz_geojson_path = load_moz_adm1_geojson()
     geo_name_field = detect_geojson_name_field(moz_geojson) if moz_geojson else None
+    fig_map = None
+    map_note = None
     if not map_df.empty and moz_geojson and geo_name_field:
         lookup = map_df.set_index("Province")[["Accounts_Per_Capita", "Population", "Accounts"]].to_dict("index")
         feature_names = []
@@ -460,14 +461,11 @@ with tabs[0]:
                     "Accounts_Per_Capita": ":.2f",
                 },
             )
-            fig_map.update_layout(height=540, margin=dict(l=10, r=10, t=20, b=10))
-            st.plotly_chart(fig_map, use_container_width=True)
-            st.caption(
-                (
-                    f"Mapa provincial (GeoJSON): `{moz_geojson_path}`"
-                    if st.session_state.lang == "PT"
-                    else f"Province map (GeoJSON): `{moz_geojson_path}`"
-                )
+            fig_map.update_layout(height=460, margin=dict(l=10, r=10, t=10, b=10))
+            map_note = (
+                f"Mapa provincial (GeoJSON): `{moz_geojson_path}`"
+                if st.session_state.lang == "PT"
+                else f"Province map (GeoJSON): `{moz_geojson_path}`"
             )
     elif not map_df.empty:
         pop_label = "População" if st.session_state.lang == "PT" else "Population"
@@ -475,26 +473,25 @@ with tabs[0]:
             go.Scattergeo(
                 lat=map_df["lat"],
                 lon=map_df["lon"],
-                mode="markers+text",
-                text=map_df["Province"],
-                textposition="top center",
+                mode="markers",
                 marker=dict(
-                    size=(map_df["Accounts_Per_Capita"] * 40).clip(lower=10),
+                    size=(map_df["Accounts_Per_Capita"] * 30).clip(lower=8),
                     color=map_df["Accounts_Per_Capita"],
                     colorscale="YlOrRd",
-                    colorbar=dict(title=T("accounts_per_capita")),
+                    colorbar=dict(title=T("accounts_per_capita"), thickness=12),
                     line=dict(width=0.5, color="#333333"),
                     sizemode="diameter",
                 ),
                 customdata=map_df[["Population", "Accounts", "Accounts_Per_Capita"]],
                 hovertemplate=(
-                    f"{T('province')}: %{{text}}<br>"
+                    f"{T('province')}: %{{customdata[3]}}<br>"
                     f"{pop_label}: %{{customdata[0]:,.0f}}<br>"
                     f"{T('total_accounts')}: %{{customdata[1]:,.0f}}<br>"
                     f"{T('accounts_per_capita')}: %{{customdata[2]:.2f}}<extra></extra>"
                 ),
             )
         )
+        fig_map.data[0].customdata = map_df[["Population", "Accounts", "Accounts_Per_Capita", "Province"]]
         fig_map.update_geos(
             scope="africa",
             projection_type="mercator",
@@ -505,9 +502,8 @@ with tabs[0]:
             lonaxis_range=[30, 41],
             lataxis_range=[-27, -10],
         )
-        fig_map.update_layout(height=520, margin=dict(l=10, r=10, t=20, b=10))
-        st.plotly_chart(fig_map, use_container_width=True)
-        st.caption(
+        fig_map.update_layout(height=430, margin=dict(l=10, r=10, t=10, b=10))
+        map_note = (
             "Fallback map: marker view (no local province GeoJSON found)."
             if st.session_state.lang == "EN"
             else "Mapa alternativo: vista por marcadores (sem GeoJSON provincial local)."
@@ -516,7 +512,7 @@ with tabs[0]:
     # Per capita bar chart
     fig_pc = px.bar(
         gap_df, x=T("province"), y=T("accounts_per_capita"),
-        color=T("accounts_per_capita"), color_continuous_scale='RdYlGn',
+        color=T("accounts_per_capita"), color_continuous_scale='YlOrRd',
         text=[f"{v:.2f}" for v in gap_df[T("accounts_per_capita")]],
     )
     fig_pc.update_layout(
@@ -525,6 +521,17 @@ with tabs[0]:
         coloraxis_showscale=False, height=400
     )
     st.plotly_chart(fig_pc, use_container_width=True)
+
+    map_expander_title = (
+        "🗺️ Ver no mapa (opcional)"
+        if st.session_state.lang == "PT"
+        else "🗺️ View on map (optional)"
+    )
+    with st.expander(map_expander_title, expanded=False):
+        if fig_map is not None:
+            st.plotly_chart(fig_map, use_container_width=True)
+            if map_note:
+                st.caption(map_note)
 
     # --- Gender Parity Index ---
     st.markdown("---")
