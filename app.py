@@ -37,7 +37,7 @@ from dashboard.forecasting import (
     STOCK_INDICATORS,
     aggregate_forecast_yearly,
     build_monthly_series,
-    poly_forecast,
+    select_best_forecast_model,
 )
 from dashboard.translations import translate
 
@@ -1349,8 +1349,8 @@ with tabs[7]:
     pred_label = T("forecast")
 
     if len(monthly_series) >= 3:
-        combined, r2, res_std, pipeline = poly_forecast(
-            monthly_series, n_future_years=forecast_horizon, degree=2
+        combined, r2, res_std, model_meta = select_best_forecast_model(
+            monthly_series, n_future_years=forecast_horizon, indicator_name=forecast_indicator
         )
 
         if combined is not None:
@@ -1399,15 +1399,28 @@ with tabs[7]:
                 )
                 st.plotly_chart(fig_fc, use_container_width=True)
 
+                holdout_label = (
+                    "N/A" if model_meta["holdout_mape"] is None else f"{model_meta['holdout_mape']:.2f}%"
+                )
+                r2_label = "N/A" if r2 is None else f"{r2:.3f}"
                 st.info(
-                    f"**R²:** {r2:.3f} · "
+                    f"**Model:** {model_meta['model_label']} · "
+                    f"**Holdout MAPE:** {holdout_label} · "
+                    f"**R²:** {r2_label} · "
                     f"**{T('indicator')}:** {tipo_label} · "
                     f"**Data points:** {len(monthly_series)}"
                 )
 
-                if r2 >= 0.8:
+                if model_meta["holdout_mape"] is not None:
+                    if model_meta["holdout_mape"] <= 8:
+                        st.success(T("model_good"))
+                    elif model_meta["holdout_mape"] <= 15:
+                        st.warning(T("model_moderate"))
+                    else:
+                        st.error(T("model_weak"))
+                elif r2 is not None and r2 >= 0.8:
                     st.success(T("model_good"))
-                elif r2 >= 0.5:
+                elif r2 is not None and r2 >= 0.5:
                     st.warning(T("model_moderate"))
                 else:
                     st.error(T("model_weak"))
@@ -1426,11 +1439,12 @@ with tabs[7]:
                 prov_data = src_df[src_df['Province'] == prov]
                 prov_monthly = build_monthly_series(prov_data, metric_col)
                 if len(prov_monthly) >= 3:
-                    prov_combined, prov_r2, _, _ = poly_forecast(
-                        prov_monthly, n_future_years=forecast_horizon, degree=2
+                    prov_combined, prov_r2, _, prov_meta = select_best_forecast_model(
+                        prov_monthly, n_future_years=forecast_horizon, indicator_name=forecast_indicator
                     )
                     if prov_combined is not None:
                         prov_yearly = aggregate_forecast_yearly(prov_combined, forecast_indicator, hist_label, pred_label)
+                        prov_yearly["Model"] = prov_meta["model_label"]
                         prov_yearly[T("province")] = prov
                         prov_results.append(prov_yearly)
 

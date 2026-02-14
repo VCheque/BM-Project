@@ -70,11 +70,19 @@ Raw Excel (BoM) + Census constants (INE)
 - **Tradeoff:** this keeps the app stable now, but province-level results for Maputo represent a combined area.
 - **Planned later:** introduce a canonical geo dimension (`geo_id`, level, aliases) and rebuild ETL outputs to support separate city/province reporting where source files allow it.
 
+6. Forecast model selection (v1.1)
+- Forecasting no longer forces one model for all indicators.
+- Candidate models are evaluated on holdout error (MAPE): `naive`, `seasonal naive (12)`, `poly1`, `poly2`.
+- The app automatically selects the best-performing candidate per indicator.
+- For sparse stock series (very few annual end-of-period points), the app defaults to a conservative linear trend (`poly1`).
+- Forecast visuals display selected model and holdout MAPE so users can interpret confidence.
+
 ## Caveats You Should Keep in Mind
 
 - Year coverage is non-contiguous (2023 missing in current CSVs).
 - Per-capita metrics combine recent banking data with Census 2017 denominators.
-- Forecasting is polynomial (degree 2), useful for scenarios but not causal inference.
+- Forecasting uses model selection across naive/seasonal/linear/quadratic candidates and remains scenario-oriented.
+- Forecasts are statistical projections, not causal estimates. Missing 2023 may affect trend continuity.
 - Maputo is currently shown as a combined geography (city + province) to preserve consistency in the current pipeline.
 
 ## Run
