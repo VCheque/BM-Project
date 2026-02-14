@@ -79,6 +79,15 @@ def process_df(df: pd.DataFrame) -> pd.DataFrame:
 
 def load_dataframes() -> tuple[dict[str, pd.DataFrame], pd.DataFrame]:
     """Load all dashboard datasets and return normalized dataframes plus census."""
+    missing = [path for path in FILE_PATHS.values() if not pd.io.common.file_exists(path)]
+    if not pd.io.common.file_exists("census_2017_provinces.csv"):
+        missing.append("census_2017_provinces.csv")
+    if missing:
+        raise FileNotFoundError(
+            "Missing required data file(s): "
+            + ", ".join(sorted(missing))
+            + ". Ensure these CSV files are committed and deployed with the app."
+        )
     dataframes = {name: process_df(pd.read_csv(path)) for name, path in FILE_PATHS.items()}
     census_df = sanitize_census_df(process_df(pd.read_csv("census_2017_provinces.csv")))
     return dataframes, census_df

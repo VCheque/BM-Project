@@ -1,0 +1,301 @@
+Year,Month,Category,Metric,Sub_Metric,Total_Transactions
+2020,Janeiro,ATM_Transactions_Vol,Levantamentos,com cartões bancários,8760354.0
+2020,Setembro,ATM_Transactions_Vol,Transferências para,contas bancárias,352463.0
+2020,Outubro,ATM_Transactions_Vol,Transferências para,contas bancárias,376664.0
+2020,Novembro,ATM_Transactions_Vol,Transferências para,contas bancárias,369054.0
+2020,Dezembro,ATM_Transactions_Vol,Transferências para,contas bancárias,402383.0
+2020,Janeiro,ATM_Transactions_Vol,telemóveis,,7426.0
+2020,Fevereiro,ATM_Transactions_Vol,telemóveis,,7009.0
+2020,Março,ATM_Transactions_Vol,telemóveis,,7617.0
+2020,Abril,ATM_Transactions_Vol,telemóveis,,6684.0
+2020,Maio,ATM_Transactions_Vol,telemóveis,,7628.0
+2020,Junho,ATM_Transactions_Vol,telemóveis,,7360.0
+2020,Julho,ATM_Transactions_Vol,telemóveis,,8195.0
+2020,Agosto,ATM_Transactions_Vol,telemóveis,,8088.0
+2020,Outubro,ATM_Transactions_Vol,telemóveis,,9149.0
+2020,Novembro,ATM_Transactions_Vol,telemóveis,,8824.0
+2020,Dezembro,ATM_Transactions_Vol,telemóveis,,10183.0
+2020,Janeiro,ATM_Transactions_Vol,Pagamentos de Serviços,,184701.0
+2020,Fevereiro,ATM_Transactions_Vol,Pagamentos de Serviços,,259213.0
+2020,Março,ATM_Transactions_Vol,Pagamentos de Serviços,,187763.0
+2020,Abril,ATM_Transactions_Vol,Pagamentos de Serviços,,179305.0
+2020,Maio,ATM_Transactions_Vol,Pagamentos de Serviços,,182445.0
+2020,Junho,ATM_Transactions_Vol,Pagamentos de Serviços,,176184.0
+2020,Julho,ATM_Transactions_Vol,Pagamentos de Serviços,,175675.0
+2020,Agosto,ATM_Transactions_Vol,Pagamentos de Serviços,,165069.0
+2020,Setembro,ATM_Transactions_Vol,Pagamentos de Serviços,,163431.0
+2020,Outubro,ATM_Transactions_Vol,Pagamentos de Serviços,,167480.0
+2020,Novembro,ATM_Transactions_Vol,Pagamentos de Serviços,,170678.0
+2020,Dezembro,ATM_Transactions_Vol,Pagamentos de Serviços,,170011.0
+2020,Agosto,ATM_Transactions_Vol,Transferências para,contas bancárias,361624.0
+2020,Julho,ATM_Transactions_Vol,Transferências para,contas bancárias,364994.0
+2020,Setembro,ATM_Transactions_Vol,telemóveis,,8231.0
+2020,Maio,ATM_Transactions_Vol,Transferências para,contas bancárias,354462.0
+2020,Junho,ATM_Transactions_Vol,Transferências para,contas bancárias,349333.0
+2020,Fevereiro,ATM_Transactions_Vol,Levantamentos,com cartões bancários,7818351.0
+2020,Março,ATM_Transactions_Vol,Levantamentos,com cartões bancários,8211390.0
+2020,Abril,ATM_Transactions_Vol,Levantamentos,com cartões bancários,7022620.0
+2020,Maio,ATM_Transactions_Vol,Levantamentos,com cartões bancários,7470722.0
+2020,Junho,ATM_Transactions_Vol,Levantamentos,com cartões bancários,7211387.0
+2020,Julho,ATM_Transactions_Vol,Levantamentos,com cartões bancários,7572602.0
+2020,Agosto,ATM_Transactions_Vol,Levantamentos,com cartões bancários,7523714.0
+2020,Outubro,ATM_Transactions_Vol,Levantamentos,com cartões bancários,7871562.0
+2020,Novembro,ATM_Transactions_Vol,Levantamentos,com cartões bancários,7671909.0
+2020,Dezembro,ATM_Transactions_Vol,Levantamentos,com cartões bancários,8824619.0
+2020,Janeiro,ATM_Transactions_Vol,Levantamentos,de fundos depositados em telemóveis,560663.0
+2020,Fevereiro,ATM_Transactions_Vol,Levantamentos,de fundos depositados em telemóveis,529620.0
+2020,Março,ATM_Transactions_Vol,Levantamentos,de fundos depositados em telemóveis,563597.0
+2020,Setembro,ATM_Transactions_Vol,Levantamentos,com cartões bancários,7207992.0
+2020,Abril,ATM_Transactions_Vol,Transferências para,contas bancárias,340923.0
+2020,Abril,ATM_Transactions_Vol,Levantamentos,de fundos depositados em telemóveis,469718.0
+2020,Março,ATM_Transactions_Vol,Transferências para,contas bancárias,380839.0
+2020,Fevereiro,ATM_Transactions_Vol,Transferências para,contas bancárias,360329.0
+2020,Janeiro,ATM_Transactions_Vol,Transferências para,contas bancárias,376932.0
+2020,Novembro,ATM_Transactions_Vol,Levantamentos,de fundos depositados em telemóveis,749905.0
+2020,Outubro,ATM_Transactions_Vol,Levantamentos,de fundos depositados em telemóveis,792810.0
+2020,Dezembro,ATM_Transactions_Vol,Levantamentos,de fundos depositados em telemóveis,864998.0
+2020,Agosto,ATM_Transactions_Vol,Levantamentos,de fundos depositados em telemóveis,741742.0
+2020,Julho,ATM_Transactions_Vol,Levantamentos,de fundos depositados em telemóveis,737130.0
+2020,Junho,ATM_Transactions_Vol,Levantamentos,de fundos depositados em telemóveis,525294.0
+2020,Maio,ATM_Transactions_Vol,Levantamentos,de fundos depositados em telemóveis,541102.0
+2020,Setembro,ATM_Transactions_Vol,Levantamentos,de fundos depositados em telemóveis,720541.0
+2021,Agosto,ATM_Transactions_Vol,para telemóveis,,9222.0
+2021,Abril,ATM_Transactions_Vol,para telemóveis,,8858.0
+2021,Julho,ATM_Transactions_Vol,para telemóveis,,9304.0
+2021,Junho,ATM_Transactions_Vol,para telemóveis,,8939.0
+2021,Maio,ATM_Transactions_Vol,para telemóveis,,9699.0
+2021,Março,ATM_Transactions_Vol,para telemóveis,,9494.0
+2021,Setembro,ATM_Transactions_Vol,Transferências,para Contas Bancárias,367297.0
+2021,Janeiro,ATM_Transactions_Vol,para telemóveis,,7739.0
+2021,Dezembro,ATM_Transactions_Vol,Transferências,para Contas Bancárias,384446.0
+2021,Novembro,ATM_Transactions_Vol,Transferências,para Contas Bancárias,370873.0
+2021,Outubro,ATM_Transactions_Vol,Transferências,para Contas Bancárias,374506.0
+2021,Setembro,ATM_Transactions_Vol,para telemóveis,,9353.0
+2021,Fevereiro,ATM_Transactions_Vol,para telemóveis,,7573.0
+2021,Outubro,ATM_Transactions_Vol,para telemóveis,,9896.0
+2021,Dezembro,ATM_Transactions_Vol,Pagamentos de Serviços,,184493.0
+2021,Dezembro,ATM_Transactions_Vol,para telemóveis,,11400.0
+2021,Janeiro,ATM_Transactions_Vol,Pagamentos de Serviços,,178420.0
+2021,Fevereiro,ATM_Transactions_Vol,Pagamentos de Serviços,,169672.0
+2021,Março,ATM_Transactions_Vol,Pagamentos de Serviços,,173073.0
+2021,Abril,ATM_Transactions_Vol,Pagamentos de Serviços,,173249.0
+2021,Maio,ATM_Transactions_Vol,Pagamentos de Serviços,,176448.0
+2021,Junho,ATM_Transactions_Vol,Pagamentos de Serviços,,175158.0
+2021,Julho,ATM_Transactions_Vol,Pagamentos de Serviços,,175092.0
+2021,Agosto,ATM_Transactions_Vol,Pagamentos de Serviços,,175121.0
+2021,Setembro,ATM_Transactions_Vol,Pagamentos de Serviços,,178661.0
+2021,Outubro,ATM_Transactions_Vol,Pagamentos de Serviços,,179633.0
+2021,Novembro,ATM_Transactions_Vol,Pagamentos de Serviços,,178496.0
+2021,Agosto,ATM_Transactions_Vol,Transferências,para Contas Bancárias,367744.0
+2021,Novembro,ATM_Transactions_Vol,para telemóveis,,10049.0
+2021,Julho,ATM_Transactions_Vol,Transferências,para Contas Bancárias,365347.0
+2021,Março,ATM_Transactions_Vol,Levantamentos,de fundos depositados em telemóveis,813124.0
+2021,Maio,ATM_Transactions_Vol,Transferências,para Contas Bancárias,359389.0
+2021,Junho,ATM_Transactions_Vol,Transferências,para Contas Bancárias,361776.0
+2021,Janeiro,ATM_Transactions_Vol,Levantamentos,com cartões bancários,8089602.0
+2021,Fevereiro,ATM_Transactions_Vol,Levantamentos,com cartões bancários,7163830.0
+2021,Março,ATM_Transactions_Vol,Levantamentos,com cartões bancários,7936863.0
+2021,Abril,ATM_Transactions_Vol,Levantamentos,com cartões bancários,7399611.0
+2021,Maio,ATM_Transactions_Vol,Levantamentos,com cartões bancários,7786138.0
+2021,Junho,ATM_Transactions_Vol,Levantamentos,com cartões bancários,7642958.0
+2021,Julho,ATM_Transactions_Vol,Levantamentos,com cartões bancários,7699631.0
+2021,Setembro,ATM_Transactions_Vol,Levantamentos,com cartões bancários,7630714.0
+2021,Outubro,ATM_Transactions_Vol,Levantamentos,com cartões bancários,7899273.0
+2021,Novembro,ATM_Transactions_Vol,Levantamentos,com cartões bancários,8020265.0
+2021,Dezembro,ATM_Transactions_Vol,Levantamentos,com cartões bancários,8878663.0
+2021,Janeiro,ATM_Transactions_Vol,Levantamentos,de fundos depositados em telemóveis,750679.0
+2021,Fevereiro,ATM_Transactions_Vol,Levantamentos,de fundos depositados em telemóveis,673965.0
+2021,Agosto,ATM_Transactions_Vol,Levantamentos,com cartões bancários,7648840.0
+2021,Abril,ATM_Transactions_Vol,Levantamentos,de fundos depositados em telemóveis,757800.0
+2021,Março,ATM_Transactions_Vol,Transferências,para Contas Bancárias,371145.0
+2021,Fevereiro,ATM_Transactions_Vol,Transferências,para Contas Bancárias,340720.0
+2021,Janeiro,ATM_Transactions_Vol,Transferências,para Contas Bancárias,359634.0
+2021,Dezembro,ATM_Transactions_Vol,Levantamentos,de fundos depositados em telemóveis,1104970.0
+2021,Novembro,ATM_Transactions_Vol,Levantamentos,de fundos depositados em telemóveis,969552.0
+2021,Outubro,ATM_Transactions_Vol,Levantamentos,de fundos depositados em telemóveis,909530.0
+2021,Abril,ATM_Transactions_Vol,Transferências,para Contas Bancárias,349804.0
+2021,Agosto,ATM_Transactions_Vol,Levantamentos,de fundos depositados em telemóveis,852505.0
+2021,Julho,ATM_Transactions_Vol,Levantamentos,de fundos depositados em telemóveis,813139.0
+2021,Junho,ATM_Transactions_Vol,Levantamentos,de fundos depositados em telemóveis,790900.0
+2021,Maio,ATM_Transactions_Vol,Levantamentos,de fundos depositados em telemóveis,822366.0
+2021,Setembro,ATM_Transactions_Vol,Levantamentos,de fundos depositados em telemóveis,908512.0
+2022,Setembro,ATM_Transactions_Vol,para telemóveis,,11102.0
+2022,Agosto,ATM_Transactions_Vol,para telemóveis,,10615.0
+2022,Julho,ATM_Transactions_Vol,para telemóveis,,9660.0
+2022,Junho,ATM_Transactions_Vol,para telemóveis,,9759.0
+2022,Maio,ATM_Transactions_Vol,para telemóveis,,9926.0
+2022,Abril,ATM_Transactions_Vol,para telemóveis,,9341.0
+2022,Janeiro,ATM_Transactions_Vol,para telemóveis,,8990.0
+2022,Fevereiro,ATM_Transactions_Vol,para telemóveis,,8784.0
+2022,Dezembro,ATM_Transactions_Vol,Transferências,para Contas Bancárias,432356.0
+2022,Novembro,ATM_Transactions_Vol,Transferências,para Contas Bancárias,381063.0
+2022,Outubro,ATM_Transactions_Vol,Transferências,para Contas Bancárias,355379.0
+2022,Setembro,ATM_Transactions_Vol,Transferências,para Contas Bancárias,369165.0
+2022,Março,ATM_Transactions_Vol,para telemóveis,,10313.0
+2022,Outubro,ATM_Transactions_Vol,para telemóveis,,10825.0
+2022,Dezembro,ATM_Transactions_Vol,Pagamentos de Serviços,,184185.0
+2022,Dezembro,ATM_Transactions_Vol,para telemóveis,,13761.0
+2022,Janeiro,ATM_Transactions_Vol,Pagamentos de Serviços,,178822.0
+2022,Fevereiro,ATM_Transactions_Vol,Pagamentos de Serviços,,178223.0
+2022,Março,ATM_Transactions_Vol,Pagamentos de Serviços,,183659.0
+2022,Abril,ATM_Transactions_Vol,Pagamentos de Serviços,,178274.0
+2022,Maio,ATM_Transactions_Vol,Pagamentos de Serviços,,178643.0
+2022,Junho,ATM_Transactions_Vol,Pagamentos de Serviços,,179021.0
+2022,Julho,ATM_Transactions_Vol,Pagamentos de Serviços,,180409.0
+2022,Agosto,ATM_Transactions_Vol,Pagamentos de Serviços,,186642.0
+2022,Setembro,ATM_Transactions_Vol,Pagamentos de Serviços,,182281.0
+2022,Outubro,ATM_Transactions_Vol,Pagamentos de Serviços,,183564.0
+2022,Novembro,ATM_Transactions_Vol,Pagamentos de Serviços,,185373.0
+2022,Agosto,ATM_Transactions_Vol,Transferências,para Contas Bancárias,375718.0
+2022,Novembro,ATM_Transactions_Vol,para telemóveis,,11036.0
+2022,Julho,ATM_Transactions_Vol,Transferências,para Contas Bancárias,351673.0
+2022,Junho,ATM_Transactions_Vol,Transferências,para Contas Bancárias,372857.0
+2022,Maio,ATM_Transactions_Vol,Transferências,para Contas Bancárias,365031.0
+2022,Fevereiro,ATM_Transactions_Vol,Levantamentos,com cartões bancários,7480594.0
+2022,Março,ATM_Transactions_Vol,Levantamentos,com cartões bancários,8019320.0
+2022,Abril,ATM_Transactions_Vol,Levantamentos,com cartões bancários,7492785.0
+2022,Maio,ATM_Transactions_Vol,Levantamentos,com cartões bancários,7752043.0
+2022,Junho,ATM_Transactions_Vol,Levantamentos,com cartões bancários,7768899.0
+2022,Julho,ATM_Transactions_Vol,Levantamentos,com cartões bancários,7485005.0
+2022,Agosto,ATM_Transactions_Vol,Levantamentos,com cartões bancários,8357313.0
+2022,Setembro,ATM_Transactions_Vol,Levantamentos,com cartões bancários,8090484.0
+2022,Outubro,ATM_Transactions_Vol,Levantamentos,com cartões bancários,7554115.0
+2022,Novembro,ATM_Transactions_Vol,Levantamentos,com cartões bancários,8243780.0
+2022,Dezembro,ATM_Transactions_Vol,Levantamentos,com cartões bancários,10721604.0
+2022,Janeiro,ATM_Transactions_Vol,Levantamentos,de fundos depositados em telemóveis,971305.0
+2022,Fevereiro,ATM_Transactions_Vol,Levantamentos,de fundos depositados em telemóveis,931109.0
+2022,Janeiro,ATM_Transactions_Vol,Levantamentos,com cartões bancários,8224275.0
+2022,Abril,ATM_Transactions_Vol,Levantamentos,de fundos depositados em telemóveis,969107.0
+2022,Março,ATM_Transactions_Vol,Levantamentos,de fundos depositados em telemóveis,1043032.0
+2022,Abril,ATM_Transactions_Vol,Transferências,para Contas Bancárias,356398.0
+2022,Março,ATM_Transactions_Vol,Transferências,para Contas Bancárias,377132.0
+2022,Fevereiro,ATM_Transactions_Vol,Transferências,para Contas Bancárias,353639.0
+2022,Dezembro,ATM_Transactions_Vol,Levantamentos,de fundos depositados em telemóveis,1508539.0
+2022,Novembro,ATM_Transactions_Vol,Levantamentos,de fundos depositados em telemóveis,1181156.0
+2022,Janeiro,ATM_Transactions_Vol,Transferências,para Contas Bancárias,353820.0
+2022,Setembro,ATM_Transactions_Vol,Levantamentos,de fundos depositados em telemóveis,1116060.0
+2022,Agosto,ATM_Transactions_Vol,Levantamentos,de fundos depositados em telemóveis,1166719.0
+2022,Julho,ATM_Transactions_Vol,Levantamentos,de fundos depositados em telemóveis,1017471.0
+2022,Junho,ATM_Transactions_Vol,Levantamentos,de fundos depositados em telemóveis,1044084.0
+2022,Maio,ATM_Transactions_Vol,Levantamentos,de fundos depositados em telemóveis,1052156.0
+2022,Outubro,ATM_Transactions_Vol,Levantamentos,de fundos depositados em telemóveis,1062478.0
+2024,Abril,ATM_Transactions_Vol,para telemóveis,,57652.0
+2024,Julho,ATM_Transactions_Vol,para telemóveis,,101923.5
+2024,Junho,ATM_Transactions_Vol,para telemóveis,,59386.0
+2024,Maio,ATM_Transactions_Vol,para telemóveis,,65953.0
+2024,Março,ATM_Transactions_Vol,para telemóveis,,60359.0
+2024,Setembro,ATM_Transactions_Vol,Transferências,para Contas Bancárias,118371.0
+2024,Janeiro,ATM_Transactions_Vol,para telemóveis,,39329.0
+2024,Dezembro,ATM_Transactions_Vol,Transferências,para Contas Bancárias,136695.0
+2024,Novembro,ATM_Transactions_Vol,Transferências,para Contas Bancárias,112811.0
+2024,Outubro,ATM_Transactions_Vol,Transferências,para Contas Bancárias,120015.0
+2024,Agosto,ATM_Transactions_Vol,para telemóveis,,70987.0
+2024,Fevereiro,ATM_Transactions_Vol,para telemóveis,,51271.0
+2024,Setembro,ATM_Transactions_Vol,para telemóveis,,81824.0
+2024,Maio,ATM_Transactions_Vol,Pagamentos de Serviços,,15181.0
+2024,Dezembro,ATM_Transactions_Vol,para telemóveis,,207771.0
+2024,Janeiro,ATM_Transactions_Vol,Pagamentos de Serviços,,16415.0
+2024,Fevereiro,ATM_Transactions_Vol,Pagamentos de Serviços,,13306.0
+2024,Março,ATM_Transactions_Vol,Pagamentos de Serviços,,10674.0
+2024,Abril,ATM_Transactions_Vol,Pagamentos de Serviços,,9242.0
+2024,Junho,ATM_Transactions_Vol,Pagamentos de Serviços,,12040.0
+2024,Julho,ATM_Transactions_Vol,Pagamentos de Serviços,,13431.0
+2024,Agosto,ATM_Transactions_Vol,Pagamentos de Serviços,,11850.0
+2024,Setembro,ATM_Transactions_Vol,Pagamentos de Serviços,,10783.0
+2024,Outubro,ATM_Transactions_Vol,Pagamentos de Serviços,,11274.0
+2024,Novembro,ATM_Transactions_Vol,Pagamentos de Serviços,,9844.0
+2024,Dezembro,ATM_Transactions_Vol,Pagamentos de Serviços,,10657.0
+2024,Agosto,ATM_Transactions_Vol,Transferências,para Contas Bancárias,113788.0
+2024,Novembro,ATM_Transactions_Vol,para telemóveis,,94344.0
+2024,Julho,ATM_Transactions_Vol,Transferências,para Contas Bancárias,118652.0
+2024,Outubro,ATM_Transactions_Vol,para telemóveis,,78085.0
+2024,Maio,ATM_Transactions_Vol,Transferências,para Contas Bancárias,118396.0
+2024,Junho,ATM_Transactions_Vol,Transferências,para Contas Bancárias,106543.0
+2024,Fevereiro,ATM_Transactions_Vol,Levantamentos,com cartões bancários,5342126.0
+2024,Março,ATM_Transactions_Vol,Levantamentos,com cartões bancários,5618566.0
+2024,Abril,ATM_Transactions_Vol,Levantamentos,com cartões bancários,5213040.0
+2024,Maio,ATM_Transactions_Vol,Levantamentos,com cartões bancários,6415298.0
+2024,Junho,ATM_Transactions_Vol,Levantamentos,com cartões bancários,5823203.0
+2024,Julho,ATM_Transactions_Vol,Levantamentos,com cartões bancários,6220462.0
+2024,Agosto,ATM_Transactions_Vol,Levantamentos,com cartões bancários,6343611.0
+2024,Setembro,ATM_Transactions_Vol,Levantamentos,com cartões bancários,6511825.0
+2024,Outubro,ATM_Transactions_Vol,Levantamentos,com cartões bancários,6250672.0
+2024,Novembro,ATM_Transactions_Vol,Levantamentos,com cartões bancários,5777190.0
+2024,Dezembro,ATM_Transactions_Vol,Levantamentos,com cartões bancários,5949785.0
+2024,Janeiro,ATM_Transactions_Vol,Levantamentos,de fundos depositados em telemóveis,933129.0
+2024,Fevereiro,ATM_Transactions_Vol,Levantamentos,de fundos depositados em telemóveis,926436.0
+2024,Janeiro,ATM_Transactions_Vol,Levantamentos,com cartões bancários,5763859.0
+2024,Março,ATM_Transactions_Vol,Levantamentos,de fundos depositados em telemóveis,932746.0
+2024,Abril,ATM_Transactions_Vol,Transferências,para Contas Bancárias,96170.0
+2024,Março,ATM_Transactions_Vol,Transferências,para Contas Bancárias,101611.0
+2024,Fevereiro,ATM_Transactions_Vol,Transferências,para Contas Bancárias,92916.0
+2024,Janeiro,ATM_Transactions_Vol,Transferências,para Contas Bancárias,92855.0
+2024,Novembro,ATM_Transactions_Vol,Levantamentos,de fundos depositados em telemóveis,1102256.0
+2024,Outubro,ATM_Transactions_Vol,Levantamentos,de fundos depositados em telemóveis,1255912.0
+2024,Dezembro,ATM_Transactions_Vol,Levantamentos,de fundos depositados em telemóveis,1036140.0
+2024,Agosto,ATM_Transactions_Vol,Levantamentos,de fundos depositados em telemóveis,1231528.0
+2024,Julho,ATM_Transactions_Vol,Levantamentos,de fundos depositados em telemóveis,1196164.0
+2024,Junho,ATM_Transactions_Vol,Levantamentos,de fundos depositados em telemóveis,1022063.0
+2024,Maio,ATM_Transactions_Vol,Levantamentos,de fundos depositados em telemóveis,1127949.0
+2024,Abril,ATM_Transactions_Vol,Levantamentos,de fundos depositados em telemóveis,998970.0
+2024,Setembro,ATM_Transactions_Vol,Levantamentos,de fundos depositados em telemóveis,1251108.0
+2025,Abril,ATM_Transactions_Vol,para telemóveis,,137533.0
+2025,Julho,ATM_Transactions_Vol,para telemóveis,,154651.5
+2025,Junho,ATM_Transactions_Vol,para telemóveis,,136184.0
+2025,Maio,ATM_Transactions_Vol,para telemóveis,,143737.0
+2025,Março,ATM_Transactions_Vol,para telemóveis,,144030.0
+2025,Agosto,ATM_Transactions_Vol,Transferências,para Contas Bancárias,104132.0
+2025,Janeiro,ATM_Transactions_Vol,para telemóveis,,132699.0
+2025,Dezembro,ATM_Transactions_Vol,Transferências,para Contas Bancárias,123966.0
+2025,Novembro,ATM_Transactions_Vol,Transferências,para Contas Bancárias,102947.0
+2025,Outubro,ATM_Transactions_Vol,Transferências,para Contas Bancárias,111194.0
+2025,Setembro,ATM_Transactions_Vol,Transferências,para Contas Bancárias,100258.0
+2025,Fevereiro,ATM_Transactions_Vol,para telemóveis,,152092.0
+2025,Agosto,ATM_Transactions_Vol,para telemóveis,,132488.0
+2025,Fevereiro,ATM_Transactions_Vol,Pagamentos de Serviços,,10521.0
+2025,Outubro,ATM_Transactions_Vol,para telemóveis,,177414.0
+2025,Novembro,ATM_Transactions_Vol,para telemóveis,,167033.0
+2025,Dezembro,ATM_Transactions_Vol,para telemóveis,,244727.0
+2025,Janeiro,ATM_Transactions_Vol,Pagamentos de Serviços,,9010.0
+2025,Outubro,ATM_Transactions_Vol,Pagamentos de Serviços,,9606.0
+2025,Março,ATM_Transactions_Vol,Pagamentos de Serviços,,10684.0
+2025,Abril,ATM_Transactions_Vol,Pagamentos de Serviços,,8967.0
+2025,Maio,ATM_Transactions_Vol,Pagamentos de Serviços,,10525.0
+2025,Junho,ATM_Transactions_Vol,Pagamentos de Serviços,,10675.0
+2025,Julho,ATM_Transactions_Vol,Pagamentos de Serviços,,11611.0
+2025,Agosto,ATM_Transactions_Vol,Pagamentos de Serviços,,8958.0
+2025,Setembro,ATM_Transactions_Vol,Pagamentos de Serviços,,8803.0
+2025,Julho,ATM_Transactions_Vol,Transferências,para Contas Bancárias,110817.0
+2025,Setembro,ATM_Transactions_Vol,para telemóveis,,141014.0
+2025,Junho,ATM_Transactions_Vol,Transferências,para Contas Bancárias,99712.0
+2025,Março,ATM_Transactions_Vol,Levantamentos,de fundos depositados em telemóveis,1117135.0
+2025,Abril,ATM_Transactions_Vol,Transferências,para Contas Bancárias,113964.0
+2025,Novembro,ATM_Transactions_Vol,Pagamentos de Serviços,,8584.0
+2025,Janeiro,ATM_Transactions_Vol,Levantamentos,com cartões bancários,5417862.0
+2025,Fevereiro,ATM_Transactions_Vol,Levantamentos,com cartões bancários,6353658.0
+2025,Março,ATM_Transactions_Vol,Levantamentos,com cartões bancários,5696029.0
+2025,Abril,ATM_Transactions_Vol,Levantamentos,com cartões bancários,5866421.0
+2025,Maio,ATM_Transactions_Vol,Levantamentos,com cartões bancários,6185918.0
+2025,Junho,ATM_Transactions_Vol,Levantamentos,com cartões bancários,5661432.0
+2025,Julho,ATM_Transactions_Vol,Levantamentos,com cartões bancários,5929662.0
+2025,Agosto,ATM_Transactions_Vol,Levantamentos,com cartões bancários,5494833.0
+2025,Setembro,ATM_Transactions_Vol,Levantamentos,com cartões bancários,5395723.0
+2025,Outubro,ATM_Transactions_Vol,Levantamentos,com cartões bancários,6236412.0
+2025,Novembro,ATM_Transactions_Vol,Levantamentos,com cartões bancários,5328741.0
+2025,Dezembro,ATM_Transactions_Vol,Levantamentos,com cartões bancários,6403710.0
+2025,Janeiro,ATM_Transactions_Vol,Levantamentos,de fundos depositados em telemóveis,969552.0
+2025,Fevereiro,ATM_Transactions_Vol,Levantamentos,de fundos depositados em telemóveis,1061247.0
+2025,Abril,ATM_Transactions_Vol,Levantamentos,de fundos depositados em telemóveis,1134371.0
+2025,Maio,ATM_Transactions_Vol,Levantamentos,de fundos depositados em telemóveis,1169216.0
+2025,Junho,ATM_Transactions_Vol,Levantamentos,de fundos depositados em telemóveis,1184855.0
+2025,Julho,ATM_Transactions_Vol,Levantamentos,de fundos depositados em telemóveis,1278011.0
+2025,Agosto,ATM_Transactions_Vol,Levantamentos,de fundos depositados em telemóveis,1275605.0
+2025,Setembro,ATM_Transactions_Vol,Levantamentos,de fundos depositados em telemóveis,1275217.0
+2025,Outubro,ATM_Transactions_Vol,Levantamentos,de fundos depositados em telemóveis,1479213.0
+2025,Novembro,ATM_Transactions_Vol,Levantamentos,de fundos depositados em telemóveis,1376352.0
+2025,Dezembro,ATM_Transactions_Vol,Levantamentos,de fundos depositados em telemóveis,1529477.0
+2025,Janeiro,ATM_Transactions_Vol,Transferências,para Contas Bancárias,109462.0
+2025,Fevereiro,ATM_Transactions_Vol,Transferências,para Contas Bancárias,121978.0
+2025,Março,ATM_Transactions_Vol,Transferências,para Contas Bancárias,124450.0
+2025,Maio,ATM_Transactions_Vol,Transferências,para Contas Bancárias,101564.0
+2025,Dezembro,ATM_Transactions_Vol,Pagamentos de Serviços,,10205.0
