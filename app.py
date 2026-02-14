@@ -838,6 +838,22 @@ with tabs[4]:
 
     if usage_view == usage_opt_digital:
         st.caption(T("caption_digital"))
+        mobile_context_pt = (
+            "ℹ️ Contexto metodológico (Moçambique): o indicador de Mobile Banking pode incluir utilizadores de "
+            "M-Pesa, mKesh, e-Mola e Conta Móvel. Como as plataformas são contabilizadas por conta/serviço, "
+            "uma mesma pessoa pode ter registo em mais de uma plataforma."
+        )
+        mobile_context_en = (
+            "ℹ️ Methodology context (Mozambique): the Mobile Banking indicator may include users from "
+            "M-Pesa, mKesh, e-Mola, and Conta Móvel. Because platforms are counted by account/service, "
+            "one person may appear in more than one platform."
+        )
+        st.info(mobile_context_pt if st.session_state.lang == "PT" else mobile_context_en)
+        st.caption(
+            "Fontes: Banco de Moçambique (interligação de carteiras móveis), Vodacom M-Pesa, mKesh/Tmcel e BCI Conta Móvel."
+            if st.session_state.lang == "PT"
+            else "Sources: Bank of Mozambique (mobile wallet interoperability), Vodacom M-Pesa, mKesh/Tmcel, and BCI Conta Móvel."
+        )
         common_metrics = sorted(set(mob_df['Metric'].unique()) & set(net_df['Metric'].unique()))
         if not common_metrics:
             common_metrics = sorted(mob_df['Metric'].unique())

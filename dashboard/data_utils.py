@@ -107,7 +107,7 @@ def last_month_snapshot_all_years(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def normalize_atm_txn(df: pd.DataFrame) -> pd.DataFrame:
-    """Fix naming inconsistencies in ATM transaction data between years."""
+    """Normalize ATM transaction naming to a consistent taxonomy across years."""
     df = df.copy()
     df.loc[df["Metric"] == "Transferências para", "Metric"] = "Transferências"
     df.loc[df["Sub_Metric"] == "contas bancárias", "Sub_Metric"] = "para Contas Bancárias"
