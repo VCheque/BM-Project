@@ -4,8 +4,6 @@ from __future__ import annotations
 
 import numpy as np
 import pandas as pd
-from sklearn.linear_model import LinearRegression
-from sklearn.preprocessing import PolynomialFeatures
 
 STOCK_INDICATORS = {"Contas Bancárias", "Cartões Bancários", "ATMs", "POS"}
 FLOW_INDICATORS = {
@@ -58,17 +56,12 @@ def poly_forecast(monthly_series: pd.DataFrame, n_future_years: int = 5, degree:
     if len(monthly_series) < 3:
         return None, None, None, None
 
-    t = monthly_series[["t"]].values
+    t = monthly_series["t"].to_numpy()
     y = monthly_series["Value"].values
 
-    poly = PolynomialFeatures(degree=degree, include_bias=False)
-    t_poly = poly.fit_transform(t)
-
-    model = LinearRegression()
-    model.fit(t_poly, y)
-
-    r2 = model.score(t_poly, y)
-    y_pred_hist = model.predict(t_poly)
+    coeffs = np.polyfit(t, y, degree)
+    y_pred_hist = np.polyval(coeffs, t)
+    r2 = _r2_score(y, y_pred_hist)
     residual_std = np.std(y - y_pred_hist)
 
     hist_df = monthly_series[["t", "Value"]].copy()
@@ -81,16 +74,15 @@ def poly_forecast(monthly_series: pd.DataFrame, n_future_years: int = 5, degree:
     for yr_offset in range(1, n_future_years + 1):
         for m in range(12):
             future_ts.append(last_year + yr_offset + m / 12)
-    future_t = np.array(future_ts).reshape(-1, 1)
-    future_poly = poly.transform(future_t)
-    future_vals = model.predict(future_poly).clip(min=0)
+    future_t = np.array(future_ts)
+    future_vals = np.polyval(coeffs, future_t).clip(min=0)
 
     pred_df = pd.DataFrame(
         {
             "t": future_t.flatten(),
             "Value": future_vals,
             "Tipo": "forecast",
-            "Year_Label": [int(x) for x in future_t.flatten()],
+            "Year_Label": [int(x) for x in future_t],
         }
     )
 
@@ -116,12 +108,18 @@ def _mape(y_true: np.ndarray, y_pred: np.ndarray) -> float:
     return float(np.mean(np.abs((y_true - y_pred) / denom)) * 100)
 
 
+def _r2_score(y_true: np.ndarray, y_pred: np.ndarray) -> float:
+    y_mean = float(np.mean(y_true))
+    ss_tot = float(np.sum((y_true - y_mean) ** 2))
+    if ss_tot == 0:
+        return 0.0
+    ss_res = float(np.sum((y_true - y_pred) ** 2))
+    return 1.0 - (ss_res / ss_tot)
+
+
 def _poly_predict(train_t: np.ndarray, train_y: np.ndarray, test_t: np.ndarray, degree: int) -> np.ndarray:
-    poly = PolynomialFeatures(degree=degree, include_bias=False)
-    x_train = poly.fit_transform(train_t.reshape(-1, 1))
-    x_test = poly.transform(test_t.reshape(-1, 1))
-    model = LinearRegression().fit(x_train, train_y)
-    pred = model.predict(x_test)
+    coeffs = np.polyfit(train_t, train_y, degree)
+    pred = np.polyval(coeffs, test_t)
     return np.clip(pred, a_min=0, a_max=None)
 
 
@@ -144,12 +142,10 @@ def _fit_predict_full(monthly_series: pd.DataFrame, model_name: str, n_future_ye
 
     if model_name == "poly2":
         pred_hist = _poly_predict(t, y, t, degree=2)
-        r2 = float(LinearRegression().fit(
-            PolynomialFeatures(degree=2, include_bias=False).fit_transform(t.reshape(-1, 1)), y
-        ).score(PolynomialFeatures(degree=2, include_bias=False).fit_transform(t.reshape(-1, 1)), y))
+        r2 = _r2_score(y, pred_hist)
     elif model_name == "poly1":
         pred_hist = _poly_predict(t, y, t, degree=1)
-        r2 = float(LinearRegression().fit(t.reshape(-1, 1), y).score(t.reshape(-1, 1), y))
+        r2 = _r2_score(y, pred_hist)
     elif model_name == "seasonal_naive":
         season = 12 if len(y) >= 12 else max(1, len(y) // 2)
         pred_hist = y.copy()

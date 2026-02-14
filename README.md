@@ -90,7 +90,7 @@ Raw Excel (BoM) + Census constants (INE)
 Install dependencies:
 
 ```bash
-pip install streamlit pandas numpy plotly scikit-learn openpyxl
+pip install streamlit pandas numpy plotly openpyxl
 ```
 
 Optional ETL maintenance (recommended after notebook extraction):
