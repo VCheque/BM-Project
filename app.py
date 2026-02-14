@@ -59,6 +59,7 @@ PROVINCE_COORDS = {
     "Inhambane": (-22.3, 35.4),
     "Gaza": (-23.7, 33.3),
     "Província de Maputo": (-25.2, 32.8),
+    "Cidade de Maputo": (-25.97, 32.58),
 }
 
 
@@ -158,8 +159,8 @@ def normalize_geo_name(name: str) -> str:
         "Maputo": "Província de Maputo",
         "Maputo Province": "Província de Maputo",
         "Maputo Província": "Província de Maputo",
-        "Maputo City": "Província de Maputo",
-        "Cidade de Maputo": "Província de Maputo",
+        "Maputo City": "Cidade de Maputo",
+        "Cidade de Maputo": "Cidade de Maputo",
         "Zambezia": "Zambézia",
     }
     return aliases.get(raw, raw)
@@ -216,6 +217,23 @@ if year_gaps:
     msg_en = f"Time series has missing year(s): {gap_list}."
     st.sidebar.warning(msg_pt if st.session_state.lang == "PT" else msg_en)
 selected_year = st.sidebar.selectbox(T("year"), all_years, help=T("help_year"))
+denominator_options = (
+    [
+        "Population 15+ (eligibility-adjusted)",
+        "Population 18+ (adult-focused)",
+        "Population 21+ (conservative)",
+        "Total population (legacy)",
+    ]
+    if st.session_state.lang == "EN"
+    else [
+        "População 15+ (ajustada à elegibilidade)",
+        "População 18+ (foco adulto)",
+        "População 21+ (conservador)",
+        "População total (legado)",
+    ]
+)
+if st.session_state.get("fi_denominator") not in denominator_options:
+    st.session_state["fi_denominator"] = denominator_options[0]
 selected_regions = st.sidebar.multiselect(T("zones"), list(regions_map.keys()), default=list(regions_map.keys()), help=T("help_zones"))
 prov_options = [p for r in selected_regions for p in regions_map[r]]
 selected_prov = st.sidebar.multiselect(T("provinces"), prov_options, default=prov_options, help=T("help_prov"))
@@ -233,6 +251,87 @@ selected_dist = st.sidebar.multiselect(T("districts"), dist_options, default=Non
 geo_axis = 'District' if selected_dist else 'Province'
 geo_axis_label = T("district") if selected_dist else T("province")
 title_suffix = f"{T('per_by')} {geo_axis_label}"
+
+
+def _population_geq_age_2017(row: pd.Series, threshold_age: float) -> float:
+    """Estimate population >= threshold age using Census 2017 grouped-age buckets."""
+    total = float(row.get("Population_Total", 0))
+    p15 = float(row.get("Population_15plus_2017", 0))
+    p10_14 = float(row.get("Population_10_14_2017", 0))
+    p15_19 = float(row.get("Population_15_19_2017", 0))
+
+    p20_plus = max(0.0, p15 - p15_19)
+    if threshold_age <= 10:
+        frac_10_14 = min(1.0, max(0.0, (15 - threshold_age) / 5))
+        return p20_plus + p15_19 + p10_14 * frac_10_14
+    if threshold_age < 15:
+        frac_10_14 = min(1.0, max(0.0, (15 - threshold_age) / 5))
+        return p20_plus + p15_19 + p10_14 * frac_10_14
+    if threshold_age < 20:
+        frac_15_19 = min(1.0, max(0.0, (20 - threshold_age) / 5))
+        return p20_plus + p15_19 * frac_15_19
+    return p20_plus if threshold_age < 100 else 0.0
+
+
+def denominator_population(census_slice: pd.DataFrame, year: int) -> float:
+    """Return denominator population for inclusion metrics under selected scenario."""
+    label = st.session_state.get("fi_denominator", denominator_options[0])
+    fallback_total = float(pd.to_numeric(census_slice.get("Population_Total", 0), errors="coerce").fillna(0).sum())
+    if "legacy" in label.lower() or "legado" in label.lower():
+        return fallback_total
+
+    min_age = 15
+    if "18+" in label:
+        min_age = 18
+    elif "21+" in label:
+        min_age = 21
+
+    # Backward-compatible fallback: if age-bucket columns are absent, use total population.
+    required = {"Population_15plus_2017", "Population_10_14_2017", "Population_15_19_2017"}
+    if not required.issubset(set(census_slice.columns)):
+        return fallback_total
+
+    # Cohort progression from Census 2017 age structure (no births/deaths/migration adjustment).
+    threshold_2017 = max(0.0, float(min_age - (year - 2017)))
+    est = census_slice.apply(lambda r: _population_geq_age_2017(r, threshold_2017), axis=1).sum()
+    est = float(max(est, 0.0))
+    return est if est > 0 else fallback_total
+
+
+def row_denominator_population(row: pd.Series, year: int) -> float:
+    """Row-level denominator aligned to selected inclusion scenario."""
+    label = st.session_state.get("fi_denominator", denominator_options[0])
+    fallback_total = float(pd.to_numeric(row.get("Population_Total", 0), errors="coerce"))
+    if "legacy" in label.lower() or "legado" in label.lower():
+        return fallback_total
+    required = {"Population_15plus_2017", "Population_10_14_2017", "Population_15_19_2017"}
+    if not required.issubset(set(row.index)):
+        return fallback_total
+    min_age = 15
+    if "18+" in label:
+        min_age = 18
+    elif "21+" in label:
+        min_age = 21
+    threshold_2017 = max(0.0, float(min_age - (year - 2017)))
+    est = float(max(_population_geq_age_2017(row, threshold_2017), 0.0))
+    return est if est > 0 else fallback_total
+
+
+def inclusion_method_note(year: int) -> str:
+    label = st.session_state.get("fi_denominator", denominator_options[0])
+    if st.session_state.lang == "PT":
+        return (
+            f"Para calcular os Indicadores de Inclusão Financeira em {year}, usamos o Censo 2017 "
+            "e extrapolamos a população elegível por coorte etária (progressão do tempo), sem ajuste de "
+            "nascimentos, mortes ou migração. Esta é uma decisão metodológica do autor para o v1. "
+            f"Cenário selecionado: {label}."
+        )
+    return (
+        f"To calculate Financial Inclusion Indicators for {year}, we use Census 2017 and extrapolate the "
+        "eligible population using age-cohort progression over time, without explicit birth/death/migration "
+        "adjustments. This is an author-defined methodological decision for v1. "
+        f"Selected scenario: {label}."
+    )
 
 
 # ── Filter helpers ──────────────────────────────────────────────────────────
@@ -353,6 +452,11 @@ with tabs[0]:
     # --- Financial Inclusion KPI cards ---
     st.markdown("---")
     st.subheader(T("financial_inclusion"))
+    st.selectbox(
+        "Financial inclusion denominator" if st.session_state.lang == "EN" else "Denominador de inclusão financeira",
+        denominator_options,
+        key="fi_denominator",
+    )
 
     # Compute per-capita from the latest year banking data (last month snapshot only)
     latest_year = max(all_years)
@@ -367,7 +471,7 @@ with tabs[0]:
     latest_atm = last_month_snapshot(latest_atm)
     latest_pos = last_month_snapshot(latest_pos)
 
-    total_pop = census_filtered['Population_Total'].sum()
+    total_pop = denominator_population(census_filtered, latest_year)
     total_acc_latest = latest_acc['Total_Accounts'].sum()
     total_card_latest = latest_card['Total_Cards'].sum()
     total_atm_latest = latest_atm['ATMs_Number'].sum()
@@ -381,6 +485,7 @@ with tabs[0]:
 
     st.caption(f"ℹ️ {'Dados bancários:' if st.session_state.lang == 'PT' else 'Banking data:'} {latest_year} · "
                f"{'Dados demográficos: Censo 2017 (INE)' if st.session_state.lang == 'PT' else 'Demographics: Census 2017 (INE)'}")
+    st.caption(f"ℹ️ {inclusion_method_note(latest_year)}")
 
     # --- Underbanked Gap: Population vs Accounts per province ---
     st.markdown("---")
@@ -392,11 +497,12 @@ with tabs[0]:
         # Province names now align between census and banking data
         prov_acc = latest_acc[latest_acc['Province'] == prov_name]
         total_a = prov_acc['Total_Accounts'].sum() if not prov_acc.empty else 0
+        row_pop = row_denominator_population(row, latest_year)
         gap_rows.append({
             T("province"): prov_name,
-            'Population (Census 2017)': row['Population_Total'],
+            'Population (Denominator)': row_pop,
             f'{T("total_accounts")} ({latest_year})': total_a,
-            T("accounts_per_capita"): round(total_a / row['Population_Total'], 3) if row['Population_Total'] > 0 else 0
+            T("accounts_per_capita"): round(total_a / row_pop, 3) if row_pop > 0 else 0
         })
 
     gap_df = pd.DataFrame(gap_rows).sort_values(T("accounts_per_capita"), ascending=False)
@@ -412,7 +518,7 @@ with tabs[0]:
             "lat": coords[0],
             "lon": coords[1],
             "Accounts_Per_Capita": float(row[T("accounts_per_capita")]),
-            "Population": float(row["Population (Census 2017)"]),
+            "Population": float(row["Population (Denominator)"]),
             "Accounts": float(row[f'{T("total_accounts")} ({latest_year})']),
         })
     map_df = pd.DataFrame(map_rows)
@@ -639,13 +745,14 @@ with tabs[1]:
 
     # Per-capita KPIs from census
     st.markdown(f"###### {T('census_kpis')}")
-    total_pop_sel = census_df[census_df['Province'].isin(selected_prov)]['Population_Total'].sum()
+    total_pop_sel = denominator_population(census_df[census_df['Province'].isin(selected_prov)], selected_year)
     if total_pop_sel > 0:
         ov_k1, ov_k2, ov_k3 = st.columns(3)
         ov_k1.metric(T("accounts_per_capita"), f"{curr_acc_total / total_pop_sel:.2f}")
         ov_k2.metric(T("cards_per_capita"), f"{curr_card_total / total_pop_sel:.2f}")
         ov_k3.metric(T("atm_per_100k"), f"{curr_atm_total / total_pop_sel * 100_000:.1f}")
         st.caption(T("census_note_short"))
+        st.caption(f"ℹ️ {inclusion_method_note(selected_year)}")
 
     st.subheader(f"{T('gender_distribution')} ({selected_year})")
     g_col1, g_col2 = st.columns(2)
@@ -822,6 +929,7 @@ with tabs[3]:
         inf_k1.metric(T("atm_per_100k"), f"{curr_atm_total / total_pop_sel * 100_000:.1f}")
         inf_k2.metric(T("pos_per_100k"), f"{curr_pos_total / total_pop_sel * 100_000:.1f}")
         st.caption(T("census_note_short"))
+        st.caption(f"ℹ️ {inclusion_method_note(selected_year)}")
 
     col_i1, col_i2 = st.columns(2)
     with col_i1:

@@ -20,7 +20,7 @@ FILE_PATHS = {
 REGIONS = {
     "Zona Norte": ["Cabo Delgado", "Niassa", "Nampula"],
     "Zona Centro": ["Zambézia", "Sofala", "Tete", "Manica"],
-    "Zona Sul": ["Inhambane", "Gaza", "Província de Maputo"],
+    "Zona Sul": ["Inhambane", "Gaza", "Província de Maputo", "Cidade de Maputo"],
 }
 
 AGE_ORDER = ["0-16", "17-21", "22-60", "+60"]
@@ -131,4 +131,7 @@ def sanitize_census_df(df: pd.DataFrame) -> pd.DataFrame:
         # Keep demographic shares valid even when source merges have inconsistencies.
         df.loc[over_urban, "Population_Urban"] = df.loc[over_urban, "Population_Total"]
         df["Population_Rural"] = (df["Population_Total"] - df["Population_Urban"]).clip(lower=0)
+    for col in ["Population_15plus_2017", "Population_10_14_2017", "Population_15_19_2017"]:
+        if col in df.columns:
+            df[col] = pd.to_numeric(df[col], errors="coerce").fillna(0).clip(lower=0)
     return df
