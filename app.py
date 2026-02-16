@@ -2144,47 +2144,47 @@ with tab_forecast:
             yearly_fc = aggregate_forecast_yearly(combined, forecast_indicator, hist_label, pred_label)
 
             if not yearly_fc.empty:
-                fig_fc = go.Figure()
-
                 hist_yr = yearly_fc[yearly_fc['Tipo'] == hist_label]
                 pred_yr = yearly_fc[yearly_fc['Tipo'] == pred_label]
 
-                fig_fc.add_trace(go.Bar(
-                    x=hist_yr['Ano'], y=hist_yr['Valor'],
-                    name=hist_label, marker_color='#636EFA',
-                    text=[format_compact(v) for v in hist_yr['Valor']],
-                    textposition='outside'
-                ))
-
-                if not pred_yr.empty:
-                    fig_fc.add_trace(go.Scatter(
-                        x=pred_yr['Ano'], y=pred_yr['Upper'],
-                        mode='lines', line=dict(width=0),
-                        showlegend=False, hoverinfo='skip'
-                    ))
-                    fig_fc.add_trace(go.Scatter(
-                        x=pred_yr['Ano'], y=pred_yr['Lower'],
-                        mode='lines', line=dict(width=0),
-                        fill='tonexty', fillcolor='rgba(239,85,59,0.15)',
-                        showlegend=False, hoverinfo='skip'
-                    ))
-                    fig_fc.add_trace(go.Scatter(
-                        x=pred_yr['Ano'], y=pred_yr['Valor'],
-                        mode='lines+markers', name=pred_label,
-                        marker_color='#EF553B', line=dict(width=3, dash='dash'),
-                        text=[format_compact(v) for v in pred_yr['Valor']],
-                        textposition='top center'
-                    ))
-
                 tipo_label = T("flow_label")
-                fig_fc.update_layout(
-                    title=f"{T('forecast')}: {forecast_indicator}",
-                    xaxis=dict(title=T("year"), dtick=1),
-                    yaxis=dict(title=T("value"), rangemode='tozero'),
-                    legend=dict(x=0.01, y=0.99),
-                    height=500
-                )
-                plot_chart(fig_fc, use_container_width=True)
+                if not is_wallet_indicator:
+                    fig_fc = go.Figure()
+                    fig_fc.add_trace(go.Bar(
+                        x=hist_yr['Ano'], y=hist_yr['Valor'],
+                        name=hist_label, marker_color='#636EFA',
+                        text=[format_compact(v) for v in hist_yr['Valor']],
+                        textposition='outside'
+                    ))
+
+                    if not pred_yr.empty:
+                        fig_fc.add_trace(go.Scatter(
+                            x=pred_yr['Ano'], y=pred_yr['Upper'],
+                            mode='lines', line=dict(width=0),
+                            showlegend=False, hoverinfo='skip'
+                        ))
+                        fig_fc.add_trace(go.Scatter(
+                            x=pred_yr['Ano'], y=pred_yr['Lower'],
+                            mode='lines', line=dict(width=0),
+                            fill='tonexty', fillcolor='rgba(239,85,59,0.15)',
+                            showlegend=False, hoverinfo='skip'
+                        ))
+                        fig_fc.add_trace(go.Scatter(
+                            x=pred_yr['Ano'], y=pred_yr['Valor'],
+                            mode='lines+markers', name=pred_label,
+                            marker_color='#EF553B', line=dict(width=3, dash='dash'),
+                            text=[format_compact(v) for v in pred_yr['Valor']],
+                            textposition='top center'
+                        ))
+
+                    fig_fc.update_layout(
+                        title=f"{T('forecast')}: {forecast_indicator}",
+                        xaxis=dict(title=T("year"), dtick=1),
+                        yaxis=dict(title=T("value"), rangemode='tozero'),
+                        legend=dict(x=0.01, y=0.99),
+                        height=500
+                    )
+                    plot_chart(fig_fc, use_container_width=True)
 
                 holdout_label = (
                     "N/A" if model_meta["holdout_mape"] is None else f"{model_meta['holdout_mape']:.2f}%"
