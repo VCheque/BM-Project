@@ -1908,6 +1908,7 @@ with tab_forecast:
             return df, 'Transactions_Amount'
 
     has_province = False
+    wallet_scope_hint = None
     if forecast_indicator == "Transações ATM (Volume)":
         src_df, metric_col = get_atm_txn_forecast_data('vol')
     elif forecast_indicator == "Transações ATM (Valor)":
@@ -1936,9 +1937,28 @@ with tab_forecast:
             "Carteiras Móveis - Pagamentos (Valor)": ("Pagamentos", "Value"),
         }
         tx_type, metric_col = ime_map[forecast_indicator]
-        src_df = ime_txn_district_df[ime_txn_district_df["Transaction_Type"] == tx_type].copy()
-        if not src_df.empty:
-            src_df = apply_geo_only(src_df)
+        wallet_raw = ime_txn_district_df[ime_txn_district_df["Transaction_Type"] == tx_type].copy()
+        src_df = wallet_raw.copy()
+        if not wallet_raw.empty:
+            scoped_geo = apply_geo_only(wallet_raw)
+            if not scoped_geo.empty:
+                src_df = scoped_geo
+            else:
+                scoped_prov = wallet_raw[wallet_raw["Province"].isin(selected_prov)].copy()
+                if not scoped_prov.empty:
+                    src_df = scoped_prov
+                    wallet_scope_hint = (
+                        "ℹ️ Não existem registos para o distrito seleccionado neste indicador; foi aplicado recorte por província."
+                        if st.session_state.lang == "PT"
+                        else "ℹ️ No records for the selected district in this indicator; province-level scope was applied."
+                    )
+                else:
+                    src_df = wallet_raw
+                    wallet_scope_hint = (
+                        "ℹ️ Não existem registos para os filtros geográficos actuais; foi aplicada a série nacional."
+                        if st.session_state.lang == "PT"
+                        else "ℹ️ No records for the current geographic filters; national series was applied."
+                    )
             has_province = "Province" in src_df.columns
     else:
         src_df = pd.DataFrame()
@@ -1964,6 +1984,8 @@ with tab_forecast:
             key="wallet_forecast_months",
         )
         forecast_horizon_years = max(1, math.ceil(wallet_forecast_months / 12))
+        if wallet_scope_hint:
+            st.caption(wallet_scope_hint)
 
     monthly_series = build_monthly_series(src_df, metric_col)
     fc_type = T("flow_label")
@@ -1993,6 +2015,8 @@ with tab_forecast:
 
     hist_label = T("historic")
     pred_label = T("forecast")
+    hist_tag = "historic"
+    pred_tag = "forecast"
 
     if len(monthly_series) >= 3:
         combined, r2, res_std, model_meta = select_best_forecast_model(
@@ -2001,29 +2025,32 @@ with tab_forecast:
 
         if combined is not None:
             if is_wallet_indicator:
-                pred_trim = combined[combined["Tipo"] == pred_label].sort_values("t").head(wallet_forecast_months).copy()
-                hist_keep = combined[combined["Tipo"] == hist_label].copy()
+                pred_trim = combined[combined["Tipo"] == pred_tag].sort_values("t").head(wallet_forecast_months).copy()
+                hist_keep = combined[combined["Tipo"] == hist_tag].copy()
                 combined = pd.concat([hist_keep, pred_trim], ignore_index=True)
+                combined["Tipo_Display"] = combined["Tipo"].replace({hist_tag: hist_label, pred_tag: pred_label})
 
                 wallet_view = combined.copy()
                 wallet_view["Período"] = wallet_view["t"].apply(t_to_period_label)
-                recent_hist = wallet_view[wallet_view["Tipo"] == hist_label].tail(18)
-                wallet_plot = pd.concat([recent_hist, wallet_view[wallet_view["Tipo"] == pred_label]], ignore_index=True)
+                recent_hist = wallet_view[wallet_view["Tipo"] == hist_tag].tail(18)
+                wallet_plot = pd.concat([recent_hist, wallet_view[wallet_view["Tipo"] == pred_tag]], ignore_index=True)
+                period_order = [t_to_period_label(t) for t in sorted(wallet_plot["t"].unique())]
                 fig_wallet = px.line(
-                    wallet_plot,
+                    wallet_plot.sort_values("t"),
                     x="Período",
                     y="Value",
-                    color="Tipo",
+                    color="Tipo_Display",
                     markers=True,
+                    category_orders={"Período": period_order},
                     title=(
                         "Projeção mensal de Carteira Móvel"
                         if st.session_state.lang == "PT"
                         else "Mobile Wallet monthly projection"
                     ),
                 )
-                fig_wallet.update_layout(yaxis=dict(rangemode="tozero"))
+                fig_wallet.update_layout(yaxis=dict(rangemode="tozero"), xaxis_tickangle=-35)
                 st.plotly_chart(fig_wallet, use_container_width=True)
-                future_table = wallet_view[wallet_view["Tipo"] == pred_label][["Período", "Value", "Lower", "Upper"]].copy()
+                future_table = wallet_view[wallet_view["Tipo"] == pred_tag][["Período", "Value", "Lower", "Upper"]].copy()
                 if not future_table.empty:
                     future_table["Value"] = future_table["Value"].apply(format_compact)
                     future_table["Lower"] = future_table["Lower"].apply(format_compact)
@@ -2178,58 +2205,129 @@ with tab_forecast:
         provinces = [p for p in selected_prov if p in src_df['Province'].unique()]
 
         if provinces:
-            prov_results = []
-            for prov in provinces:
-                prov_data = src_df[src_df['Province'] == prov]
-                prov_monthly = build_monthly_series(prov_data, metric_col)
-                if len(prov_monthly) >= 3:
-                    prov_combined, prov_r2, _, prov_meta = select_best_forecast_model(
-                        prov_monthly, n_future_years=forecast_horizon_years, indicator_name=forecast_indicator
-                    )
-                    if prov_combined is not None:
-                        prov_yearly = aggregate_forecast_yearly(prov_combined, forecast_indicator, hist_label, pred_label)
-                        prov_yearly["Model"] = prov_meta["model_label"]
-                        prov_yearly[T("province")] = prov
-                        prov_results.append(prov_yearly)
-
-            if prov_results:
-                all_prov = pd.concat(prov_results, ignore_index=True)
-
-                fig_prov_fc = px.line(
-                    all_prov, x='Ano', y='Valor', color=T("province"),
-                    line_dash='Tipo', markers=True,
-                    title=f"{T('province_forecast')}: {forecast_indicator}",
-                    line_dash_map={hist_label: 'solid', pred_label: 'dash'}
-                )
-                fig_prov_fc.update_layout(xaxis=dict(dtick=1), yaxis=dict(rangemode='tozero'))
-                st.plotly_chart(fig_prov_fc, use_container_width=True)
-
-                st.subheader(
-                    T("forecast_summary"),
-                    help=(
-                        "Compara o valor observado mais recente com o valor projectado no fim do horizonte por província."
-                        if st.session_state.lang == "PT"
-                        else "Compares latest observed value against projected end-of-horizon value by province."
-                    ),
-                )
+            if is_wallet_indicator:
+                prov_plot_parts = []
                 summary_rows = []
+                period_order = []
                 for prov in provinces:
-                    prov_data_fc = all_prov[all_prov[T("province")] == prov]
-                    hist = prov_data_fc[prov_data_fc['Tipo'] == hist_label]
-                    pred = prov_data_fc[prov_data_fc['Tipo'] == pred_label]
-                    if not hist.empty and not pred.empty:
-                        current = hist.iloc[-1]['Valor']
-                        projected = pred.iloc[-1]['Valor']
-                        growth_pct = ((projected - current) / current * 100) if current > 0 else 0
-                        summary_rows.append({
-                            T("province"): prov,
-                            f'Actual ({int(hist.iloc[-1]["Ano"])})': f"{current:,.0f}",
-                            f'{T("forecast")} ({int(pred.iloc[-1]["Ano"])})': f"{projected:,.0f}",
-                            T("growth_pct"): f"{growth_pct:.1f}%"
-                        })
+                    prov_data = src_df[src_df["Province"] == prov]
+                    prov_monthly = build_monthly_series(prov_data, metric_col)
+                    if len(prov_monthly) >= 3:
+                        prov_combined, _, _, _ = select_best_forecast_model(
+                            prov_monthly, n_future_years=forecast_horizon_years, indicator_name=forecast_indicator
+                        )
+                        if prov_combined is None:
+                            continue
+                        prov_pred = prov_combined[prov_combined["Tipo"] == pred_tag].sort_values("t").head(wallet_forecast_months).copy()
+                        prov_hist = prov_combined[prov_combined["Tipo"] == hist_tag].copy()
+                        prov_view = pd.concat([prov_hist, prov_pred], ignore_index=True).sort_values("t")
+                        prov_view["Tipo_Display"] = prov_view["Tipo"].replace({hist_tag: hist_label, pred_tag: pred_label})
+                        prov_view["Período"] = prov_view["t"].apply(t_to_period_label)
+                        prov_view["t_order"] = prov_view["t"]
+                        prov_view[T("province")] = prov
+                        recent_hist = prov_view[prov_view["Tipo"] == hist_tag].tail(12)
+                        prov_plot_parts.append(pd.concat([recent_hist, prov_view[prov_view["Tipo"] == pred_tag]], ignore_index=True))
+                        period_order.extend(prov_view["t"].tolist())
 
-                if summary_rows:
-                    st.dataframe(pd.DataFrame(summary_rows), use_container_width=True, hide_index=True)
+                        hist_tail = prov_view[prov_view["Tipo"] == hist_tag].sort_values("t")
+                        pred_tail = prov_view[prov_view["Tipo"] == pred_tag].sort_values("t")
+                        if not hist_tail.empty and not pred_tail.empty:
+                            current = float(hist_tail.iloc[-1]["Value"])
+                            projected = float(pred_tail.iloc[-1]["Value"])
+                            growth_pct = ((projected - current) / current * 100) if current > 0 else 0.0
+                            summary_rows.append(
+                                {
+                                    T("province"): prov,
+                                    ("Último período observado" if st.session_state.lang == "PT" else "Latest observed period"): hist_tail.iloc[-1]["Período"],
+                                    ("Valor observado" if st.session_state.lang == "PT" else "Observed value"): format_compact(current),
+                                    ("Fim da projeção" if st.session_state.lang == "PT" else "End forecast period"): pred_tail.iloc[-1]["Período"],
+                                    ("Valor projetado" if st.session_state.lang == "PT" else "Forecast value"): format_compact(projected),
+                                    T("growth_pct"): f"{growth_pct:+.1f}%",
+                                }
+                            )
+
+                if prov_plot_parts:
+                    all_prov = pd.concat(prov_plot_parts, ignore_index=True).sort_values(["t_order", T("province")])
+                    period_labels = [t_to_period_label(t) for t in sorted(set(period_order))]
+                    fig_prov_fc = px.line(
+                        all_prov,
+                        x="Período",
+                        y="Value",
+                        color=T("province"),
+                        line_dash="Tipo_Display",
+                        markers=True,
+                        category_orders={"Período": period_labels},
+                        title=f"{T('province_forecast')}: {forecast_indicator}",
+                        line_dash_map={hist_label: "solid", pred_label: "dash"},
+                    )
+                    fig_prov_fc.update_layout(yaxis=dict(rangemode="tozero"), xaxis_tickangle=-35)
+                    st.plotly_chart(fig_prov_fc, use_container_width=True)
+
+                    st.subheader(
+                        T("forecast_summary"),
+                        help=(
+                            "Compara o último mês observado com o mês final projectado por província."
+                            if st.session_state.lang == "PT"
+                            else "Compares the latest observed month with the final projected month by province."
+                        ),
+                    )
+                    if summary_rows:
+                        st.dataframe(pd.DataFrame(summary_rows), use_container_width=True, hide_index=True)
+                else:
+                    st.info(T("insufficient_data"))
+            else:
+                prov_results = []
+                for prov in provinces:
+                    prov_data = src_df[src_df['Province'] == prov]
+                    prov_monthly = build_monthly_series(prov_data, metric_col)
+                    if len(prov_monthly) >= 3:
+                        prov_combined, prov_r2, _, prov_meta = select_best_forecast_model(
+                            prov_monthly, n_future_years=forecast_horizon_years, indicator_name=forecast_indicator
+                        )
+                        if prov_combined is not None:
+                            prov_yearly = aggregate_forecast_yearly(prov_combined, forecast_indicator, hist_label, pred_label)
+                            prov_yearly["Model"] = prov_meta["model_label"]
+                            prov_yearly[T("province")] = prov
+                            prov_results.append(prov_yearly)
+
+                if prov_results:
+                    all_prov = pd.concat(prov_results, ignore_index=True)
+
+                    fig_prov_fc = px.line(
+                        all_prov, x='Ano', y='Valor', color=T("province"),
+                        line_dash='Tipo', markers=True,
+                        title=f"{T('province_forecast')}: {forecast_indicator}",
+                        line_dash_map={hist_label: 'solid', pred_label: 'dash'}
+                    )
+                    fig_prov_fc.update_layout(xaxis=dict(dtick=1), yaxis=dict(rangemode='tozero'))
+                    st.plotly_chart(fig_prov_fc, use_container_width=True)
+
+                    st.subheader(
+                        T("forecast_summary"),
+                        help=(
+                            "Compara o valor observado mais recente com o valor projectado no fim do horizonte por província."
+                            if st.session_state.lang == "PT"
+                            else "Compares latest observed value against projected end-of-horizon value by province."
+                        ),
+                    )
+                    summary_rows = []
+                    for prov in provinces:
+                        prov_data_fc = all_prov[all_prov[T("province")] == prov]
+                        hist = prov_data_fc[prov_data_fc['Tipo'] == hist_label]
+                        pred = prov_data_fc[prov_data_fc['Tipo'] == pred_label]
+                        if not hist.empty and not pred.empty:
+                            current = hist.iloc[-1]['Valor']
+                            projected = pred.iloc[-1]['Valor']
+                            growth_pct = ((projected - current) / current * 100) if current > 0 else 0
+                            summary_rows.append({
+                                T("province"): prov,
+                                f'Actual ({int(hist.iloc[-1]["Ano"])})': f"{current:,.0f}",
+                                f'{T("forecast")} ({int(pred.iloc[-1]["Ano"])})': f"{projected:,.0f}",
+                                T("growth_pct"): f"{growth_pct:.1f}%"
+                            })
+
+                    if summary_rows:
+                        st.dataframe(pd.DataFrame(summary_rows), use_container_width=True, hide_index=True)
 
     # --- Custom Growth Simulator (CAGR-seeded) ---
     st.markdown("---")
