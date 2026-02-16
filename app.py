@@ -494,7 +494,7 @@ f_pos_snap = last_month_snapshot(f_pos)
 
 
 # ── Dashboard tabs ──────────────────────────────────────────────────────────
-tab_demo, tab_overview, tab_ime, tab_accounts_cards, tab_infra, tab_channels, tab_trends, tab_forecast, tab_decision = st.tabs(
+tab_demo, tab_overview, tab_ime, tab_accounts_cards, tab_infra, tab_channels, tab_trends, tab_decision, tab_forecast = st.tabs(
     [
         T("tab_demo"),
         T("tab_overview"),
@@ -503,8 +503,8 @@ tab_demo, tab_overview, tab_ime, tab_accounts_cards, tab_infra, tab_channels, ta
         T("tab_infra"),
         f"{T('tab_digital')} + {T('tab_txn')}",
         T("tab_trends"),
-        T("tab_forecast"),
         T("tab_decision"),
+        T("tab_forecast"),
     ]
 )
 
@@ -1878,20 +1878,20 @@ with tab_forecast:
                 "Transações POS (Valor)",
                 "Transações Mobile Banking (Valor)",
                 "Transações Internet Banking (Valor)",
-                "Carteira Móvel Depósitos (Valor)",
-                "Carteira Móvel Levantamentos (Valor)",
-                "Carteira Móvel Transferências (Valor)",
-                "Carteira Móvel Pagamentos (Valor)",
+                "Carteiras Móveis - Depósitos (Valor)",
+                "Carteiras Móveis - Levantamentos (Valor)",
+                "Carteiras Móveis - Transferências (Valor)",
+                "Carteiras Móveis - Pagamentos (Valor)",
             ],
             group_volumes: [
                 "Transações ATM (Volume)",
                 "Transações POS (Volume)",
                 "Transações Mobile Banking (Volume)",
                 "Transações Internet Banking (Volume)",
-                "Carteira Móvel Depósitos (Volume)",
-                "Carteira Móvel Levantamentos (Volume)",
-                "Carteira Móvel Transferências (Volume)",
-                "Carteira Móvel Pagamentos (Volume)",
+                "Carteiras Móveis - Depósitos (Volume)",
+                "Carteiras Móveis - Levantamentos (Volume)",
+                "Carteiras Móveis - Transferências (Volume)",
+                "Carteiras Móveis - Pagamentos (Volume)",
             ],
         }
         forecast_indicator = st.selectbox(T("forecast_indicator"), grouped_indicators[forecast_group], 
@@ -1924,16 +1924,16 @@ with tab_forecast:
         src_df = net_df[net_df['Metric'].str.contains('Volume', case=False, na=False)]; metric_col = 'Value'
     elif forecast_indicator == "Transações Internet Banking (Valor)":
         src_df = net_df[net_df['Metric'].str.contains('Valor', case=False, na=False)]; metric_col = 'Value'
-    elif forecast_indicator.startswith("Carteira Móvel "):
+    elif forecast_indicator.startswith("Carteiras Móveis - "):
         ime_map = {
-            "Carteira Móvel Depósitos (Volume)": ("Depósitos", "Volume"),
-            "Carteira Móvel Levantamentos (Volume)": ("Levantamentos", "Volume"),
-            "Carteira Móvel Transferências (Volume)": ("Transferências", "Volume"),
-            "Carteira Móvel Pagamentos (Volume)": ("Pagamentos", "Volume"),
-            "Carteira Móvel Depósitos (Valor)": ("Depósitos", "Value"),
-            "Carteira Móvel Levantamentos (Valor)": ("Levantamentos", "Value"),
-            "Carteira Móvel Transferências (Valor)": ("Transferências", "Value"),
-            "Carteira Móvel Pagamentos (Valor)": ("Pagamentos", "Value"),
+            "Carteiras Móveis - Depósitos (Volume)": ("Depósitos", "Volume"),
+            "Carteiras Móveis - Levantamentos (Volume)": ("Levantamentos", "Volume"),
+            "Carteiras Móveis - Transferências (Volume)": ("Transferências", "Volume"),
+            "Carteiras Móveis - Pagamentos (Volume)": ("Pagamentos", "Volume"),
+            "Carteiras Móveis - Depósitos (Valor)": ("Depósitos", "Value"),
+            "Carteiras Móveis - Levantamentos (Valor)": ("Levantamentos", "Value"),
+            "Carteiras Móveis - Transferências (Valor)": ("Transferências", "Value"),
+            "Carteiras Móveis - Pagamentos (Valor)": ("Pagamentos", "Value"),
         }
         tx_type, metric_col = ime_map[forecast_indicator]
         src_df = ime_txn_district_df[ime_txn_district_df["Transaction_Type"] == tx_type].copy()
@@ -1952,7 +1952,7 @@ with tab_forecast:
             else "Main projection for the selected indicator, showing observed history and forecasted values."
         ),
     )
-    is_wallet_indicator = forecast_indicator.startswith("Carteira Móvel ")
+    is_wallet_indicator = forecast_indicator.startswith("Carteiras Móveis - ")
     wallet_forecast_months = 6
     forecast_horizon_years = forecast_horizon
     if is_wallet_indicator:
@@ -2356,6 +2356,234 @@ with tab_decision:
 
     st.markdown("---")
     st.subheader(
+        "Comparador distrital para priorização de investimento"
+        if st.session_state.lang == "PT"
+        else "District comparator for investment prioritization",
+        help=(
+            "Compara dois distritos em indicadores operacionais e de transacção para triagem relativa."
+            if st.session_state.lang == "PT"
+            else "Compares two districts on operational and transaction indicators for relative screening."
+        ),
+    )
+    st.caption(
+        "Comparação directa entre dois distritos no último período disponível por indicador. A leitura apoia triagem relativa, não substitui due diligence local."
+        if st.session_state.lang == "PT"
+        else "Direct comparison between two districts on the latest available period by indicator. This supports relative screening, not local due diligence."
+    )
+
+    pair_frames = []
+    for dfx in [acc_df, card_df, atm_df, pos_df, ime_sub_df, ime_agents_df, ime_txn_district_df]:
+        if {"Province", "District"}.issubset(dfx.columns):
+            pair_frames.append(dfx[["Province", "District"]].dropna().astype(str))
+    if pair_frames:
+        district_pairs = (
+            pd.concat(pair_frames, ignore_index=True)
+            .drop_duplicates()
+            .sort_values(["Province", "District"])
+            .reset_index(drop=True)
+        )
+    else:
+        district_pairs = pd.DataFrame(columns=["Province", "District"])
+
+    if district_pairs.empty:
+        st.info("Sem dados distritais para comparar." if st.session_state.lang == "PT" else "No district data available for comparison.")
+    else:
+        default_pair_a = ("Província de Maputo", "Cidade de Maputo")
+        default_pair_b = ("Sofala", "Cidade da Beira")
+
+        prov_options = sorted(district_pairs["Province"].dropna().astype(str).unique().tolist())
+        comp_col1, comp_col2 = st.columns(2)
+        with comp_col1:
+            province_a = st.selectbox(
+                "Província A" if st.session_state.lang == "PT" else "Province A",
+                prov_options,
+                index=(prov_options.index(default_pair_a[0]) if default_pair_a[0] in prov_options else 0),
+                key="cmp_province_a",
+            )
+            dist_options_a = sorted(
+                district_pairs[district_pairs["Province"] == province_a]["District"].astype(str).unique().tolist()
+            )
+            district_a = st.selectbox(
+                "Distrito A" if st.session_state.lang == "PT" else "District A",
+                dist_options_a,
+                index=(dist_options_a.index(default_pair_a[1]) if default_pair_a[0] == province_a and default_pair_a[1] in dist_options_a else 0),
+                key="cmp_district_a",
+            )
+        with comp_col2:
+            province_b = st.selectbox(
+                "Província B" if st.session_state.lang == "PT" else "Province B",
+                prov_options,
+                index=(prov_options.index(default_pair_b[0]) if default_pair_b[0] in prov_options else min(1, len(prov_options) - 1)),
+                key="cmp_province_b",
+            )
+            dist_options_b = sorted(
+                district_pairs[district_pairs["Province"] == province_b]["District"].astype(str).unique().tolist()
+            )
+            district_b = st.selectbox(
+                "Distrito B" if st.session_state.lang == "PT" else "District B",
+                dist_options_b,
+                index=(dist_options_b.index(default_pair_b[1]) if default_pair_b[0] == province_b and default_pair_b[1] in dist_options_b else 0),
+                key="cmp_district_b",
+            )
+
+        pair_a = (province_a, district_a)
+        pair_b = (province_b, district_b)
+        label_a = f"{province_a} - {district_a}"
+        label_b = f"{province_b} - {district_b}"
+        if pair_a == pair_b:
+            st.warning("Seleccionar dois distritos diferentes." if st.session_state.lang == "PT" else "Select two different districts.")
+
+        if pair_a != pair_b:
+            stock_year = selected_year if selected_year in set(acc_df["Year"].unique()) else int(max(acc_df["Year"]))
+            acc_cmp = last_month_snapshot(acc_df[acc_df["Year"] == stock_year]).copy()
+            card_cmp = last_month_snapshot(card_df[card_df["Year"] == stock_year]).copy()
+            atm_cmp = last_month_snapshot(atm_df[atm_df["Year"] == stock_year]).copy()
+            pos_cmp = last_month_snapshot(pos_df[pos_df["Year"] == stock_year]).copy()
+
+            ime_year_cmp = int(pd.to_numeric(ime_txn_district_df["Year"], errors="coerce").dropna().max()) if not ime_txn_district_df.empty else None
+            tx_cmp = ime_txn_district_df[ime_txn_district_df["Year"] == ime_year_cmp].copy() if ime_year_cmp else pd.DataFrame()
+            sub_cmp = ime_sub_df[ime_sub_df["Year"] == ime_year_cmp].copy() if ime_year_cmp else pd.DataFrame()
+            ag_cmp = ime_agents_df[ime_agents_df["Year"] == ime_year_cmp].copy() if ime_year_cmp else pd.DataFrame()
+            if not tx_cmp.empty:
+                tx_cmp["Month_Ord"] = tx_cmp["Month"].astype(str).map(MONTH_RANK)
+                latest_m = tx_cmp["Month_Ord"].max()
+                tx_cmp = tx_cmp[tx_cmp["Month_Ord"] == latest_m].copy()
+            if not sub_cmp.empty:
+                sub_cmp["Month_Ord"] = sub_cmp["Month"].astype(str).map(MONTH_RANK)
+                sub_cmp = sub_cmp[sub_cmp["Month_Ord"] == sub_cmp["Month_Ord"].max()].copy()
+            if not ag_cmp.empty:
+                ag_cmp["Month_Ord"] = ag_cmp["Month"].astype(str).map(MONTH_RANK)
+                ag_cmp = ag_cmp[ag_cmp["Month_Ord"] == ag_cmp["Month_Ord"].max()].copy()
+
+            def _dist_sum(df: pd.DataFrame, value_col: str) -> dict[str, float]:
+                if df.empty or value_col not in df.columns:
+                    return {label_a: 0.0, label_b: 0.0}
+                tmp = (
+                    df[
+                        ((df["Province"] == pair_a[0]) & (df["District"] == pair_a[1]))
+                        | ((df["Province"] == pair_b[0]) & (df["District"] == pair_b[1]))
+                    ]
+                    .assign(_Label=lambda x: x["Province"] + " - " + x["District"])
+                    .groupby("_Label", as_index=False)[value_col]
+                    .sum()
+                    .set_index("_Label")[value_col]
+                    .to_dict()
+                )
+                return {label_a: float(tmp.get(label_a, 0.0)), label_b: float(tmp.get(label_b, 0.0))}
+
+            metric_rows: list[dict[str, object]] = []
+            for label, values in [
+                ("Subscritores de Carteira Móvel", _dist_sum(sub_cmp, "Subscribers")),
+                ("Agentes de Carteira Móvel", _dist_sum(ag_cmp, "Agents")),
+                ("Contas Bancárias", _dist_sum(acc_cmp, "Total_Accounts")),
+                ("Cartões Bancários", _dist_sum(card_cmp, "Total_Cards")),
+                ("ATM", _dist_sum(atm_cmp, "ATMs_Number")),
+                ("POS", _dist_sum(pos_cmp, "POSs_Number")),
+            ]:
+                metric_rows.extend(
+                    [
+                        {"Metric": label, "District": label_a, "Value": values[label_a]},
+                        {"Metric": label, "District": label_b, "Value": values[label_b]},
+                    ]
+                )
+
+            for tx_name in ["Depósitos", "Levantamentos", "Transferências", "Pagamentos"]:
+                tx_part = tx_cmp[tx_cmp["Transaction_Type"] == tx_name].copy() if not tx_cmp.empty else pd.DataFrame()
+                vol_vals = _dist_sum(tx_part, "Volume")
+                val_vals = _dist_sum(tx_part, "Value")
+                metric_rows.extend(
+                    [
+                        {"Metric": f"Carteiras Móveis - {tx_name} (Volume)", "District": label_a, "Value": vol_vals[label_a]},
+                        {"Metric": f"Carteiras Móveis - {tx_name} (Volume)", "District": label_b, "Value": vol_vals[label_b]},
+                        {"Metric": f"Carteiras Móveis - {tx_name} (Valor)", "District": label_a, "Value": val_vals[label_a]},
+                        {"Metric": f"Carteiras Móveis - {tx_name} (Valor)", "District": label_b, "Value": val_vals[label_b]},
+                    ]
+                )
+
+            prov_accounts = acc_cmp.groupby("Province", as_index=False)["Total_Accounts"].sum() if not acc_cmp.empty else pd.DataFrame()
+            inclusion_context = {}
+            for lbl, prov in [(label_a, province_a), (label_b, province_b)]:
+                prov_acc = float(prov_accounts.loc[prov_accounts["Province"] == prov, "Total_Accounts"].sum()) if not prov_accounts.empty else 0.0
+                c_row = census_df[census_df["Province"] == prov]
+                prov_pop = denominator_population(c_row, stock_year) if not c_row.empty else 0.0
+                inclusion_context[lbl] = (prov_acc / prov_pop) if prov_pop > 0 else 0.0
+            metric_rows.extend(
+                [
+                    {"Metric": "Inclusão (contas por pessoa elegível, contexto provincial)", "District": label_a, "Value": inclusion_context[label_a]},
+                    {"Metric": "Inclusão (contas por pessoa elegível, contexto provincial)", "District": label_b, "Value": inclusion_context[label_b]},
+                ]
+            )
+
+            cmp_df = pd.DataFrame(metric_rows)
+            flow_metric_order = [
+                "Carteiras Móveis - Depósitos (Volume)",
+                "Carteiras Móveis - Depósitos (Valor)",
+                "Carteiras Móveis - Levantamentos (Volume)",
+                "Carteiras Móveis - Levantamentos (Valor)",
+                "Carteiras Móveis - Transferências (Volume)",
+                "Carteiras Móveis - Transferências (Valor)",
+                "Carteiras Móveis - Pagamentos (Volume)",
+                "Carteiras Móveis - Pagamentos (Valor)",
+            ]
+            core_metric_order = [
+                "Subscritores de Carteira Móvel",
+                "Agentes de Carteira Móvel",
+                "Contas Bancárias",
+                "Cartões Bancários",
+                "ATM",
+                "POS",
+                "Inclusão (contas por pessoa elegível, contexto provincial)",
+            ]
+            metric_order = flow_metric_order + core_metric_order
+            order_map = {m: i for i, m in enumerate(metric_order)}
+
+            flow_chart_df = cmp_df[
+                ~cmp_df["Metric"].isin(
+                    {
+                        "Inclusão (contas por pessoa elegível, contexto provincial)",
+                        "ATM",
+                        "POS",
+                        "Contas Bancárias",
+                        "Cartões Bancários",
+                    }
+                )
+            ].copy()
+            flow_chart_df["order"] = flow_chart_df["Metric"].map(order_map).fillna(999)
+            flow_chart_df = flow_chart_df.sort_values(["order", "District"]).drop(columns=["order"])
+            fig_flow_compare = px.bar(
+                flow_chart_df,
+                x="Metric",
+                y="Value",
+                color="District",
+                barmode="group",
+                text=[format_compact(v) for v in flow_chart_df["Value"]],
+                title=(
+                    "Comparação directa por indicador (fluxo primeiro)"
+                    if st.session_state.lang == "PT"
+                    else "Direct indicator comparison (flow first)"
+                ),
+            )
+            fig_flow_compare.update_layout(yaxis=dict(rangemode="tozero"), xaxis_tickangle=-25)
+            st.plotly_chart(fig_flow_compare, use_container_width=True)
+
+            wide = cmp_df.pivot_table(index="Metric", columns="District", values="Value", aggfunc="sum", fill_value=0).reset_index()
+            if label_a in wide.columns and label_b in wide.columns:
+                wide["order"] = wide["Metric"].map(order_map).fillna(999)
+                wide = wide.sort_values("order").drop(columns=["order"])
+                wide["Delta"] = wide[label_a] - wide[label_b]
+                wide["Delta_%"] = wide.apply(
+                    lambda r: ((r["Delta"] / r[label_b]) * 100) if r[label_b] > 0 else None,
+                    axis=1,
+                )
+                show_wide = wide.copy()
+                show_wide[label_a] = show_wide[label_a].apply(format_compact)
+                show_wide[label_b] = show_wide[label_b].apply(format_compact)
+                show_wide["Delta"] = show_wide["Delta"].apply(format_compact)
+                show_wide["Delta_%"] = show_wide["Delta_%"].apply(lambda v: "N/A" if pd.isna(v) else f"{v:+.1f}%")
+                st.dataframe(show_wide, use_container_width=True, hide_index=True)
+
+    st.markdown("---")
+    st.subheader(
         "Maiores oportunidades identificadas" if st.session_state.lang == "PT" else "Main opportunities identified",
         help=(
             "Pontuação composta para priorização relativa entre províncias, com pesos explícitos."
@@ -2528,6 +2756,11 @@ with tab_decision:
         if st.session_state.lang == "PT"
         else "The Base path follows historical pattern; Conservative and Accelerated adjust that pace for range reading."
     )
+    st.caption(
+        "ℹ️ A lógica de construção destas trajectórias está alinhada com a página de Previsões."
+        if st.session_state.lang == "PT"
+        else "ℹ️ The trajectory-building logic here is aligned with the Forecasts page."
+    )
     sc_col1, sc_col2 = st.columns(2)
     with sc_col1:
         sc_horizon = st.slider(
@@ -2661,234 +2894,6 @@ with tab_decision:
                 f"Modelo seleccionado: {model_meta.get('model_label', 'N/A')} · Holdout MAPE: "
                 f"{'N/A' if holdout_mape is None else f'{holdout_mape:.1f}%'}"
             )
-
-    st.markdown("---")
-    st.subheader(
-        "Comparador distrital para priorização de investimento"
-        if st.session_state.lang == "PT"
-        else "District comparator for investment prioritization",
-        help=(
-            "Compara dois distritos em indicadores operacionais e de transacção para triagem relativa."
-            if st.session_state.lang == "PT"
-            else "Compares two districts on operational and transaction indicators for relative screening."
-        ),
-    )
-    st.caption(
-        "Comparação directa entre dois distritos no último período disponível por indicador. A leitura apoia triagem relativa, não substitui due diligence local."
-        if st.session_state.lang == "PT"
-        else "Direct comparison between two districts on the latest available period by indicator. This supports relative screening, not local due diligence."
-    )
-
-    pair_frames = []
-    for dfx in [acc_df, card_df, atm_df, pos_df, ime_sub_df, ime_agents_df, ime_txn_district_df]:
-        if {"Province", "District"}.issubset(dfx.columns):
-            pair_frames.append(dfx[["Province", "District"]].dropna().astype(str))
-    if pair_frames:
-        district_pairs = (
-            pd.concat(pair_frames, ignore_index=True)
-            .drop_duplicates()
-            .sort_values(["Province", "District"])
-            .reset_index(drop=True)
-        )
-    else:
-        district_pairs = pd.DataFrame(columns=["Province", "District"])
-
-    if district_pairs.empty:
-        st.info("Sem dados distritais para comparar." if st.session_state.lang == "PT" else "No district data available for comparison.")
-    else:
-        default_pair_a = ("Província de Maputo", "Cidade de Maputo")
-        default_pair_b = ("Sofala", "Cidade da Beira")
-
-        prov_options = sorted(district_pairs["Province"].dropna().astype(str).unique().tolist())
-        comp_col1, comp_col2 = st.columns(2)
-        with comp_col1:
-            province_a = st.selectbox(
-                "Província A" if st.session_state.lang == "PT" else "Province A",
-                prov_options,
-                index=(prov_options.index(default_pair_a[0]) if default_pair_a[0] in prov_options else 0),
-                key="cmp_province_a",
-            )
-            dist_options_a = sorted(
-                district_pairs[district_pairs["Province"] == province_a]["District"].astype(str).unique().tolist()
-            )
-            district_a = st.selectbox(
-                "Distrito A" if st.session_state.lang == "PT" else "District A",
-                dist_options_a,
-                index=(dist_options_a.index(default_pair_a[1]) if default_pair_a[0] == province_a and default_pair_a[1] in dist_options_a else 0),
-                key="cmp_district_a",
-            )
-        with comp_col2:
-            province_b = st.selectbox(
-                "Província B" if st.session_state.lang == "PT" else "Province B",
-                prov_options,
-                index=(prov_options.index(default_pair_b[0]) if default_pair_b[0] in prov_options else min(1, len(prov_options) - 1)),
-                key="cmp_province_b",
-            )
-            dist_options_b = sorted(
-                district_pairs[district_pairs["Province"] == province_b]["District"].astype(str).unique().tolist()
-            )
-            district_b = st.selectbox(
-                "Distrito B" if st.session_state.lang == "PT" else "District B",
-                dist_options_b,
-                index=(dist_options_b.index(default_pair_b[1]) if default_pair_b[0] == province_b and default_pair_b[1] in dist_options_b else 0),
-                key="cmp_district_b",
-            )
-
-        pair_a = (province_a, district_a)
-        pair_b = (province_b, district_b)
-        label_a = f"{province_a} - {district_a}"
-        label_b = f"{province_b} - {district_b}"
-        if pair_a == pair_b:
-            st.warning("Seleccionar dois distritos diferentes." if st.session_state.lang == "PT" else "Select two different districts.")
-
-        if pair_a != pair_b:
-            stock_year = selected_year if selected_year in set(acc_df["Year"].unique()) else int(max(acc_df["Year"]))
-            acc_cmp = last_month_snapshot(acc_df[acc_df["Year"] == stock_year]).copy()
-            card_cmp = last_month_snapshot(card_df[card_df["Year"] == stock_year]).copy()
-            atm_cmp = last_month_snapshot(atm_df[atm_df["Year"] == stock_year]).copy()
-            pos_cmp = last_month_snapshot(pos_df[pos_df["Year"] == stock_year]).copy()
-
-            ime_year_cmp = int(pd.to_numeric(ime_txn_district_df["Year"], errors="coerce").dropna().max()) if not ime_txn_district_df.empty else None
-            tx_cmp = ime_txn_district_df[ime_txn_district_df["Year"] == ime_year_cmp].copy() if ime_year_cmp else pd.DataFrame()
-            sub_cmp = ime_sub_df[ime_sub_df["Year"] == ime_year_cmp].copy() if ime_year_cmp else pd.DataFrame()
-            ag_cmp = ime_agents_df[ime_agents_df["Year"] == ime_year_cmp].copy() if ime_year_cmp else pd.DataFrame()
-            if not tx_cmp.empty:
-                tx_cmp["Month_Ord"] = tx_cmp["Month"].astype(str).map(MONTH_RANK)
-                latest_m = tx_cmp["Month_Ord"].max()
-                tx_cmp = tx_cmp[tx_cmp["Month_Ord"] == latest_m].copy()
-            if not sub_cmp.empty:
-                sub_cmp["Month_Ord"] = sub_cmp["Month"].astype(str).map(MONTH_RANK)
-                sub_cmp = sub_cmp[sub_cmp["Month_Ord"] == sub_cmp["Month_Ord"].max()].copy()
-            if not ag_cmp.empty:
-                ag_cmp["Month_Ord"] = ag_cmp["Month"].astype(str).map(MONTH_RANK)
-                ag_cmp = ag_cmp[ag_cmp["Month_Ord"] == ag_cmp["Month_Ord"].max()].copy()
-
-            def _dist_sum(df: pd.DataFrame, value_col: str) -> dict[str, float]:
-                if df.empty or value_col not in df.columns:
-                    return {label_a: 0.0, label_b: 0.0}
-                tmp = (
-                    df[
-                        ((df["Province"] == pair_a[0]) & (df["District"] == pair_a[1]))
-                        | ((df["Province"] == pair_b[0]) & (df["District"] == pair_b[1]))
-                    ]
-                    .assign(_Label=lambda x: x["Province"] + " - " + x["District"])
-                    .groupby("_Label", as_index=False)[value_col]
-                    .sum()
-                    .set_index("_Label")[value_col]
-                    .to_dict()
-                )
-                return {label_a: float(tmp.get(label_a, 0.0)), label_b: float(tmp.get(label_b, 0.0))}
-
-            metric_rows: list[dict[str, object]] = []
-            for label, values in [
-                ("Subscritores de Carteira Móvel", _dist_sum(sub_cmp, "Subscribers")),
-                ("Agentes de Carteira Móvel", _dist_sum(ag_cmp, "Agents")),
-                ("Contas Bancárias", _dist_sum(acc_cmp, "Total_Accounts")),
-                ("Cartões Bancários", _dist_sum(card_cmp, "Total_Cards")),
-                ("ATM", _dist_sum(atm_cmp, "ATMs_Number")),
-                ("POS", _dist_sum(pos_cmp, "POSs_Number")),
-            ]:
-                metric_rows.extend(
-                    [
-                        {"Metric": label, "District": label_a, "Value": values[label_a]},
-                        {"Metric": label, "District": label_b, "Value": values[label_b]},
-                    ]
-                )
-
-            for tx_name in ["Depósitos", "Levantamentos", "Transferências", "Pagamentos"]:
-                tx_part = tx_cmp[tx_cmp["Transaction_Type"] == tx_name].copy() if not tx_cmp.empty else pd.DataFrame()
-                vol_vals = _dist_sum(tx_part, "Volume")
-                val_vals = _dist_sum(tx_part, "Value")
-                metric_rows.extend(
-                    [
-                        {"Metric": f"{tx_name} (Volume)", "District": label_a, "Value": vol_vals[label_a]},
-                        {"Metric": f"{tx_name} (Volume)", "District": label_b, "Value": vol_vals[label_b]},
-                        {"Metric": f"{tx_name} (Valor)", "District": label_a, "Value": val_vals[label_a]},
-                        {"Metric": f"{tx_name} (Valor)", "District": label_b, "Value": val_vals[label_b]},
-                    ]
-                )
-
-            prov_accounts = acc_cmp.groupby("Province", as_index=False)["Total_Accounts"].sum() if not acc_cmp.empty else pd.DataFrame()
-            inclusion_context = {}
-            for lbl, prov in [(label_a, province_a), (label_b, province_b)]:
-                prov_acc = float(prov_accounts.loc[prov_accounts["Province"] == prov, "Total_Accounts"].sum()) if not prov_accounts.empty else 0.0
-                c_row = census_df[census_df["Province"] == prov]
-                prov_pop = denominator_population(c_row, stock_year) if not c_row.empty else 0.0
-                inclusion_context[lbl] = (prov_acc / prov_pop) if prov_pop > 0 else 0.0
-            metric_rows.extend(
-                [
-                    {"Metric": "Inclusão (contas por pessoa elegível, contexto provincial)", "District": label_a, "Value": inclusion_context[label_a]},
-                    {"Metric": "Inclusão (contas por pessoa elegível, contexto provincial)", "District": label_b, "Value": inclusion_context[label_b]},
-                ]
-            )
-
-            cmp_df = pd.DataFrame(metric_rows)
-            flow_metric_order = [
-                "Depósitos (Volume)",
-                "Depósitos (Valor)",
-                "Levantamentos (Volume)",
-                "Levantamentos (Valor)",
-                "Transferências (Volume)",
-                "Transferências (Valor)",
-                "Pagamentos (Volume)",
-                "Pagamentos (Valor)",
-            ]
-            core_metric_order = [
-                "Subscritores de Carteira Móvel",
-                "Agentes de Carteira Móvel",
-                "Contas Bancárias",
-                "Cartões Bancários",
-                "ATM",
-                "POS",
-                "Inclusão (contas por pessoa elegível, contexto provincial)",
-            ]
-            metric_order = flow_metric_order + core_metric_order
-            order_map = {m: i for i, m in enumerate(metric_order)}
-
-            flow_chart_df = cmp_df[
-                ~cmp_df["Metric"].isin(
-                    {
-                        "Inclusão (contas por pessoa elegível, contexto provincial)",
-                        "ATM",
-                        "POS",
-                        "Contas Bancárias",
-                        "Cartões Bancários",
-                    }
-                )
-            ].copy()
-            flow_chart_df["order"] = flow_chart_df["Metric"].map(order_map).fillna(999)
-            flow_chart_df = flow_chart_df.sort_values(["order", "District"]).drop(columns=["order"])
-            fig_flow_compare = px.bar(
-                flow_chart_df,
-                x="Metric",
-                y="Value",
-                color="District",
-                barmode="group",
-                text=[format_compact(v) for v in flow_chart_df["Value"]],
-                title=(
-                    "Comparação directa por indicador (fluxo primeiro)"
-                    if st.session_state.lang == "PT"
-                    else "Direct indicator comparison (flow first)"
-                ),
-            )
-            fig_flow_compare.update_layout(yaxis=dict(rangemode="tozero"), xaxis_tickangle=-25)
-            st.plotly_chart(fig_flow_compare, use_container_width=True)
-
-            wide = cmp_df.pivot_table(index="Metric", columns="District", values="Value", aggfunc="sum", fill_value=0).reset_index()
-            if label_a in wide.columns and label_b in wide.columns:
-                wide["order"] = wide["Metric"].map(order_map).fillna(999)
-                wide = wide.sort_values("order").drop(columns=["order"])
-                wide["Delta"] = wide[label_a] - wide[label_b]
-                wide["Delta_%"] = wide.apply(
-                    lambda r: ((r["Delta"] / r[label_b]) * 100) if r[label_b] > 0 else None,
-                    axis=1,
-                )
-                show_wide = wide.copy()
-                show_wide[label_a] = show_wide[label_a].apply(format_compact)
-                show_wide[label_b] = show_wide[label_b].apply(format_compact)
-                show_wide["Delta"] = show_wide["Delta"].apply(format_compact)
-                show_wide["Delta_%"] = show_wide["Delta_%"].apply(lambda v: "N/A" if pd.isna(v) else f"{v:+.1f}%")
-                st.dataframe(show_wide, use_container_width=True, hide_index=True)
 
     st.markdown("---")
     st.subheader(
