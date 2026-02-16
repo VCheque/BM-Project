@@ -90,7 +90,7 @@ def poly_forecast(monthly_series: pd.DataFrame, n_future_years: int = 5, degree:
     combined["Upper"] = (combined["Value"] + 1.96 * residual_std).clip(lower=0)
     combined["Lower"] = (combined["Value"] - 1.96 * residual_std).clip(lower=0)
 
-    return combined, r2, residual_std, (poly, model)
+    return combined, r2, residual_std, {"degree": degree, "coefficients": coeffs.tolist()}
 
 
 def _future_t(last_t: float, n_future_years: int) -> np.ndarray:

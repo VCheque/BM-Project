@@ -11,12 +11,15 @@ Streamlit dashboard for analyzing Banco de Moçambique electronic banking statis
   - Mobile/Internet banking usage.
   - ATM/POS/Mobile/Internet transaction volume and value.
 - Adds demographic context (population, urban/rural, connectivity) for inclusion KPIs.
-- Provides historical trend and forecast views.
+- Provides historical trend and flow-focused forecast views.
+- Adds a decision layer with province opportunity scoring, scenario ranges, and district-vs-district comparison.
+- Adds a dedicated Mobile Wallets page (`📱 Carteiras Móveis`) as an early navigation step.
 
 ## Data Sources
 
 - Banco de Moçambique workbooks: `banca-electronica-YYYY.xlsx`
 - INE Census 2017 provincial aggregates (maintained in ETL and exported to `census_2017_provinces.csv`)
+- Banco de Moçambique IME workbook (district depth): `instituições-de-moeda-electrónica-2025.xlsx`
 
 ## Architecture
 
@@ -38,10 +41,26 @@ Raw Excel (BoM) + Census constants (INE)
   - Data loading, cleanup, normalization, snapshots, year-gap detection.
 - `dashboard/forecasting.py`
   - Time-series preparation and polynomial forecasting utilities.
+- `dashboard/opportunity.py`
+  - Province opportunity score engine (weighted decomposition and rank rationale).
+- `dashboard/scenarios.py`
+  - Scenario ranges (`Conservative`, `Base`, `Accelerated`) from baseline forecast paths.
+- `dashboard/audience.py`
+  - Rule-based interpretation paragraph and KPI labels by audience lens.
 - `etl.py`
   - ETL maintenance tasks:
     - Export census CSV.
     - Post-process CSV outputs (drop `Unnamed:*`, district normalization, non-negative numeric clipping).
+    - Extract IME district datasets for 2025:
+      - Subscribers by district.
+      - Subscribers by district, gender, and age.
+      - Agents by district.
+      - Transactions by district with both `Volume` and `Value` preserved for each sheet (`Depósitos`, `Levantamentos`, `Transferências`, `Pagamentos`).
+    - Export context datasets from BoM 2025 releases:
+      - `Access_Points_District_2025Q3.csv`
+      - `Financial_Inclusion_Indicators_2020_2025Q3.csv`
+      - `Sectoral_Growth_Rates_2020_2025.csv`
+      - `GDP_Expenditure_Annual_Variation_2020_2025.csv`
 
 ## Key Decisions
 
@@ -93,15 +112,45 @@ Raw Excel (BoM) + Census constants (INE)
 - Forecasting no longer forces one model for all indicators.
 - Candidate models are evaluated on holdout error (MAPE): `naive`, `seasonal naive (12)`, `poly1`, `poly2`.
 - The app automatically selects the best-performing candidate per indicator.
-- For sparse stock series (very few annual end-of-period points), the app defaults to a conservative linear trend (`poly1`).
+- Forecast scope is intentionally limited to **flow indicators**:
+  - ATM/POS/Mobile/Internet transactions (volume and value)
+  - IME transactions by type (`Depósitos`, `Levantamentos`, `Transferências`, `Pagamentos`; volume and value)
 - Forecast visuals display selected model and holdout MAPE so users can interpret confidence.
+
+9. Decision layer design
+- Opportunity scoring ranks provinces using transparent weights:
+  - Demand potential: `35`
+  - Digital momentum: `25`
+  - Monetization signal: `25`
+  - Infrastructure gap: `15`
+- Scenario comparison is shown as planning ranges (`Conservative`, `Base`, `Accelerated`) by scaling baseline annual growth paths.
+- District comparator adds direct side-by-side analysis (default: `Cidade de Maputo` vs `Cidade da Beira`) across:
+  - IME subscribers and agents
+  - IME transactions by type (volume and value)
+  - accounts, cards, ATM, POS
+  - inclusion context (shown at province level for each district)
+- A freshness panel exposes latest periods detected in core banking, IME district, access-points, and inclusion releases.
+
+10. Presentation flow decision
+- Mobile wallet analysis was moved to its own page (`📱 Carteiras Móveis`) near the start of the app.
+- Rationale: IME/mobile wallet is a primary focus and should not be hidden inside expandable content.
+- The former standalone heatmap page was condensed into an optional section inside `📈 Tendências Históricas` to reduce navigation and scroll overhead.
+- The final page was reframed to `Insights Estratégicos / Oportunidades` as a synthesis page:
+  - where opportunities are concentrated,
+  - how indicators behave under scenario ranges,
+  - how two districts compare directly for prioritization.
 
 ## Caveats You Should Keep in Mind
 
 - Year coverage is non-contiguous (2023 missing in current CSVs).
 - Per-capita metrics use Census 2017-based denominator scenarios with cohort progression (static approximation).
+- The financial-inclusion denominator selector is global (sidebar) and applies across pages.
 - Forecasting uses model selection across naive/seasonal/linear/quadratic candidates and remains scenario-oriented.
 - Forecasts are statistical projections, not causal estimates. Missing 2023 may affect trend continuity.
+- District-level inclusion is not directly observed; in district comparator, inclusion is displayed as province-level context.
+- IME district-level detail is currently available from the official 2025 workbook; 2020-2025 continuity remains national/provincial in base BoM electronic-banking series.
+- Opportunity score is a prioritization heuristic, not a causal impact model.
+- Scenario ranges are sensitivity views around baseline trend, not policy targets.
 
 ## Regulatory and Statistical References
 
@@ -113,13 +162,19 @@ Raw Excel (BoM) + Census constants (INE)
 Install dependencies:
 
 ```bash
-pip install streamlit pandas numpy plotly openpyxl
+pip install streamlit pandas numpy plotly openpyxl xlrd
 ```
 
 Optional ETL maintenance (recommended after notebook extraction):
 
 ```bash
 python etl.py --all
+```
+
+IME-only extraction:
+
+```bash
+python etl.py --export-ime
 ```
 
 Run dashboard:
@@ -152,7 +207,10 @@ BM Project/
 │   ├── __init__.py
 │   ├── translations.py
 │   ├── data_utils.py
-│   └── forecasting.py
+│   ├── forecasting.py
+│   ├── opportunity.py
+│   ├── scenarios.py
+│   └── audience.py
 ├── census_2017_provinces.csv
 ├── accounts_2020_2025.csv
 ├── cards_2020_2025.csv
@@ -162,7 +220,15 @@ BM Project/
 ├── transactions_val_2020_2025.csv
 ├── POS_Transactions_2020_2025.csv
 ├── Mobile_Banking_2020_2025.csv
-└── Internet_Banking_2020_2025.csv
+├── Internet_Banking_2020_2025.csv
+├── IME_Subscribers_District_2025.csv
+├── IME_Subscribers_District_Demographics_2025.csv
+├── IME_Agents_District_2025.csv
+├── IME_Transactions_District_2025.csv
+├── Access_Points_District_2025Q3.csv
+├── Financial_Inclusion_Indicators_2020_2025Q3.csv
+├── Sectoral_Growth_Rates_2020_2025.csv
+└── GDP_Expenditure_Annual_Variation_2020_2025.csv
 ```
 
 ## Author

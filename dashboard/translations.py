@@ -18,6 +18,7 @@ _TRANSLATIONS = {
     # Tab names
     "tab_demo": {"PT": "🗺️ Contexto Demográfico", "EN": "🗺️ Demographic Context"},
     "tab_overview": {"PT": "📊 Visão Geral", "EN": "📊 Overview"},
+    "tab_ime": {"PT": "📱 Carteiras Móveis", "EN": "📱 Mobile Wallets"},
     "tab_accounts": {"PT": "🏦 Contas", "EN": "🏦 Accounts"},
     "tab_cards": {"PT": "💳 Cartões", "EN": "💳 Cards"},
     "tab_infra": {"PT": "📡 Infraestrutura", "EN": "📡 Infrastructure"},
@@ -26,9 +27,11 @@ _TRANSLATIONS = {
     "tab_trends": {"PT": "📈 Tendências Históricas", "EN": "📈 Historical Trends"},
     "tab_heatmap": {"PT": "🔥 Mapa de Calor", "EN": "🔥 Heatmap"},
     "tab_forecast": {"PT": "🔮 Previsões", "EN": "🔮 Forecasts"},
+    "tab_decision": {"PT": "🎯 Insights Estratégicos / Oportunidades", "EN": "🎯 Strategic Insights / Opportunities"},
     # Page titles
     "title_demo": {"PT": "Contexto Demográfico de Moçambique", "EN": "Mozambique Demographic Context"},
     "title_overview": {"PT": "Estado do Sistema Financeiro", "EN": "Financial System Status"},
+    "title_ime": {"PT": "Carteiras Móveis", "EN": "Mobile Wallets"},
     "title_accounts": {"PT": "Análise Detalhada de Contas", "EN": "Detailed Account Analysis"},
     "title_cards": {"PT": "Análise Detalhada de Cartões", "EN": "Detailed Card Analysis"},
     "title_infra": {"PT": "Infraestrutura Física", "EN": "Physical Infrastructure"},
@@ -37,6 +40,7 @@ _TRANSLATIONS = {
     "title_trends": {"PT": "Tendências Históricas", "EN": "Historical Trends"},
     "title_heatmap": {"PT": "Mapa de Calor — Indicadores por Província", "EN": "Heatmap — Indicators by Province"},
     "title_forecast": {"PT": "Previsões e Simulação de Crescimento", "EN": "Forecasts & Growth Simulation"},
+    "title_decision": {"PT": "Insights Estratégicos e Oportunidades", "EN": "Strategic Insights and Opportunities"},
     # Common labels
     "month": {"PT": "Mês", "EN": "Month"},
     "value": {"PT": "Valor", "EN": "Value"},
@@ -111,10 +115,18 @@ _TRANSLATIONS = {
         "PT": "ℹ️ Previsões baseadas em regressão polinomial sobre dados mensais, com bandas de confiança. O simulador manual permite testar cenários de crescimento personalizado.",
         "EN": "ℹ️ Forecasts based on polynomial regression over monthly data, with confidence bands. The manual simulator allows testing custom growth scenarios."
     },
+    "caption_decision": {
+        "PT": "ℹ️ Esta página transforma os indicadores em leituras de priorização territorial, cenários e interpretação por público-alvo.",
+        "EN": "ℹ️ This page converts indicators into territorial prioritization, scenario ranges, and audience-focused interpretation."
+    },
     # Page captions
     "caption_overview": {
         "PT": "ℹ️ Resumo dos principais indicadores do sistema financeiro para o ano e províncias selecionadas. Os deltas mostram a variação face ao ano anterior.",
         "EN": "ℹ️ Summary of key financial system indicators for the selected year and provinces. Deltas show year-on-year change."
+    },
+    "caption_ime": {
+        "PT": "ℹ️ Rede de carteiras móveis por província e distrito, com foco em subscritores, agentes e transações por tipo.",
+        "EN": "ℹ️ Mobile wallet network by province and district, focused on subscribers, agents, and transaction types."
     },
     "caption_accounts": {
         "PT": "ℹ️ Detalhes sobre contas bancárias: tendência mensal, distribuição por faixa etária e moeda. Filtrado pelo ano e províncias selecionadas.",
@@ -180,7 +192,7 @@ _TRANSLATIONS = {
     "gender_distribution": {"PT": "Distribuição por Género", "EN": "Gender Distribution"},
     "accounts_distribution": {"PT": "Distribuição de Contas", "EN": "Account Distribution"},
     "accounts_by_age": {"PT": "Contas por Faixa Etária", "EN": "Accounts by Age Group"},
-    "currency_distribution": {"PT": "Distribuição de Moeda", "EN": "Currency Distribution"},
+    "currency_distribution": {"PT": "Distribuição de Contas por Moeda", "EN": "Account Distribution by Currency"},
     "product_adoption_age": {"PT": "Adoção de Produto por Idade", "EN": "Product Adoption by Age"},
     "card_type": {"PT": "Tipo de Cartão", "EN": "Card Type"},
     "atm_distribution": {"PT": "Distribuição de ATMs", "EN": "ATM Distribution"},

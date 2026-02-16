@@ -17,10 +17,21 @@ FILE_PATHS = {
     "pos_transactions": "POS_Transactions_2020_2025.csv",
 }
 
+OPTIONAL_FILE_PATHS = {
+    "ime_subscribers_district": "IME_Subscribers_District_2025.csv",
+    "ime_subscribers_district_demo": "IME_Subscribers_District_Demographics_2025.csv",
+    "ime_agents_district": "IME_Agents_District_2025.csv",
+    "ime_transactions_district": "IME_Transactions_District_2025.csv",
+    "access_points_district": "Access_Points_District_2025Q3.csv",
+    "fi_indicators_2020_2025q3": "Financial_Inclusion_Indicators_2020_2025Q3.csv",
+    "sectoral_growth_2020_2025": "Sectoral_Growth_Rates_2020_2025.csv",
+    "gdp_expenditure_variation_2020_2025": "GDP_Expenditure_Annual_Variation_2020_2025.csv",
+}
+
 REGIONS = {
     "Zona Norte": ["Cabo Delgado", "Niassa", "Nampula"],
     "Zona Centro": ["Zambézia", "Sofala", "Tete", "Manica"],
-    "Zona Sul": ["Inhambane", "Gaza", "Província de Maputo", "Cidade de Maputo"],
+    "Zona Sul": ["Inhambane", "Gaza", "Província de Maputo"],
 }
 
 AGE_ORDER = ["0-16", "17-21", "22-60", "+60"]
@@ -54,6 +65,7 @@ def process_df(df: pd.DataFrame) -> pd.DataFrame:
 
     if "Province" in df.columns:
         df["Province"] = df["Province"].fillna("Não Definido").astype(str)
+        df["Province"] = df["Province"].replace({"Cidade de Maputo": "Província de Maputo"})
         df["Region"] = df["Province"].map({p: r for r, ps in REGIONS.items() for p in ps})
 
     if "District" in df.columns:
@@ -69,7 +81,18 @@ def process_df(df: pd.DataFrame) -> pd.DataFrame:
             df.loc[maputo_city_mask, "District"] = "Cidade de Maputo"
 
     if "Age" in df.columns:
-        df["Age"] = pd.Categorical(df["Age"].astype(str), categories=AGE_ORDER, ordered=True)
+        age_raw = df["Age"].astype(str).str.strip()
+        age_norm = age_raw.replace(
+            {
+                "0 a 16": "0-16",
+                "17 a 21": "17-21",
+                "22 a 60": "22-60",
+                "60+": "+60",
+                "Mais de 60": "+60",
+                "mais de 60": "+60",
+            }
+        )
+        df["Age"] = pd.Categorical(age_norm, categories=AGE_ORDER, ordered=True)
     if "Month" in df.columns:
         df["Month"] = pd.Categorical(df["Month"], categories=MONTH_ORDER, ordered=True)
     if "Gender" in df.columns:
@@ -89,6 +112,9 @@ def load_dataframes() -> tuple[dict[str, pd.DataFrame], pd.DataFrame]:
             + ". Ensure these CSV files are committed and deployed with the app."
         )
     dataframes = {name: process_df(pd.read_csv(path)) for name, path in FILE_PATHS.items()}
+    for name, path in OPTIONAL_FILE_PATHS.items():
+        if pd.io.common.file_exists(path):
+            dataframes[name] = process_df(pd.read_csv(path))
     census_df = sanitize_census_df(process_df(pd.read_csv("census_2017_provinces.csv")))
     return dataframes, census_df
 
@@ -126,6 +152,43 @@ def missing_years(years: list[int]) -> list[int]:
 def sanitize_census_df(df: pd.DataFrame) -> pd.DataFrame:
     """Enforce basic internal consistency in census aggregates."""
     df = df.copy()
+    if "Province" in df.columns and df["Province"].duplicated().any():
+        weighted_pct_cols = [c for c in ["Growth_Rate_Pct", "Phone_Ownership_Pct", "Internet_Usage_Pct"] if c in df.columns]
+        sum_cols = [
+            c
+            for c in [
+                "Population_Total",
+                "Population_Male",
+                "Population_Female",
+                "Population_Urban",
+                "Population_Rural",
+                "Population_15plus_2017",
+                "Population_10_14_2017",
+                "Population_15_19_2017",
+                "Pop_0_16",
+                "Pop_17_21",
+                "Pop_22_60",
+                "Pop_60_plus",
+            ]
+            if c in df.columns
+        ]
+
+        def _agg_group(g: pd.DataFrame) -> pd.Series:
+            out: dict[str, float | str] = {"Province": g["Province"].iloc[0]}
+            pop = pd.to_numeric(g.get("Population_Total", 0), errors="coerce").fillna(0)
+            pop_sum = float(pop.sum())
+            for col in sum_cols:
+                out[col] = float(pd.to_numeric(g[col], errors="coerce").fillna(0).sum())
+            for col in weighted_pct_cols:
+                vals = pd.to_numeric(g[col], errors="coerce").fillna(0)
+                if pop_sum > 0:
+                    out[col] = float((vals * pop).sum() / pop_sum)
+                else:
+                    out[col] = float(vals.mean()) if not vals.empty else 0.0
+            return pd.Series(out)
+
+        df = df.groupby("Province", as_index=False).apply(_agg_group).reset_index(drop=True)
+
     if {"Population_Total", "Population_Urban", "Population_Rural"}.issubset(df.columns):
         over_urban = df["Population_Urban"] > df["Population_Total"]
         # Keep demographic shares valid even when source merges have inconsistencies.
