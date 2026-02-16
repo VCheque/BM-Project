@@ -173,13 +173,71 @@ MONTH_NAME_BY_NUM = {
     12: "Dezembro",
 }
 
+MONTH_NAME_BY_NUM_EN = {
+    1: "January",
+    2: "February",
+    3: "March",
+    4: "April",
+    5: "May",
+    6: "June",
+    7: "July",
+    8: "August",
+    9: "September",
+    10: "October",
+    11: "November",
+    12: "December",
+}
+
+MONTH_NUM_FROM_LABEL = {name: num for num, name in MONTH_NAME_BY_NUM.items()}
+MONTH_NUM_FROM_LABEL.update({name: num for num, name in MONTH_NAME_BY_NUM_EN.items()})
+
+
+def month_to_num(month_label: object) -> float:
+    """Return month number for PT/EN month labels."""
+    if pd.isna(month_label):
+        return float("nan")
+    return float(MONTH_NUM_FROM_LABEL.get(str(month_label), float("nan")))
+
+
+def localize_month(month_label: object) -> str:
+    """Translate month label according to current app language."""
+    month_num = month_to_num(month_label)
+    if pd.isna(month_num):
+        return str(month_label)
+    month_num_int = int(month_num)
+    if st.session_state.lang == "EN":
+        return MONTH_NAME_BY_NUM_EN[month_num_int]
+    return MONTH_NAME_BY_NUM[month_num_int]
+
+
+def localize_month_df(df: pd.DataFrame, source_col: str = "Month", target_col: str = "Month_Display") -> pd.DataFrame:
+    """Create localized month labels plus numeric ordering helper."""
+    if source_col not in df.columns:
+        return df.copy()
+    out = df.copy()
+    out["_Month_Num"] = out[source_col].apply(month_to_num)
+    out[target_col] = out[source_col].apply(localize_month)
+    out = out.sort_values("_Month_Num")
+    return out
+
 
 def t_to_period_label(t_value: float) -> str:
     """Convert decimal year axis to month-year label."""
     year = int(float(t_value))
     month_num = int(round((float(t_value) - year) * 12)) + 1
     month_num = max(1, min(12, month_num))
-    return f"{MONTH_NAME_BY_NUM[month_num]} {year}"
+    month_name = MONTH_NAME_BY_NUM_EN[month_num] if st.session_state.lang == "EN" else MONTH_NAME_BY_NUM[month_num]
+    return f"{month_name} {year}"
+
+
+def plot_chart(fig, **kwargs):
+    """Render Plotly chart with clean axis titles for line/bar visuals."""
+    trace_types = {getattr(trace, "type", "") for trace in getattr(fig, "data", [])}
+    if trace_types.intersection({"bar", "scatter"}):
+        fig.update_layout(xaxis_title=None, yaxis_title=None)
+    if "use_container_width" not in kwargs:
+        kwargs["use_container_width"] = True
+    st.plotly_chart(fig, **kwargs)
 
 
 def clean_ime_district_rows(df: pd.DataFrame) -> pd.DataFrame:
@@ -377,22 +435,24 @@ def inclusion_method_note(year: int) -> str:
 def render_page_caveats(extra_notes: list[str] | None = None) -> None:
     """Render a compact caveat panel with optional page-specific notes."""
     if st.session_state.lang == "PT":
-        st.caption("ℹ️ Pressupostos e limites metodológicos aplicam-se a esta página.")
-        with st.expander("Pressupostos e limites"):
+        st.caption("ℹ️ Pressupostos e limitações metodológicas aplicam-se a esta página.")
+        with st.expander("Pressupostos e limitações"):
             st.write("- A leitura é feita ao nível do sistema; não há dados por banco/provedor.")
             st.write("- O denominador de inclusão usa extrapolação por coorte com base no Censo 2017.")
             st.write("- A série histórica contém lacuna anual (2023), podendo afectar continuidade.")
             st.write("- O detalhe distrital de Carteira Móvel cobre 2025 e é usado como fotografia de profundidade.")
+            st.write("- Cidade de Maputo é incluída em Província de Maputo para harmonização geográfica.")
             if extra_notes:
                 for note in extra_notes:
                     st.write(f"- {note}")
     else:
-        st.caption("ℹ️ Methodological assumptions and limits apply to this page.")
-        with st.expander("Assumptions and limits"):
+        st.caption("ℹ️ Methodological assumptions and limitations apply to this page.")
+        with st.expander("Assumptions and limitations"):
             st.write("- Interpretation is at system level; no bank/provider-level dataset is available.")
             st.write("- Inclusion denominator uses Census 2017 cohort extrapolation.")
             st.write("- Historical series has an annual gap (2023), which may affect continuity.")
             st.write("- Mobile Wallet district depth currently covers 2025 and is treated as a current-state view.")
+            st.write("- Cidade de Maputo is included under Província de Maputo for harmonized geographic reporting.")
             if extra_notes:
                 for note in extra_notes:
                     st.write(f"- {note}")
@@ -549,7 +609,7 @@ with tab_demo:
         xaxis_title=T("value"), yaxis_title=T("province"),
         coloraxis_showscale=False, height=450
     )
-    st.plotly_chart(fig_pop, use_container_width=True)
+    plot_chart(fig_pop, use_container_width=True)
 
     # --- Gender + Urban/Rural side by side ---
     demo_col1, demo_col2 = st.columns(2)
@@ -564,7 +624,7 @@ with tab_demo:
                    'Mulheres' if st.session_state.lang == 'PT' else 'Female'],
             hole=0.4
         )
-        st.plotly_chart(fig_gen, use_container_width=True)
+        plot_chart(fig_gen, use_container_width=True)
 
     with demo_col2:
         st.subheader(T("urban_rural"))
@@ -576,7 +636,7 @@ with tab_demo:
                    'Rural' if st.session_state.lang == 'PT' else 'Rural'],
             hole=0.4
         )
-        st.plotly_chart(fig_ur, use_container_width=True)
+        plot_chart(fig_ur, use_container_width=True)
 
     # --- Financial Inclusion KPI cards ---
     st.markdown("---")
@@ -698,7 +758,7 @@ with tab_demo:
                 title="Contas por faixa etária (%)" if st.session_state.lang == "PT" else "Accounts by age group (%)",
             )
             fig_age_acc_ctx.update_layout(yaxis_title="%")
-            st.plotly_chart(fig_age_acc_ctx, use_container_width=True)
+            plot_chart(fig_age_acc_ctx, use_container_width=True)
     with age_cols[1]:
         age_card_ctx = latest_card[latest_card["Age"].isin(["0-16", "17-21", "22-60", "+60"])]
         if not age_card_ctx.empty:
@@ -712,7 +772,7 @@ with tab_demo:
                 title="Cartões por faixa etária (%)" if st.session_state.lang == "PT" else "Cards by age group (%)",
             )
             fig_age_card_ctx.update_layout(yaxis_title="%")
-            st.plotly_chart(fig_age_card_ctx, use_container_width=True)
+            plot_chart(fig_age_card_ctx, use_container_width=True)
 
     # --- Underbanked Gap: Population vs Accounts per province ---
     st.markdown("---")
@@ -745,7 +805,7 @@ with tab_demo:
         yaxis_title=T("accounts_per_capita"),
         coloraxis_showscale=False, height=400
     )
-    st.plotly_chart(fig_pc, use_container_width=True)
+    plot_chart(fig_pc, use_container_width=True)
 
     # --- Gender Parity Index ---
     st.markdown("---")
@@ -777,7 +837,7 @@ with tab_demo:
         fig_gpi.add_hline(y=1.0, line_dash="dash", line_color="grey",
                           annotation_text="Paridade" if st.session_state.lang == 'PT' else "Parity")
         fig_gpi.update_layout(coloraxis_showscale=False, height=400)
-        st.plotly_chart(fig_gpi, use_container_width=True)
+        plot_chart(fig_gpi, use_container_width=True)
 
     # --- Connectivity context: Phone/Internet vs Digital Banking ---
     st.markdown("---")
@@ -793,7 +853,7 @@ with tab_demo:
             title=T("phone_vs_mobile_banking")
         )
         fig_phone.update_layout(xaxis_title="%", coloraxis_showscale=False, height=400)
-        st.plotly_chart(fig_phone, use_container_width=True)
+        plot_chart(fig_phone, use_container_width=True)
 
     with conn_col2:
         fig_internet = px.bar(
@@ -804,7 +864,7 @@ with tab_demo:
             title=T("internet_vs_internet_banking")
         )
         fig_internet.update_layout(xaxis_title="%", coloraxis_showscale=False, height=400)
-        st.plotly_chart(fig_internet, use_container_width=True)
+        plot_chart(fig_internet, use_container_width=True)
 
     st.caption(T("census_note_short"))
     render_page_caveats()
@@ -871,7 +931,7 @@ with tab_overview:
     st.subheader(f"{T('accounts_distribution')} {title_suffix} ({selected_year})")
     prov_summary = f_acc_snap.groupby(geo_axis)['Total_Accounts'].sum().sort_values(ascending=False).reset_index()
     prov_summary.columns = [geo_axis_label, T("total_accounts")]
-    st.plotly_chart(px.bar(prov_summary, x=geo_axis_label, y=T("total_accounts"), color=geo_axis_label), use_container_width=True)
+    plot_chart(px.bar(prov_summary, x=geo_axis_label, y=T("total_accounts"), color=geo_axis_label), use_container_width=True)
     render_page_caveats()
 
 # ==========================================
@@ -883,8 +943,8 @@ with tab_ime:
     st.caption(tab_story("ime"))
 
     mobile_context_pt = (
-        "ℹ️ Contexto metodológico (Moçambique): o indicador de Mobile Banking pode incluir utilizadores de "
-        "M-Pesa, mKesh, e-Mola e Conta Móvel. Como as plataformas são contabilizadas por conta/serviço, "
+        "ℹ️ Os indicadores das carteiras móveis incluem utilizadores de M-Pesa, mKesh, e-Mola e Conta Móvel. "
+        "Como as plataformas são contabilizadas por conta/serviço, "
         "uma mesma pessoa pode ter registo em mais de uma plataforma."
     )
     mobile_context_en = (
@@ -923,18 +983,20 @@ with tab_ime:
             available_months = (
                 sorted(
                     month_values.astype(str).unique().tolist(),
-                    key=lambda m: MONTH_RANK.get(m, 99),
+                    key=lambda m: month_to_num(m),
                 )
                 if not month_values.empty
                 else []
             )
+            month_display_to_raw = {localize_month(m): m for m in available_months}
+            month_options_display = [all_months_label] + [localize_month(m) for m in available_months]
             ime_month_pick = st.selectbox(
                 month_label,
-                [all_months_label] + available_months,
+                month_options_display,
                 index=0,
                 key="ime_page_month",
             )
-            ime_month = None if ime_month_pick == all_months_label else ime_month_pick
+            ime_month = None if ime_month_pick == all_months_label else month_display_to_raw.get(ime_month_pick, ime_month_pick)
         with control_c2:
             measure_label = "Métrica de transacção" if st.session_state.lang == "PT" else "Transaction metric"
             ime_measure = st.selectbox(
@@ -963,12 +1025,12 @@ with tab_ime:
         st.caption(
             (
                 f"Filtros aplicados: {len(ime_prov)} província(s), "
-                f"{len(ime_dist)} distrito(s), mês: {ime_month if ime_month else 'todos'}."
+                f"{len(ime_dist)} distrito(s), mês: {localize_month(ime_month) if ime_month else 'todos'}."
             )
             if st.session_state.lang == "PT"
             else (
                 f"Applied filters: {len(ime_prov)} province(s), "
-                f"{len(ime_dist)} district(s), month: {ime_month if ime_month else 'all'}."
+                f"{len(ime_dist)} district(s), month: {localize_month(ime_month) if ime_month else 'all'}."
             )
         )
 
@@ -1042,11 +1104,19 @@ with tab_ime:
                 )
             else:
                 eff_show = eff_df.sort_values("Subscribers_per_Agent", ascending=False)
+                geo_label = (
+                    ("Distrito" if use_district_axis else "Província")
+                    if st.session_state.lang == "PT"
+                    else ("District" if use_district_axis else "Province")
+                )
+                ratio_label = "Subscritores por agente" if st.session_state.lang == "PT" else "Subscribers per agent"
+                eff_show_plot = eff_show.rename(columns={group_axis: geo_label}).copy()
+                eff_show_plot[ratio_label] = eff_show_plot["Subscribers_per_Agent"]
                 fig_eff = px.bar(
-                    eff_show,
-                    x=group_axis,
-                    y="Subscribers_per_Agent",
-                    text=[f"{v:.1f}" for v in eff_show["Subscribers_per_Agent"]],
+                    eff_show_plot,
+                    x=geo_label,
+                    y=ratio_label,
+                    text=[f"{v:.1f}" for v in eff_show_plot[ratio_label]],
                     title=(
                         ("Subscritores por Agente por Distrito" if use_district_axis else "Subscritores por Agente por Província")
                         if st.session_state.lang == "PT"
@@ -1054,7 +1124,7 @@ with tab_ime:
                     ),
                 )
                 fig_eff.update_layout(height=420)
-                st.plotly_chart(fig_eff, use_container_width=True)
+                plot_chart(fig_eff, use_container_width=True)
 
         with c2:
             metric_options = (
@@ -1111,12 +1181,14 @@ with tab_ime:
                 )
             else:
                 top_show = top_df.sort_values("Total", ascending=False).head(10).sort_values("Total", ascending=True)
+                district_axis = "Distrito" if st.session_state.lang == "PT" else "District"
+                top_show_plot = top_show.rename(columns={"District": district_axis}).copy()
                 fig_top = px.bar(
-                    top_show,
-                    y="District",
+                    top_show_plot,
+                    y=district_axis,
                     x="Total",
                     orientation="h",
-                    text=[format_compact(v) for v in top_show["Total"]],
+                    text=[format_compact(v) for v in top_show_plot["Total"]],
                     title=(
                         f"Top 10 distritos — {top_metric}"
                         if st.session_state.lang == "PT"
@@ -1124,7 +1196,7 @@ with tab_ime:
                     ),
                 )
                 fig_top.update_layout(height=420)
-                st.plotly_chart(fig_top, use_container_width=True)
+                plot_chart(fig_top, use_container_width=True)
 
         st.markdown("---")
         t1, t2 = st.columns(2)
@@ -1135,36 +1207,38 @@ with tab_ime:
                 .rename(columns={tx_metric_col: "Total"})
             )
             if not tx_trend.empty:
+                tx_trend = localize_month_df(tx_trend, source_col="Month", target_col="Month_Display")
                 fig_tx_trend = px.line(
                     tx_trend,
-                    x="Month",
+                    x="Month_Display",
                     y="Total",
                     color="Transaction_Type",
                     markers=True,
                     title=(
-                        f"Tendência mensal de transações de Carteira Móvel ({ime_measure})"
+                        f"Tendência - transações de carteira móvel ({ime_measure})"
                         if st.session_state.lang == "PT"
-                        else f"Monthly Mobile Wallet transaction trend ({ime_measure})"
+                        else f"Trend - mobile wallet transactions ({ime_measure})"
                     ),
                 )
                 fig_tx_trend.update_layout(yaxis=dict(rangemode="tozero"), height=420)
-                st.plotly_chart(fig_tx_trend, use_container_width=True)
+                plot_chart(fig_tx_trend, use_container_width=True)
         with t2:
             subs_trend = sub_geo.groupby("Month", as_index=False)["Subscribers"].sum()
             ag_trend = ag_geo.groupby("Month", as_index=False)["Agents"].sum()
             trend_join = pd.merge(subs_trend, ag_trend, on="Month", how="outer")
+            trend_join = localize_month_df(trend_join, source_col="Month", target_col="Month_Display")
             trend_join["Subscribers"] = pd.to_numeric(trend_join["Subscribers"], errors="coerce").fillna(0)
             trend_join["Agents"] = pd.to_numeric(trend_join["Agents"], errors="coerce").fillna(0)
             if not trend_join.empty:
                 fig_sa = go.Figure()
-                fig_sa.add_trace(go.Scatter(x=trend_join["Month"], y=trend_join["Subscribers"], mode="lines+markers", name="Subscritores" if st.session_state.lang == "PT" else "Subscribers"))
-                fig_sa.add_trace(go.Scatter(x=trend_join["Month"], y=trend_join["Agents"], mode="lines+markers", name="Agentes" if st.session_state.lang == "PT" else "Agents"))
+                fig_sa.add_trace(go.Scatter(x=trend_join["Month_Display"], y=trend_join["Subscribers"], mode="lines+markers", name="Subscritores" if st.session_state.lang == "PT" else "Subscribers"))
+                fig_sa.add_trace(go.Scatter(x=trend_join["Month_Display"], y=trend_join["Agents"], mode="lines+markers", name="Agentes" if st.session_state.lang == "PT" else "Agents"))
                 fig_sa.update_layout(
                     title="Subscritores e Agentes (tendência mensal)" if st.session_state.lang == "PT" else "Subscribers and Agents (monthly trend)",
                     yaxis=dict(rangemode="tozero"),
                     height=420,
                 )
-                st.plotly_chart(fig_sa, use_container_width=True)
+                plot_chart(fig_sa, use_container_width=True)
 
         if not ime_sub_demo_df.empty and ime_month is not None:
             demo_scope = ime_sub_demo_df[
@@ -1186,7 +1260,7 @@ with tab_ime:
                             hole=0.45,
                         )
                         fig_gender.update_layout(height=380)
-                        st.plotly_chart(fig_gender, use_container_width=True)
+                        plot_chart(fig_gender, use_container_width=True)
                 with d2:
                     age_col = "Age" if "Age" in demo_scope.columns else ("Age_Group" if "Age_Group" in demo_scope.columns else None)
                     if age_col is None:
@@ -1211,7 +1285,7 @@ with tab_ime:
                             title="Subscritores de Carteira Móvel por faixa etária" if st.session_state.lang == "PT" else "Mobile Wallet subscribers by age group",
                         )
                         fig_age.update_layout(height=380)
-                        st.plotly_chart(fig_age, use_container_width=True)
+                        plot_chart(fig_age, use_container_width=True)
                     else:
                         st.info(
                             "Sem dados por faixa etária para os filtros seleccionados."
@@ -1270,6 +1344,8 @@ with tab_accounts_cards:
 
         st.subheader(f"{T('monthly_trend_accounts')} ({selected_year})")
         month_acc = f_acc.groupby('Month', observed=False)['Total_Accounts'].sum().reset_index()
+        month_acc = localize_month_df(month_acc, source_col="Month", target_col=T("month"))
+        month_acc = month_acc[[T("month"), "Total_Accounts"]].copy()
         month_acc.columns = [T("month"), T("total_accounts")]
         fig_month_acc = px.line(
             month_acc,
@@ -1279,7 +1355,7 @@ with tab_accounts_cards:
             title=f"{T('monthly_trend_accounts')} ({selected_year})",
         )
         fig_month_acc.update_layout(yaxis=dict(rangemode='tozero'))
-        st.plotly_chart(fig_month_acc, use_container_width=True)
+        plot_chart(fig_month_acc, use_container_width=True)
 
         st.subheader(f"{T('accounts_by_age')} ({selected_year})")
         age_buckets = ["0-16", "17-21", "22-60", "+60"]
@@ -1297,7 +1373,7 @@ with tab_accounts_cards:
         else:
             age_acc = age_acc_detail.groupby('Age', observed=False)['Total_Accounts'].sum().reset_index()
             age_acc.columns = [T("age_group"), T("total_accounts")]
-            st.plotly_chart(
+            plot_chart(
                 px.bar(age_acc, y=T("age_group"), x=T("total_accounts"), orientation='h', color=T("age_group")),
                 use_container_width=True,
             )
@@ -1305,7 +1381,7 @@ with tab_accounts_cards:
         st.subheader(f"{T('currency_distribution')} {title_suffix} ({selected_year})")
         curr_data = f_acc_snap.groupby([geo_axis, 'Account_Currency'])['Total_Accounts'].sum().reset_index()
         curr_data.columns = [geo_axis_label, T("currency_label"), T("total_accounts")]
-        st.plotly_chart(px.bar(curr_data, x=geo_axis_label, y=T("total_accounts"), color=T("currency_label"), barmode='group'), use_container_width=True)
+        plot_chart(px.bar(curr_data, x=geo_axis_label, y=T("total_accounts"), color=T("currency_label"), barmode='group'), use_container_width=True)
 
     else:
         st.caption(T("caption_cards"))
@@ -1331,6 +1407,8 @@ with tab_accounts_cards:
 
         st.subheader(f"{T('monthly_trend_cards')} ({selected_year})")
         month_card = f_card.groupby('Month', observed=False)['Total_Cards'].sum().reset_index()
+        month_card = localize_month_df(month_card, source_col="Month", target_col=T("month"))
+        month_card = month_card[[T("month"), "Total_Cards"]].copy()
         month_card.columns = [T("month"), T("total_cards")]
         fig_month_card = px.line(
             month_card,
@@ -1340,7 +1418,7 @@ with tab_accounts_cards:
             title=f"{T('monthly_trend_cards')} ({selected_year})",
         )
         fig_month_card.update_layout(yaxis=dict(rangemode='tozero'))
-        st.plotly_chart(fig_month_card, use_container_width=True)
+        plot_chart(fig_month_card, use_container_width=True)
 
         st.subheader(f"{T('product_adoption_age')} ({selected_year})")
         age_buckets = ["0-16", "17-21", "22-60", "+60"]
@@ -1358,7 +1436,7 @@ with tab_accounts_cards:
         else:
             age_card = age_card_detail.groupby(['Age', 'Card_Type'], observed=False)['Total_Cards'].sum().reset_index()
             age_card.columns = [T("age_group"), T("card_type_label"), T("total_cards")]
-            st.plotly_chart(
+            plot_chart(
                 px.bar(age_card, y=T("age_group"), x=T("total_cards"), color=T("card_type_label"), orientation='h'),
                 use_container_width=True,
             )
@@ -1366,7 +1444,7 @@ with tab_accounts_cards:
         st.subheader(f"{T('card_type')} {title_suffix} ({selected_year})")
         card_type_geo = f_card_snap.groupby([geo_axis, 'Card_Type'])['Total_Cards'].sum().reset_index()
         card_type_geo.columns = [geo_axis_label, T("card_type_label"), T("total_cards")]
-        st.plotly_chart(px.bar(card_type_geo, x=geo_axis_label, y=T("total_cards"), color=T("card_type_label"), barmode='group'), use_container_width=True)
+        plot_chart(px.bar(card_type_geo, x=geo_axis_label, y=T("total_cards"), color=T("card_type_label"), barmode='group'), use_container_width=True)
     render_page_caveats()
 
 # ==========================================
@@ -1376,6 +1454,7 @@ with tab_infra:
     st.title(T("title_infra"))
     st.caption(T("caption_infra"))
     st.caption(tab_story("infra"))
+    curr_atm_total = f_atm_snap["ATMs_Number"].sum()
     curr_pos_total = f_pos_snap["POSs_Number"].sum()
     infra_ratio = (curr_pos_total / curr_atm_total) if curr_atm_total > 0 else 0
     i1, i2, i3 = st.columns(3)
@@ -1395,14 +1474,14 @@ with tab_infra:
     with col_i1:
         atm_sum = f_atm_snap.groupby(geo_axis)['ATMs_Number'].sum().reset_index()
         atm_sum.columns = [geo_axis_label, T("num_atms")]
-        st.plotly_chart(
+        plot_chart(
             px.bar(atm_sum, x=geo_axis_label, y=T("num_atms"), title=f"{T('atm_distribution')} ({selected_year})"),
             use_container_width=True,
         )
     with col_i2:
         pos_sum = f_pos_snap.groupby(geo_axis)['POSs_Number'].sum().reset_index()
         pos_sum.columns = [geo_axis_label, T("num_pos")]
-        st.plotly_chart(
+        plot_chart(
             px.bar(pos_sum, x=geo_axis_label, y=T("num_pos"), title=f"{T('pos_distribution')} ({selected_year})"),
             use_container_width=True,
         )
@@ -1469,8 +1548,10 @@ with tab_channels:
         f_net = net_df[(net_df['Year'] == selected_year) & (net_df['Metric'] == digital_metric)]
         m_mob = f_mob.groupby('Month', observed=False)['Value'].sum().reset_index().assign(Canal='Mobile Banking')
         m_net = f_net.groupby('Month', observed=False)['Value'].sum().reset_index().assign(Canal='Internet Banking')
-        m_mob.rename(columns={'Month': T("month"), 'Value': T("value")}, inplace=True)
-        m_net.rename(columns={'Month': T("month"), 'Value': T("value")}, inplace=True)
+        m_mob = localize_month_df(m_mob, source_col="Month", target_col=T("month"))
+        m_net = localize_month_df(m_net, source_col="Month", target_col=T("month"))
+        m_mob = m_mob[[T("month"), "Value", "Canal"]].rename(columns={"Value": T("value")})
+        m_net = m_net[[T("month"), "Value", "Canal"]].rename(columns={"Value": T("value")})
         comp_dig = pd.concat([m_mob, m_net])
         fig_comp_dig = px.line(
             comp_dig,
@@ -1481,7 +1562,7 @@ with tab_channels:
             title=f"{T('monthly_comparison')}: {digital_metric} ({selected_year})",
         )
         fig_comp_dig.update_layout(yaxis=dict(rangemode='tozero'))
-        st.plotly_chart(fig_comp_dig, use_container_width=True)
+        plot_chart(fig_comp_dig, use_container_width=True)
 
         st.markdown("---")
 
@@ -1504,11 +1585,12 @@ with tab_channels:
 
         st.subheader(f"{dig_label} — {selected_year}")
         dig_monthly = dig_filtered[dig_filtered['Year'] == selected_year].groupby('Month', observed=False)['Value'].sum().reset_index()
-        dig_monthly.rename(columns={'Month': T("month"), 'Value': T("value")}, inplace=True)
+        dig_monthly = localize_month_df(dig_monthly, source_col="Month", target_col=T("month"))
+        dig_monthly = dig_monthly[[T("month"), "Value"]].rename(columns={"Value": T("value")})
         fig_dig_monthly = px.line(dig_monthly, x=T("month"), y=T("value"), markers=True,
                                   title=f"{T('monthly_trend')} ({selected_year})")
         fig_dig_monthly.update_layout(yaxis=dict(rangemode='tozero'))
-        st.plotly_chart(fig_dig_monthly, use_container_width=True)
+        plot_chart(fig_dig_monthly, use_container_width=True)
 
         dig_yearly = dig_filtered.groupby('Year')['Value'].sum().reset_index().sort_values('Year')
         dig_yearly.rename(columns={'Year': T("year"), 'Value': T("value")}, inplace=True)
@@ -1521,7 +1603,7 @@ with tab_channels:
                 fig_dig_bar = px.bar(dig_yearly, x=T("year"), y=T("value"), text_auto='.3s',
                                      title=T("annual_evolution"))
                 fig_dig_bar.update_layout(xaxis=dict(dtick=1))
-                st.plotly_chart(fig_dig_bar, use_container_width=True)
+                plot_chart(fig_dig_bar, use_container_width=True)
             with v2_col2:
                 growth_dig = dig_yearly.dropna(subset=[T("growth_pct")]).copy()
                 if not growth_dig.empty:
@@ -1529,7 +1611,7 @@ with tab_channels:
                                         title=T("yoy_growth"),
                                         color=T("growth_pct"), color_continuous_scale='RdYlGn')
                     fig_dig_gr.update_layout(xaxis=dict(dtick=1))
-                    st.plotly_chart(fig_dig_gr, use_container_width=True)
+                    plot_chart(fig_dig_gr, use_container_width=True)
 
     else:
         st.caption(T("caption_txn"))
@@ -1619,8 +1701,10 @@ with tab_channels:
         ticket_label = "Ticket Médio (MZN)" if st.session_state.lang == "PT" else "Avg Ticket (MZN)"
         t3.metric(ticket_label, format_compact(avg_ticket))
 
-        vol_monthly.rename(columns={'Month': T("month")}, inplace=True)
-        val_monthly.rename(columns={'Month': T("month")}, inplace=True)
+        vol_monthly = localize_month_df(vol_monthly, source_col="Month", target_col=T("month"))
+        val_monthly = localize_month_df(val_monthly, source_col="Month", target_col=T("month"))
+        vol_monthly = vol_monthly[[T("month"), T("volume")]]
+        val_monthly = val_monthly[[T("month"), T("value")]]
 
         col_v1, col_v2 = st.columns(2)
         with col_v1:
@@ -1631,7 +1715,7 @@ with tab_channels:
                 title=f"{T('vol_monthly_title')} — {txn_title} ({selected_year})",
             )
             fig_vol_m.update_layout(yaxis=dict(rangemode='tozero'))
-            st.plotly_chart(fig_vol_m, use_container_width=True)
+            plot_chart(fig_vol_m, use_container_width=True)
         with col_v2:
             fig_val_m = px.line(
                 val_monthly,
@@ -1641,7 +1725,7 @@ with tab_channels:
                 title=f"{T('val_monthly_title')} — {txn_title} ({selected_year})",
             )
             fig_val_m.update_layout(yaxis=dict(rangemode='tozero'))
-            st.plotly_chart(fig_val_m, use_container_width=True)
+            plot_chart(fig_val_m, use_container_width=True)
 
         vol_annual.rename(columns={'Year': T("year")}, inplace=True)
         val_annual.rename(columns={'Year': T("year")}, inplace=True)
@@ -1663,7 +1747,7 @@ with tab_channels:
                 yaxis=dict(title=T("volume"), side='left'),
                 yaxis2=dict(title=f"{T('value')} (MZN)", side='right', overlaying='y'),
                 legend=dict(x=0.01, y=0.99), height=450)
-            st.plotly_chart(fig_annual, use_container_width=True)
+            plot_chart(fig_annual, use_container_width=True)
     render_page_caveats()
 
 # ==========================================
@@ -1734,7 +1818,7 @@ with tab_trends:
                            title=f"{trend_label} {T('by_year')}",
                            labels={'Year': T("year"), 'Total': trend_label})
     fig_trend_bar.update_layout(xaxis=dict(dtick=1))
-    st.plotly_chart(fig_trend_bar, use_container_width=True)
+    plot_chart(fig_trend_bar, use_container_width=True)
 
     if trend_indicator not in ["Mobile Banking", "Internet Banking"] and 'Province' in geo_trend.columns:
         prov_year_trend = geo_trend.groupby(['Year', 'Province'])[trend_col].sum().reset_index()
@@ -1744,7 +1828,7 @@ with tab_trends:
                                  title=f"{trend_label} {T('by_province_over_years')}",
                                  labels={'Year': T("year"), 'Total': trend_label})
         fig_trend_prov.update_layout(xaxis=dict(dtick=1))
-        st.plotly_chart(fig_trend_prov, use_container_width=True)
+        plot_chart(fig_trend_prov, use_container_width=True)
 
     if len(yearly_trend) > 1:
         yearly_trend = yearly_trend.sort_values('Year')
@@ -1758,7 +1842,7 @@ with tab_trends:
                                       color_continuous_scale='RdYlGn',
                                       labels={'Year': T("year")})
             fig_trend_growth.update_layout(xaxis=dict(dtick=1))
-            st.plotly_chart(fig_trend_growth, use_container_width=True)
+            plot_chart(fig_trend_growth, use_container_width=True)
 
 # Heatmap view condensed into Historical Trends page.
 with tab_trends:
@@ -1822,7 +1906,7 @@ with tab_trends:
                 yaxis_title=T("province"),
                 height=500,
             )
-            st.plotly_chart(fig_hm, use_container_width=True)
+            plot_chart(fig_hm, use_container_width=True)
 
             if len(pivot.columns) > 1:
                 growth_pivot = pivot.pct_change(axis=1) * 100
@@ -1845,7 +1929,7 @@ with tab_trends:
                     yaxis_title=T("province"),
                     height=500,
                 )
-                st.plotly_chart(fig_growth, use_container_width=True)
+                plot_chart(fig_growth, use_container_width=True)
     render_page_caveats()
 
 # ==========================================
@@ -2049,7 +2133,7 @@ with tab_forecast:
                     ),
                 )
                 fig_wallet.update_layout(yaxis=dict(rangemode="tozero"), xaxis_tickangle=-35)
-                st.plotly_chart(fig_wallet, use_container_width=True)
+                plot_chart(fig_wallet, use_container_width=True)
                 future_table = wallet_view[wallet_view["Tipo"] == pred_tag][["Período", "Value", "Lower", "Upper"]].copy()
                 if not future_table.empty:
                     future_table["Value"] = future_table["Value"].apply(format_compact)
@@ -2100,7 +2184,7 @@ with tab_forecast:
                     legend=dict(x=0.01, y=0.99),
                     height=500
                 )
-                st.plotly_chart(fig_fc, use_container_width=True)
+                plot_chart(fig_fc, use_container_width=True)
 
                 holdout_label = (
                     "N/A" if model_meta["holdout_mape"] is None else f"{model_meta['holdout_mape']:.2f}%"
@@ -2261,7 +2345,7 @@ with tab_forecast:
                         line_dash_map={hist_label: "solid", pred_label: "dash"},
                     )
                     fig_prov_fc.update_layout(yaxis=dict(rangemode="tozero"), xaxis_tickangle=-35)
-                    st.plotly_chart(fig_prov_fc, use_container_width=True)
+                    plot_chart(fig_prov_fc, use_container_width=True)
 
                     st.subheader(
                         T("forecast_summary"),
@@ -2300,7 +2384,7 @@ with tab_forecast:
                         line_dash_map={hist_label: 'solid', pred_label: 'dash'}
                     )
                     fig_prov_fc.update_layout(xaxis=dict(dtick=1), yaxis=dict(rangemode='tozero'))
-                    st.plotly_chart(fig_prov_fc, use_container_width=True)
+                    plot_chart(fig_prov_fc, use_container_width=True)
 
                     st.subheader(
                         T("forecast_summary"),
@@ -2370,7 +2454,7 @@ with tab_forecast:
         fig_sim = px.line(sim_df, x=T("year"), y=T("value"), markers=True,
                           title=f"{forecast_indicator} — {growth*100:.0f}%/{T('year').lower()}")
         fig_sim.update_layout(xaxis=dict(dtick=1), yaxis=dict(rangemode='tozero'))
-        st.plotly_chart(fig_sim, use_container_width=True)
+        plot_chart(fig_sim, use_container_width=True)
 
         st.metric(
             f"{T('projection_for')} {base_year + horizon_manual}",
@@ -2417,7 +2501,7 @@ with tab_decision:
         sub_2025 = sub_2025.dropna(subset=["Month_Num"])
         if not sub_2025.empty:
             mx = sub_2025.sort_values(["Year", "Month_Num"]).iloc[-1]
-            latest_ime_period = f"{mx['Month']} {int(mx['Year'])}"
+            latest_ime_period = f"{localize_month(mx['Month'])} {int(mx['Year'])}"
 
     latest_fi_period = "N/A"
     if not fi_indicators_df.empty and "Period" in fi_indicators_df.columns:
@@ -2662,7 +2746,7 @@ with tab_decision:
                 ),
             )
             fig_flow_compare.update_layout(yaxis=dict(rangemode="tozero"), xaxis_tickangle=-25)
-            st.plotly_chart(fig_flow_compare, use_container_width=True)
+            plot_chart(fig_flow_compare, use_container_width=True)
 
             wide = cmp_df.pivot_table(index="Metric", columns="District", values="Value", aggfunc="sum", fill_value=0).reset_index()
             if label_a in wide.columns and label_b in wide.columns:
@@ -2827,7 +2911,7 @@ with tab_decision:
             )
         )
         fig_opp.update_layout(yaxis=dict(range=[0, 400]))
-        st.plotly_chart(fig_opp, use_container_width=True)
+        plot_chart(fig_opp, use_container_width=True)
 
         st.markdown(
             "**Top 3 opportunity rationale**" if st.session_state.lang == "EN" else "**Racional das 3 maiores oportunidades**"
@@ -2951,7 +3035,7 @@ with tab_decision:
                 )
             )
         fig_sc.update_layout(xaxis=dict(dtick=1), yaxis=dict(rangemode="tozero"))
-        st.plotly_chart(fig_sc, use_container_width=True)
+        plot_chart(fig_sc, use_container_width=True)
 
         focus_choice = st.selectbox(
             "Scenario focus" if st.session_state.lang == "EN" else "Cenário em foco",
