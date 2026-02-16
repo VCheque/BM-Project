@@ -11,9 +11,9 @@ _TRANSLATIONS = {
     "zones": {"PT": "Zonas", "EN": "Zones"},
     "provinces": {"PT": "Províncias", "EN": "Provinces"},
     "districts": {"PT": "Distritos", "EN": "Districts"},
-    "help_year": {"PT": "Selecione o ano para análise.", "EN": "Select the year for analysis."},
+    "help_year": {"PT": "Seleccione o ano para análise.", "EN": "Select the year for analysis."},
     "help_zones": {"PT": "Filtre por zona geográfica: Norte, Centro ou Sul de Moçambique.", "EN": "Filter by geographic zone: North, Centre or South of Mozambique."},
-    "help_prov": {"PT": "Selecione as províncias que deseja visualizar.", "EN": "Select the provinces you wish to view."},
+    "help_prov": {"PT": "Seleccione as províncias que deseja visualizar.", "EN": "Select the provinces you wish to view."},
     "help_dist": {"PT": "Opcional: refine a análise ao nível distrital.", "EN": "Optional: drill down to district level."},
     # Tab names
     "tab_demo": {"PT": "🗺️ Contexto Demográfico", "EN": "🗺️ Demographic Context"},
@@ -23,7 +23,7 @@ _TRANSLATIONS = {
     "tab_cards": {"PT": "💳 Cartões", "EN": "💳 Cards"},
     "tab_infra": {"PT": "📡 Infraestrutura", "EN": "📡 Infrastructure"},
     "tab_digital": {"PT": "📱 Canais Digitais", "EN": "📱 Digital Channels"},
-    "tab_txn": {"PT": "💸 Transações", "EN": "💸 Transactions"},
+    "tab_txn": {"PT": "💸 Transacções", "EN": "💸 Transactions"},
     "tab_trends": {"PT": "📈 Tendências Históricas", "EN": "📈 Historical Trends"},
     "tab_heatmap": {"PT": "🔥 Mapa de Calor", "EN": "🔥 Heatmap"},
     "tab_forecast": {"PT": "🔮 Previsões", "EN": "🔮 Forecasts"},
@@ -36,7 +36,7 @@ _TRANSLATIONS = {
     "title_cards": {"PT": "Análise Detalhada de Cartões", "EN": "Detailed Card Analysis"},
     "title_infra": {"PT": "Infraestrutura Física", "EN": "Physical Infrastructure"},
     "title_digital": {"PT": "Canais Digitais — Mobile Banking e Internet Banking", "EN": "Digital Channels — Mobile Banking & Internet Banking"},
-    "title_txn": {"PT": "Volume e Valor de Transações", "EN": "Transaction Volume & Value"},
+    "title_txn": {"PT": "Volume e Valor de Transacções", "EN": "Transaction Volume & Value"},
     "title_trends": {"PT": "Tendências Históricas", "EN": "Historical Trends"},
     "title_heatmap": {"PT": "Mapa de Calor — Indicadores por Província", "EN": "Heatmap — Indicators by Province"},
     "title_forecast": {"PT": "Previsões e Simulação de Crescimento", "EN": "Forecasts & Growth Simulation"},
@@ -61,7 +61,7 @@ _TRANSLATIONS = {
     "monthly_trend": {"PT": "Tendência Mensal", "EN": "Monthly Trend"},
     "annual_and_growth": {"PT": "Total Anual e Crescimento", "EN": "Annual Total & Growth"},
     "yoy_growth": {"PT": "Crescimento Anual (%)", "EN": "Year-on-Year Growth (%)"},
-    "txn_category": {"PT": "Categoria de Transação", "EN": "Transaction Category"},
+    "txn_category": {"PT": "Categoria de Transacção", "EN": "Transaction Category"},
     "monthly_volume": {"PT": "Volume Mensal", "EN": "Monthly Volume"},
     "monthly_value": {"PT": "Valor Mensal (MZN)", "EN": "Monthly Value (MZN)"},
     "annual_dual": {"PT": "Volume e Valor Anual", "EN": "Annual Volume & Value"},
@@ -100,7 +100,7 @@ _TRANSLATIONS = {
         "PT": (
             "As previsões são calculadas através de regressão polinomial de grau 2 aplicada à série temporal mensal "
             "de cada indicador. Para indicadores de stock (contas, cartões, ATMs, POS), utiliza-se o valor de "
-            "fim de período; para indicadores de fluxo (transações), utiliza-se a soma anual. "
+            "fim de período; para indicadores de fluxo (transacções), utiliza-se a soma anual. "
             "A banda de confiança a 95% (±1,96σ) reflecte a dispersão dos resíduos do modelo."
         ),
         "EN": (
@@ -121,19 +121,19 @@ _TRANSLATIONS = {
     },
     # Page captions
     "caption_overview": {
-        "PT": "ℹ️ Resumo dos principais indicadores do sistema financeiro para o ano e províncias selecionadas. Os deltas mostram a variação face ao ano anterior.",
+        "PT": "ℹ️ Resumo dos principais indicadores do sistema financeiro para o ano e províncias seleccionadas. Os deltas mostram a variação face ao ano anterior.",
         "EN": "ℹ️ Summary of key financial system indicators for the selected year and provinces. Deltas show year-on-year change."
     },
     "caption_ime": {
-        "PT": "ℹ️ Rede de carteiras móveis por província e distrito, com foco em subscritores, agentes e transações por tipo.",
+        "PT": "ℹ️ Rede de carteiras móveis por província e distrito, com foco em subscritores, agentes e transacções por tipo.",
         "EN": "ℹ️ Mobile wallet network by province and district, focused on subscribers, agents, and transaction types."
     },
     "caption_accounts": {
-        "PT": "ℹ️ Detalhes sobre contas bancárias: tendência mensal, distribuição por faixa etária e moeda. Filtrado pelo ano e províncias selecionadas.",
+        "PT": "ℹ️ Detalhes sobre contas bancárias: tendência mensal, distribuição por faixa etária e moeda. Filtrado pelo ano e províncias seleccionadas.",
         "EN": "ℹ️ Bank account details: monthly trend, age distribution, and currency split. Filtered by the selected year and provinces."
     },
     "caption_cards": {
-        "PT": "ℹ️ Evolução mensal, distribuição por faixa etária e tipo de cartão (crédito, débito, pré-pago). Filtrado pelo ano e províncias selecionadas.",
+        "PT": "ℹ️ Evolução mensal, distribuição por faixa etária e tipo de cartão (crédito, débito, pré-pago). Filtrado pelo ano e províncias seleccionadas.",
         "EN": "ℹ️ Monthly evolution, age group distribution, and card type (credit, debit, prepaid). Filtered by the selected year and provinces."
     },
     "caption_infra": {
@@ -141,15 +141,15 @@ _TRANSLATIONS = {
         "EN": "ℹ️ Geographic distribution of ATMs and POS terminals. Use sidebar filters to drill down by zone, province or district."
     },
     "caption_digital": {
-        "PT": "ℹ️ Selecione o canal e a métrica para ver a evolução mensal e anual. A comparação directa Mobile vs Internet aparece no primeiro gráfico.",
+        "PT": "ℹ️ Seleccione o canal e a métrica para ver a evolução mensal e anual. A comparação directa Mobile vs Internet aparece no primeiro gráfico.",
         "EN": "ℹ️ Select the channel and metric to view monthly and annual trends. The direct Mobile vs Internet comparison appears in the first chart."
     },
     "caption_txn": {
-        "PT": "ℹ️ Selecione o tipo de transação no menu abaixo para comparar volume (quantidade) e valor (MZN) mensal e anual.",
+        "PT": "ℹ️ Seleccione o tipo de transacção no menu abaixo para comparar volume (quantidade) e valor (MZN) mensal e anual.",
         "EN": "ℹ️ Select the transaction type below to compare monthly and annual volume (count) and value (MZN)."
     },
     "caption_trends": {
-        "PT": "ℹ️ Evolução multi-anual dos principais indicadores. Selecione o indicador no menu abaixo.",
+        "PT": "ℹ️ Evolução multi-anual dos principais indicadores. Seleccione o indicador no menu abaixo.",
         "EN": "ℹ️ Multi-year evolution of key indicators. Select the indicator in the menu below."
     },
     "caption_heatmap": {
@@ -199,12 +199,12 @@ _TRANSLATIONS = {
     "pos_distribution": {"PT": "Distribuição de POS", "EN": "POS Distribution"},
     "num_atms": {"PT": "Número de ATMs", "EN": "Number of ATMs"},
     "num_pos": {"PT": "Número de POS", "EN": "Number of POS"},
-    "txn_type": {"PT": "Tipo de Transação", "EN": "Transaction Type"},
+    "txn_type": {"PT": "Tipo de Transacção", "EN": "Transaction Type"},
     "help_txn": {"PT": "Escolha entre ATM, POS, Mobile Banking ou Internet Banking.", "EN": "Choose between ATM, POS, Mobile Banking or Internet Banking."},
     "help_comparison": {"PT": "Métricas comuns a ambos os canais.", "EN": "Metrics common to both channels."},
     "help_channel": {"PT": "Escolha o canal para análise detalhada.", "EN": "Choose the channel for detailed analysis."},
     "help_detail_metric": {"PT": "Métrica específica para análise mensal e anual.", "EN": "Specific metric for monthly and annual analysis."},
-    "help_indicator": {"PT": "Selecione o indicador para visualizar.", "EN": "Select the indicator to view."},
+    "help_indicator": {"PT": "Seleccione o indicador para visualizar.", "EN": "Select the indicator to view."},
     "help_sub_metric": {"PT": "Escolha a métrica específica para este canal.", "EN": "Choose the specific metric for this channel."},
     "help_heatmap": {"PT": "Escolha o indicador para o mapa de calor.", "EN": "Choose the indicator for the heatmap."},
     "growth_rate_heatmap": {"PT": "Mapa de Calor — Taxa de Crescimento (%)", "EN": "Heatmap — Growth Rate (%)"},

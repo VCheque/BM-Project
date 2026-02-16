@@ -66,7 +66,7 @@ def tab_story(key: str) -> str:
             "EN": "Story: population context and where banking inclusion is still below potential.",
         },
         "overview": {
-            "PT": "História: fotografia do sistema financeiro no ano selecionado e variação face ao ano anterior.",
+            "PT": "História: fotografia do sistema financeiro no ano seleccionado e variação face ao ano anterior.",
             "EN": "Story: snapshot of the financial system in the selected year and change vs previous year.",
         },
         "ime": {
@@ -82,7 +82,7 @@ def tab_story(key: str) -> str:
             "EN": "Story: physical capacity (ATM/POS) to support inclusion and transactional usage.",
         },
         "usage": {
-            "PT": "História: comportamento digital e de transações, em volume e valor.",
+            "PT": "História: comportamento digital e de transacções, em volume e valor.",
             "EN": "Story: digital and transaction behavior, in both volume and value.",
         },
         "trends": {
@@ -94,7 +94,7 @@ def tab_story(key: str) -> str:
             "EN": "Story: quick read of concentration and growth by province over time.",
         },
         "forecast": {
-            "PT": "História: projeções de continuidade de tendência e simulação de cenários alternativos.",
+            "PT": "História: projecções de continuidade de tendência e simulação de cenários alternativos.",
             "EN": "Story: trend-continuation forecasts and alternative scenario simulation.",
         },
         "decision": {
@@ -421,7 +421,7 @@ def inclusion_method_note(year: int) -> str:
             "e é extrapolada a população elegível por coorte etária (progressão do tempo), sem ajuste de "
             "nascimentos, mortes ou migração. Decisão de negócio: adopta-se uma base elegível para reflectir "
             "melhor o mercado potencial de inclusão financeira. "
-            f"Cenário selecionado: {label}."
+            f"Cenário seleccionado: {label}."
         )
     return (
         f"To calculate Financial Inclusion Indicators for {year}, we use Census 2017 and extrapolate the "
@@ -441,6 +441,7 @@ def render_page_caveats(extra_notes: list[str] | None = None) -> None:
             st.write("- O denominador de inclusão usa extrapolação por coorte com base no Censo 2017.")
             st.write("- A série histórica contém lacuna anual (2023), podendo afectar continuidade.")
             st.write("- O detalhe distrital de Carteira Móvel cobre 2025 e é usado como fotografia de profundidade.")
+            st.write("- Previsões de Carteira Móvel usam 12 observações mensais (2025), adequadas sobretudo para curto prazo.")
             st.write("- Cidade de Maputo é incluída em Província de Maputo para harmonização geográfica.")
             if extra_notes:
                 for note in extra_notes:
@@ -452,6 +453,7 @@ def render_page_caveats(extra_notes: list[str] | None = None) -> None:
             st.write("- Inclusion denominator uses Census 2017 cohort extrapolation.")
             st.write("- Historical series has an annual gap (2023), which may affect continuity.")
             st.write("- Mobile Wallet district depth currently covers 2025 and is treated as a current-state view.")
+            st.write("- Mobile Wallet forecasts use 12 monthly observations (2025), mainly suitable for short-term reading.")
             st.write("- Cidade de Maputo is included under Província de Maputo for harmonized geographic reporting.")
             if extra_notes:
                 for note in extra_notes:
@@ -1215,7 +1217,7 @@ with tab_ime:
                     color="Transaction_Type",
                     markers=True,
                     title=(
-                        f"Tendência - transações de carteira móvel ({ime_measure})"
+                        f"Tendência - transacções de carteira móvel ({ime_measure})"
                         if st.session_state.lang == "PT"
                         else f"Trend - mobile wallet transactions ({ime_measure})"
                     ),
@@ -1362,7 +1364,7 @@ with tab_accounts_cards:
         age_acc_detail = f_acc_snap[f_acc_snap["Age"].isin(age_buckets)]
         if age_acc_detail.empty:
             msg_pt = (
-                "Dados indisponíveis para este gráfico no ano selecionado. "
+                "Dados indisponíveis para este gráfico no ano seleccionado. "
                 "No ano de 2020, o Banco de Moçambique não reportou contas por faixa etária."
             )
             msg_en = (
@@ -1425,7 +1427,7 @@ with tab_accounts_cards:
         age_card_detail = f_card_snap[f_card_snap["Age"].isin(age_buckets)]
         if age_card_detail.empty:
             msg_pt = (
-                "Dados indisponíveis para este gráfico no ano selecionado. "
+                "Dados indisponíveis para este gráfico no ano seleccionado. "
                 "No ano de 2020, o Banco de Moçambique não reportou cartões por faixa etária."
             )
             msg_en = (
@@ -1627,8 +1629,8 @@ with tab_channels:
         atm_choices["ATM — Pagamentos de Serviços"] = ("Pagamentos de Serviços", None)
 
         pos_choice_label = "POS — Pagamentos"
-        mob_choice_label = "Mobile Banking — Transações"
-        net_choice_label = "Internet Banking — Transações"
+        mob_choice_label = "Mobile Banking — Transacções"
+        net_choice_label = "Internet Banking — Transacções"
 
         all_txn_options = list(atm_choices.keys()) + [pos_choice_label, mob_choice_label, net_choice_label]
 
@@ -1958,20 +1960,20 @@ with tab_forecast:
 
         grouped_indicators = {
             group_amounts: [
-                "Transações ATM (Valor)",
-                "Transações POS (Valor)",
-                "Transações Mobile Banking (Valor)",
-                "Transações Internet Banking (Valor)",
+                "Transacções ATM (Valor)",
+                "Transacções POS (Valor)",
+                "Transacções Mobile Banking (Valor)",
+                "Transacções Internet Banking (Valor)",
                 "Carteiras Móveis - Depósitos (Valor)",
                 "Carteiras Móveis - Levantamentos (Valor)",
                 "Carteiras Móveis - Transferências (Valor)",
                 "Carteiras Móveis - Pagamentos (Valor)",
             ],
             group_volumes: [
-                "Transações ATM (Volume)",
-                "Transações POS (Volume)",
-                "Transações Mobile Banking (Volume)",
-                "Transações Internet Banking (Volume)",
+                "Transacções ATM (Volume)",
+                "Transacções POS (Volume)",
+                "Transacções Mobile Banking (Volume)",
+                "Transacções Internet Banking (Volume)",
                 "Carteiras Móveis - Depósitos (Volume)",
                 "Carteiras Móveis - Levantamentos (Volume)",
                 "Carteiras Móveis - Transferências (Volume)",
@@ -1993,21 +1995,21 @@ with tab_forecast:
 
     has_province = False
     wallet_scope_hint = None
-    if forecast_indicator == "Transações ATM (Volume)":
+    if forecast_indicator == "Transacções ATM (Volume)":
         src_df, metric_col = get_atm_txn_forecast_data('vol')
-    elif forecast_indicator == "Transações ATM (Valor)":
+    elif forecast_indicator == "Transacções ATM (Valor)":
         src_df, metric_col = get_atm_txn_forecast_data('val')
-    elif forecast_indicator == "Transações POS (Volume)":
+    elif forecast_indicator == "Transacções POS (Volume)":
         src_df = pos_txn_df[pos_txn_df['Metric'].str.contains('Volume', case=False, na=False)]; metric_col = 'Value'
-    elif forecast_indicator == "Transações POS (Valor)":
+    elif forecast_indicator == "Transacções POS (Valor)":
         src_df = pos_txn_df[pos_txn_df['Metric'].str.contains('Valor', case=False, na=False)]; metric_col = 'Value'
-    elif forecast_indicator == "Transações Mobile Banking (Volume)":
+    elif forecast_indicator == "Transacções Mobile Banking (Volume)":
         src_df = mob_df[mob_df['Metric'].str.contains('Volume', case=False, na=False)]; metric_col = 'Value'
-    elif forecast_indicator == "Transações Mobile Banking (Valor)":
+    elif forecast_indicator == "Transacções Mobile Banking (Valor)":
         src_df = mob_df[mob_df['Metric'].str.contains('Valor', case=False, na=False)]; metric_col = 'Value'
-    elif forecast_indicator == "Transações Internet Banking (Volume)":
+    elif forecast_indicator == "Transacções Internet Banking (Volume)":
         src_df = net_df[net_df['Metric'].str.contains('Volume', case=False, na=False)]; metric_col = 'Value'
-    elif forecast_indicator == "Transações Internet Banking (Valor)":
+    elif forecast_indicator == "Transacções Internet Banking (Valor)":
         src_df = net_df[net_df['Metric'].str.contains('Valor', case=False, na=False)]; metric_col = 'Value'
     elif forecast_indicator.startswith("Carteiras Móveis - "):
         ime_map = {
@@ -2057,19 +2059,28 @@ with tab_forecast:
         ),
     )
     is_wallet_indicator = forecast_indicator.startswith("Carteiras Móveis - ")
-    wallet_forecast_months = 6
+    wallet_forecast_months = 3
     forecast_horizon_years = forecast_horizon
     if is_wallet_indicator:
         wallet_forecast_months = st.slider(
             "Horizonte (meses)" if st.session_state.lang == "PT" else "Horizon (months)",
             1,
             24,
-            6,
+            3,
             key="wallet_forecast_months",
         )
         forecast_horizon_years = max(1, math.ceil(wallet_forecast_months / 12))
         if wallet_scope_hint:
             st.caption(wallet_scope_hint)
+        st.caption(
+            "ℹ️ As previsões de Carteira Móvel baseiam-se em 12 observações mensais (2025). "
+            "A leitura é indicativa e mais adequada para curto prazo; não deve ser usada isoladamente "
+            "para decisões de investimento de médio/longo prazo."
+            if st.session_state.lang == "PT"
+            else "ℹ️ Mobile Wallet forecasts are based on 12 monthly observations (2025). "
+            "Interpretation is indicative and better suited for short-term use; it should not be used alone "
+            "for medium/long-term investment decisions."
+        )
 
     monthly_series = build_monthly_series(src_df, metric_col)
     fc_type = T("flow_label")
@@ -2127,7 +2138,7 @@ with tab_forecast:
                     markers=True,
                     category_orders={"Período": period_order},
                     title=(
-                        "Projeção mensal de Carteira Móvel"
+                        "Projecção mensal de Carteira Móvel"
                         if st.session_state.lang == "PT"
                         else "Mobile Wallet monthly projection"
                     ),
@@ -2324,7 +2335,7 @@ with tab_forecast:
                                     T("province"): prov,
                                     ("Último período observado" if st.session_state.lang == "PT" else "Latest observed period"): hist_tail.iloc[-1]["Período"],
                                     ("Valor observado" if st.session_state.lang == "PT" else "Observed value"): format_compact(current),
-                                    ("Fim da projeção" if st.session_state.lang == "PT" else "End forecast period"): pred_tail.iloc[-1]["Período"],
+                                    ("Fim da projecção" if st.session_state.lang == "PT" else "End forecast period"): pred_tail.iloc[-1]["Período"],
                                     ("Valor projetado" if st.session_state.lang == "PT" else "Forecast value"): format_compact(projected),
                                     T("growth_pct"): f"{growth_pct:+.1f}%",
                                 }
@@ -2953,9 +2964,9 @@ with tab_decision:
             key="scenario_horizon",
         )
     indicator_labels = {
-        "mobile_tx_value": "Mobile Transactions (Value)" if st.session_state.lang == "EN" else "Transações Mobile Banking (Valor)",
-        "digital_tx_volume": "Digital Transactions (Volume)" if st.session_state.lang == "EN" else "Transações Digitais (Volume)",
-        "wallet_tx_value": "Mobile Wallet Transactions (Value)" if st.session_state.lang == "EN" else "Transações de Carteira Móvel (Valor)",
+        "mobile_tx_value": "Mobile Transactions (Value)" if st.session_state.lang == "EN" else "Transacções Mobile Banking (Valor)",
+        "digital_tx_volume": "Digital Transactions (Volume)" if st.session_state.lang == "EN" else "Transacções Digitais (Volume)",
+        "wallet_tx_value": "Mobile Wallet Transactions (Value)" if st.session_state.lang == "EN" else "Transacções de Carteira Móvel (Valor)",
     }
     with sc_col2:
         indicator_choice = st.selectbox(
@@ -2965,7 +2976,7 @@ with tab_decision:
         )
     indicator_id = next(k for k, v in indicator_labels.items() if v == indicator_choice)
     if indicator_id == "mobile_tx_value":
-        indicator_name = "Transações Mobile Banking (Valor)"
+        indicator_name = "Transacções Mobile Banking (Valor)"
         accounts_geo = apply_geo_only(acc_df)
         monthly_input = build_indicator_monthly_series(
             indicator_id,
@@ -2974,7 +2985,7 @@ with tab_decision:
             internet_df=net_df,
         )
     elif indicator_id == "digital_tx_volume":
-        indicator_name = "Transações Mobile Banking (Volume)"
+        indicator_name = "Transacções Mobile Banking (Volume)"
         accounts_geo = apply_geo_only(acc_df)
         monthly_input = build_indicator_monthly_series(
             indicator_id,
@@ -2983,7 +2994,7 @@ with tab_decision:
             internet_df=net_df,
         )
     else:
-        indicator_name = "Transações de Carteira Móvel (Valor)"
+        indicator_name = "Transacções de Carteira Móvel (Valor)"
         ime_scope = apply_geo_only(ime_txn_district_df.copy())
         monthly_input = build_monthly_series(ime_scope, "Value")
     yearly_base, model_meta = build_baseline_forecast_yearly(
@@ -3132,7 +3143,7 @@ with tab_decision:
     )
 
     question_bank_pt = [
-        ("Qual distrito lidera em valor de transações de Carteira Móvel no último mês disponível?", "ime_top_value"),
+        ("Qual distrito lidera em valor de transacções de Carteira Móvel no último mês disponível?", "ime_top_value"),
         ("Qual distrito tem maior rácio de subscritores por agente de Carteira Móvel?", "ime_top_subs_per_agent"),
         ("Mobile Banking cresce mais em valor do que Internet Banking (YoY)?", "mobile_vs_internet_yoy"),
         ("Como evoluiu o indicador oficial de contas por adulto desde 2020?", "official_accounts_change"),
@@ -3212,7 +3223,7 @@ with tab_decision:
                 district = top.iloc[0]["District"]
                 val = top.iloc[0]["Value"]
                 answer = (
-                    f"{district} lidera com {format_compact(val)} em valor de transações de Carteira Móvel."
+                    f"{district} lidera com {format_compact(val)} em valor de transacções de Carteira Móvel."
                     if st.session_state.lang == "PT"
                     else f"{district} leads with {format_compact(val)} in Mobile Wallet transaction value."
                 )
@@ -3247,7 +3258,7 @@ with tab_decision:
             net_yoy = ((net_val.loc[selected_year] - net_val.loc[selected_year - 1]) / net_val.loc[selected_year - 1] * 100) if net_val.loc[selected_year - 1] > 0 else 0
             winner = "Mobile Banking" if mob_yoy >= net_yoy else "Internet Banking"
             answer = (
-                f"{winner} cresce mais no ano selecionado: Mobile {mob_yoy:+.1f}% vs Internet {net_yoy:+.1f}%."
+                f"{winner} cresce mais no ano seleccionado: Mobile {mob_yoy:+.1f}% vs Internet {net_yoy:+.1f}%."
                 if st.session_state.lang == "PT"
                 else f"{winner} grows faster in the selected year: Mobile {mob_yoy:+.1f}% vs Internet {net_yoy:+.1f}%."
             )
