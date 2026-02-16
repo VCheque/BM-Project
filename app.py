@@ -17,9 +17,7 @@ The ETL pipeline (ETL.ipynb) extracts data from multi-sheet Excel files with
 Author: Valter Cheque · valtercheque@gmail.com
 """
 
-import json
 import math
-from pathlib import Path
 
 import streamlit as st
 import pandas as pd
@@ -55,21 +53,6 @@ st.set_page_config(page_title="Dashboard Bancário de Moçambique", layout="wide
 # ── Language toggle (PT default, EN available) ──────────────────────────────
 if "lang" not in st.session_state:
     st.session_state.lang = "PT"
-
-PROVINCE_COORDS = {
-    "Niassa": (-13.4, 36.1),
-    "Cabo Delgado": (-12.5, 39.1),
-    "Nampula": (-15.1, 39.3),
-    "Zambézia": (-17.8, 36.9),
-    "Tete": (-15.3, 33.2),
-    "Manica": (-19.2, 33.4),
-    "Sofala": (-19.1, 34.8),
-    "Inhambane": (-22.3, 35.4),
-    "Gaza": (-23.7, 33.3),
-    "Província de Maputo": (-25.2, 32.8),
-    "Cidade de Maputo": (-25.97, 32.58),
-}
-
 
 def T(key):
     """Return translated string for the current language."""
@@ -152,45 +135,6 @@ def format_compact(value: float) -> str:
     if abs_v >= 1_000:
         return f"{v / 1_000:.2f}K"
     return f"{v:,.0f}"
-
-
-@st.cache_data
-def load_moz_adm1_geojson():
-    candidates = [
-        Path("geoBoundaries-MOZ-ADM1_simplified.geojson"),
-        Path("geoBoundaries-MOZ-ADM1.geojson"),
-        Path("mozambique_adm1.geojson"),
-        Path("moz_adm1.geojson"),
-    ]
-    for path in candidates:
-        if path.exists():
-            with path.open("r", encoding="utf-8") as f:
-                return json.load(f), str(path)
-    return None, None
-
-
-def normalize_geo_name(name: str) -> str:
-    raw = str(name).strip()
-    aliases = {
-        "Maputo": "Província de Maputo",
-        "Maputo Province": "Província de Maputo",
-        "Maputo Província": "Província de Maputo",
-        "Maputo City": "Cidade de Maputo",
-        "Cidade de Maputo": "Cidade de Maputo",
-        "Zambezia": "Zambézia",
-    }
-    return aliases.get(raw, raw)
-
-
-def detect_geojson_name_field(geojson_obj: dict) -> str | None:
-    features = geojson_obj.get("features", [])
-    if not features:
-        return None
-    props = features[0].get("properties", {})
-    for candidate in ["shapeName", "name", "NAME_1", "ADM1_PT", "province", "Province"]:
-        if candidate in props:
-            return candidate
-    return None
 
 
 def _norm_key(text: object) -> str:
@@ -790,114 +734,6 @@ with tab_demo:
 
     gap_df = pd.DataFrame(gap_rows).sort_values(T("accounts_per_capita"), ascending=False)
 
-    map_rows = []
-    for _, row in gap_df.iterrows():
-        province_name = row[T("province")]
-        coords = PROVINCE_COORDS.get(province_name)
-        if coords is None:
-            continue
-        map_rows.append({
-            "Province": province_name,
-            "lat": coords[0],
-            "lon": coords[1],
-            "Accounts_Per_Capita": float(row[T("accounts_per_capita")]),
-            "Population": float(row["Population (Denominator)"]),
-            "Accounts": float(row[f'{T("total_accounts")} ({latest_year})']),
-        })
-    map_df = pd.DataFrame(map_rows)
-    moz_geojson, moz_geojson_path = load_moz_adm1_geojson()
-    geo_name_field = detect_geojson_name_field(moz_geojson) if moz_geojson else None
-    fig_map = None
-    map_note = None
-    if not map_df.empty and moz_geojson and geo_name_field:
-        lookup = map_df.set_index("Province")[["Accounts_Per_Capita", "Population", "Accounts"]].to_dict("index")
-        feature_names = []
-        feature_vals = []
-        feature_pop = []
-        feature_acc = []
-        for feat in moz_geojson.get("features", []):
-            feat_name = str(feat.get("properties", {}).get(geo_name_field, "")).strip()
-            norm_name = normalize_geo_name(feat_name)
-            if norm_name in lookup:
-                feature_names.append(feat_name)
-                feature_vals.append(lookup[norm_name]["Accounts_Per_Capita"])
-                feature_pop.append(lookup[norm_name]["Population"])
-                feature_acc.append(lookup[norm_name]["Accounts"])
-        choro_df = pd.DataFrame(
-            {
-                "feature_name": feature_names,
-                "Accounts_Per_Capita": feature_vals,
-                "Population": feature_pop,
-                "Accounts": feature_acc,
-            }
-        )
-        if not choro_df.empty:
-            fig_map = px.choropleth_mapbox(
-                choro_df,
-                geojson=moz_geojson,
-                locations="feature_name",
-                featureidkey=f"properties.{geo_name_field}",
-                color="Accounts_Per_Capita",
-                color_continuous_scale="YlOrRd",
-                mapbox_style="carto-positron",
-                zoom=4.6,
-                center={"lat": -18.7, "lon": 35.5},
-                opacity=0.7,
-                hover_data={
-                    "feature_name": True,
-                    "Population": ":,.0f",
-                    "Accounts": ":,.0f",
-                    "Accounts_Per_Capita": ":.2f",
-                },
-            )
-            fig_map.update_layout(height=460, margin=dict(l=10, r=10, t=10, b=10))
-            map_note = (
-                f"Mapa provincial (GeoJSON): `{moz_geojson_path}`"
-                if st.session_state.lang == "PT"
-                else f"Province map (GeoJSON): `{moz_geojson_path}`"
-            )
-    elif not map_df.empty:
-        pop_label = "População" if st.session_state.lang == "PT" else "Population"
-        fig_map = go.Figure(
-            go.Scattergeo(
-                lat=map_df["lat"],
-                lon=map_df["lon"],
-                mode="markers",
-                marker=dict(
-                    size=(map_df["Accounts_Per_Capita"] * 30).clip(lower=8),
-                    color=map_df["Accounts_Per_Capita"],
-                    colorscale="YlOrRd",
-                    colorbar=dict(title=T("accounts_per_capita"), thickness=12),
-                    line=dict(width=0.5, color="#333333"),
-                    sizemode="diameter",
-                ),
-                customdata=map_df[["Population", "Accounts", "Accounts_Per_Capita"]],
-                hovertemplate=(
-                    f"{T('province')}: %{{customdata[3]}}<br>"
-                    f"{pop_label}: %{{customdata[0]:,.0f}}<br>"
-                    f"{T('total_accounts')}: %{{customdata[1]:,.0f}}<br>"
-                    f"{T('accounts_per_capita')}: %{{customdata[2]:.2f}}<extra></extra>"
-                ),
-            )
-        )
-        fig_map.data[0].customdata = map_df[["Population", "Accounts", "Accounts_Per_Capita", "Province"]]
-        fig_map.update_geos(
-            scope="africa",
-            projection_type="mercator",
-            showcountries=True,
-            countrycolor="lightgray",
-            showland=True,
-            landcolor="rgb(247, 247, 247)",
-            lonaxis_range=[30, 41],
-            lataxis_range=[-27, -10],
-        )
-        fig_map.update_layout(height=430, margin=dict(l=10, r=10, t=10, b=10))
-        map_note = (
-            "Fallback map: marker view (no local province GeoJSON found)."
-            if st.session_state.lang == "EN"
-            else "Mapa alternativo: vista por marcadores (sem GeoJSON provincial local)."
-        )
-
     # Per capita bar chart
     fig_pc = px.bar(
         gap_df, x=T("province"), y=T("accounts_per_capita"),
@@ -910,13 +746,6 @@ with tab_demo:
         coloraxis_showscale=False, height=400
     )
     st.plotly_chart(fig_pc, use_container_width=True)
-
-    map_expander_title = "🗺️ Ver no mapa" if st.session_state.lang == "PT" else "🗺️ View on map"
-    with st.expander(map_expander_title, expanded=False):
-        if fig_map is not None:
-            st.plotly_chart(fig_map, use_container_width=True)
-            if map_note:
-                st.caption(map_note)
 
     # --- Gender Parity Index ---
     st.markdown("---")
@@ -1583,8 +1412,6 @@ with tab_infra:
 # PAGE 6: USAGE (toggle Digital/Transactions)
 # ==========================================
 with tab_channels:
-    st.title(f"{T('title_digital')} + {T('title_txn')}")
-    st.caption(tab_story("usage"))
     usage_view_prompt = "Ver" if st.session_state.lang == "PT" else "View"
     usage_opt_digital = T("tab_digital")
     usage_opt_txn = T("tab_txn")
@@ -1593,6 +1420,11 @@ with tab_channels:
         [usage_opt_txn, usage_opt_digital],
         key="usage_view_toggle",
     )
+    if usage_view == usage_opt_digital:
+        st.title(T("title_digital"))
+    else:
+        st.title(T("title_txn"))
+    st.caption(tab_story("usage"))
 
     if usage_view == usage_opt_digital:
         st.caption(T("caption_digital"))
@@ -2112,7 +1944,14 @@ with tab_forecast:
         src_df = pd.DataFrame()
         metric_col = "Value"
 
-    st.subheader(f"{T('national_forecast')} — {forecast_indicator}")
+    st.subheader(
+        f"{T('national_forecast')} — {forecast_indicator}",
+        help=(
+            "Projecção principal para o indicador seleccionado, com histórico observado e valores projectados."
+            if st.session_state.lang == "PT"
+            else "Main projection for the selected indicator, showing observed history and forecasted values."
+        ),
+    )
     is_wallet_indicator = forecast_indicator.startswith("Carteira Móvel ")
     wallet_forecast_months = 6
     forecast_horizon_years = forecast_horizon
@@ -2327,7 +2166,14 @@ with tab_forecast:
 
     # --- Province-level Forecast ---
     if has_province and 'Province' in src_df.columns:
-        st.subheader(f"{T('province_forecast')} — {forecast_indicator}")
+        st.subheader(
+            f"{T('province_forecast')} — {forecast_indicator}",
+            help=(
+                "Compara trajectórias por província para o mesmo indicador, no mesmo horizonte."
+                if st.session_state.lang == "PT"
+                else "Compares province trajectories for the same indicator under the same horizon."
+            ),
+        )
 
         provinces = [p for p in selected_prov if p in src_df['Province'].unique()]
 
@@ -2818,45 +2664,6 @@ with tab_decision:
 
     st.markdown("---")
     st.subheader(
-        "Leitura integrada dos sinais" if st.session_state.lang == "PT" else "Integrated reading of signals",
-        help=(
-            "Síntese do recorte actual combinando inclusão, intensidade digital e infraestrutura."
-            if st.session_state.lang == "PT"
-            else "Current-scope synthesis combining inclusion, digital intensity, and infrastructure."
-        ),
-    )
-
-    denominator_pop = denominator_population(census_df[census_df["Province"].isin(selected_prov)], selected_year)
-    accounts_pc = (f_acc_snap["Total_Accounts"].sum() / denominator_pop) if denominator_pop > 0 else 0.0
-    infra_pc = ((f_atm_snap["ATMs_Number"].sum() + f_pos_snap["POSs_Number"].sum()) / denominator_pop * 100_000) if denominator_pop > 0 else 0.0
-    subs_metric = "Quantidade de subscritores"
-    mob_sub = mob_df[(mob_df["Year"] == selected_year) & (mob_df["Metric"] == subs_metric)]["Value"].sum()
-    net_sub = net_df[(net_df["Year"] == selected_year) & (net_df["Metric"] == subs_metric)]["Value"].sum()
-    digital_share = (mob_sub / (mob_sub + net_sub) * 100) if (mob_sub + net_sub) > 0 else 0.0
-
-    top_txt = ""
-    if "opp_df" in locals() and not opp_df.empty:
-        top_txt = ", ".join(opp_df.head(3)["Province"].astype(str).tolist())
-    if st.session_state.lang == "PT":
-        paragraph = (
-            f"No recorte actual, a inclusão observada é de {accounts_pc:.2f} contas por pessoa elegível, "
-            f"com intensidade digital de {digital_share:.1f}% e infraestrutura de {infra_pc:.1f} pontos por 100 mil habitantes. "
-            + (f"As maiores oportunidades concentram-se em: {top_txt}." if top_txt else "")
-        )
-    else:
-        paragraph = (
-            f"For the current scope, observed inclusion is {accounts_pc:.2f} accounts per eligible person, "
-            f"with digital intensity of {digital_share:.1f}% and infrastructure density of {infra_pc:.1f} points per 100k population. "
-            + (f"Top opportunities are concentrated in: {top_txt}." if top_txt else "")
-        )
-    st.write(paragraph)
-    a1, a2, a3 = st.columns(3)
-    a1.metric("Contas per capita" if st.session_state.lang == "PT" else "Accounts per capita", f"{accounts_pc:.2f}")
-    a2.metric("Intensidade digital (%)" if st.session_state.lang == "PT" else "Digital intensity (%)", f"{digital_share:.1f}%")
-    a3.metric("ATM+POS por 100 mil" if st.session_state.lang == "PT" else "ATM+POS per 100k", f"{infra_pc:.1f}")
-
-    st.markdown("---")
-    st.subheader(
         "Comparador distrital para priorização de investimento"
         if st.session_state.lang == "PT"
         else "District comparator for investment prioritization",
@@ -2872,47 +2679,69 @@ with tab_decision:
         else "Direct comparison between two districts on the latest available period by indicator. This supports relative screening, not local due diligence."
     )
 
-    district_universe = sorted(
-        set(
-            pd.concat(
-                [
-                    acc_df["District"].dropna().astype(str),
-                    card_df["District"].dropna().astype(str),
-                    atm_df["District"].dropna().astype(str),
-                    pos_df["District"].dropna().astype(str),
-                    ime_sub_df["District"].dropna().astype(str),
-                    ime_agents_df["District"].dropna().astype(str),
-                    ime_txn_district_df["District"].dropna().astype(str),
-                ],
-                ignore_index=True,
-            ).tolist()
+    pair_frames = []
+    for dfx in [acc_df, card_df, atm_df, pos_df, ime_sub_df, ime_agents_df, ime_txn_district_df]:
+        if {"Province", "District"}.issubset(dfx.columns):
+            pair_frames.append(dfx[["Province", "District"]].dropna().astype(str))
+    if pair_frames:
+        district_pairs = (
+            pd.concat(pair_frames, ignore_index=True)
+            .drop_duplicates()
+            .sort_values(["Province", "District"])
+            .reset_index(drop=True)
         )
-    )
-    if not district_universe:
+    else:
+        district_pairs = pd.DataFrame(columns=["Province", "District"])
+
+    if district_pairs.empty:
         st.info("Sem dados distritais para comparar." if st.session_state.lang == "PT" else "No district data available for comparison.")
     else:
-        default_a = "Cidade de Maputo" if "Cidade de Maputo" in district_universe else district_universe[0]
-        default_b = "Cidade da Beira" if "Cidade da Beira" in district_universe else (district_universe[1] if len(district_universe) > 1 else default_a)
+        default_pair_a = ("Província de Maputo", "Cidade de Maputo")
+        default_pair_b = ("Sofala", "Cidade da Beira")
+
+        prov_options = sorted(district_pairs["Province"].dropna().astype(str).unique().tolist())
         comp_col1, comp_col2 = st.columns(2)
         with comp_col1:
+            province_a = st.selectbox(
+                "Província A" if st.session_state.lang == "PT" else "Province A",
+                prov_options,
+                index=(prov_options.index(default_pair_a[0]) if default_pair_a[0] in prov_options else 0),
+                key="cmp_province_a",
+            )
+            dist_options_a = sorted(
+                district_pairs[district_pairs["Province"] == province_a]["District"].astype(str).unique().tolist()
+            )
             district_a = st.selectbox(
                 "Distrito A" if st.session_state.lang == "PT" else "District A",
-                district_universe,
-                index=(district_universe.index(default_a) if default_a in district_universe else 0),
+                dist_options_a,
+                index=(dist_options_a.index(default_pair_a[1]) if default_pair_a[0] == province_a and default_pair_a[1] in dist_options_a else 0),
                 key="cmp_district_a",
             )
         with comp_col2:
+            province_b = st.selectbox(
+                "Província B" if st.session_state.lang == "PT" else "Province B",
+                prov_options,
+                index=(prov_options.index(default_pair_b[0]) if default_pair_b[0] in prov_options else min(1, len(prov_options) - 1)),
+                key="cmp_province_b",
+            )
+            dist_options_b = sorted(
+                district_pairs[district_pairs["Province"] == province_b]["District"].astype(str).unique().tolist()
+            )
             district_b = st.selectbox(
                 "Distrito B" if st.session_state.lang == "PT" else "District B",
-                district_universe,
-                index=(district_universe.index(default_b) if default_b in district_universe else 0),
+                dist_options_b,
+                index=(dist_options_b.index(default_pair_b[1]) if default_pair_b[0] == province_b and default_pair_b[1] in dist_options_b else 0),
                 key="cmp_district_b",
             )
-        if district_a == district_b:
-            st.warning("Seleccionar dois distritos diferentes." if st.session_state.lang == "PT" else "Select two different districts.")
-            district_b = next((d for d in district_universe if d != district_a), district_b)
 
-        if district_a != district_b:
+        pair_a = (province_a, district_a)
+        pair_b = (province_b, district_b)
+        label_a = f"{province_a} - {district_a}"
+        label_b = f"{province_b} - {district_b}"
+        if pair_a == pair_b:
+            st.warning("Seleccionar dois distritos diferentes." if st.session_state.lang == "PT" else "Select two different districts.")
+
+        if pair_a != pair_b:
             stock_year = selected_year if selected_year in set(acc_df["Year"].unique()) else int(max(acc_df["Year"]))
             acc_cmp = last_month_snapshot(acc_df[acc_df["Year"] == stock_year]).copy()
             card_cmp = last_month_snapshot(card_df[card_df["Year"] == stock_year]).copy()
@@ -2934,19 +2763,21 @@ with tab_decision:
                 ag_cmp["Month_Ord"] = ag_cmp["Month"].astype(str).map(MONTH_RANK)
                 ag_cmp = ag_cmp[ag_cmp["Month_Ord"] == ag_cmp["Month_Ord"].max()].copy()
 
-            districts_pair = [district_a, district_b]
-
             def _dist_sum(df: pd.DataFrame, value_col: str) -> dict[str, float]:
                 if df.empty or value_col not in df.columns:
-                    return {district_a: 0.0, district_b: 0.0}
+                    return {label_a: 0.0, label_b: 0.0}
                 tmp = (
-                    df[df["District"].isin(districts_pair)]
-                    .groupby("District", as_index=False)[value_col]
+                    df[
+                        ((df["Province"] == pair_a[0]) & (df["District"] == pair_a[1]))
+                        | ((df["Province"] == pair_b[0]) & (df["District"] == pair_b[1]))
+                    ]
+                    .assign(_Label=lambda x: x["Province"] + " - " + x["District"])
+                    .groupby("_Label", as_index=False)[value_col]
                     .sum()
-                    .set_index("District")[value_col]
+                    .set_index("_Label")[value_col]
                     .to_dict()
                 )
-                return {district_a: float(tmp.get(district_a, 0.0)), district_b: float(tmp.get(district_b, 0.0))}
+                return {label_a: float(tmp.get(label_a, 0.0)), label_b: float(tmp.get(label_b, 0.0))}
 
             metric_rows: list[dict[str, object]] = []
             for label, values in [
@@ -2959,8 +2790,8 @@ with tab_decision:
             ]:
                 metric_rows.extend(
                     [
-                        {"Metric": label, "District": district_a, "Value": values[district_a]},
-                        {"Metric": label, "District": district_b, "Value": values[district_b]},
+                        {"Metric": label, "District": label_a, "Value": values[label_a]},
+                        {"Metric": label, "District": label_b, "Value": values[label_b]},
                     ]
                 )
 
@@ -2970,34 +2801,24 @@ with tab_decision:
                 val_vals = _dist_sum(tx_part, "Value")
                 metric_rows.extend(
                     [
-                        {"Metric": f"{tx_name} (Volume)", "District": district_a, "Value": vol_vals[district_a]},
-                        {"Metric": f"{tx_name} (Volume)", "District": district_b, "Value": vol_vals[district_b]},
-                        {"Metric": f"{tx_name} (Valor)", "District": district_a, "Value": val_vals[district_a]},
-                        {"Metric": f"{tx_name} (Valor)", "District": district_b, "Value": val_vals[district_b]},
+                        {"Metric": f"{tx_name} (Volume)", "District": label_a, "Value": vol_vals[label_a]},
+                        {"Metric": f"{tx_name} (Volume)", "District": label_b, "Value": vol_vals[label_b]},
+                        {"Metric": f"{tx_name} (Valor)", "District": label_a, "Value": val_vals[label_a]},
+                        {"Metric": f"{tx_name} (Valor)", "District": label_b, "Value": val_vals[label_b]},
                     ]
                 )
 
-            district_to_province: dict[str, str] = {}
-            for df in [acc_cmp, sub_cmp, ag_cmp, tx_cmp]:
-                if not df.empty and {"District", "Province"}.issubset(df.columns):
-                    pairs = df[["District", "Province"]].dropna().drop_duplicates()
-                    district_to_province.update(dict(zip(pairs["District"], pairs["Province"])))
-
             prov_accounts = acc_cmp.groupby("Province", as_index=False)["Total_Accounts"].sum() if not acc_cmp.empty else pd.DataFrame()
             inclusion_context = {}
-            for d in districts_pair:
-                prov = district_to_province.get(d)
-                if prov is None:
-                    inclusion_context[d] = 0.0
-                    continue
+            for lbl, prov in [(label_a, province_a), (label_b, province_b)]:
                 prov_acc = float(prov_accounts.loc[prov_accounts["Province"] == prov, "Total_Accounts"].sum()) if not prov_accounts.empty else 0.0
                 c_row = census_df[census_df["Province"] == prov]
                 prov_pop = denominator_population(c_row, stock_year) if not c_row.empty else 0.0
-                inclusion_context[d] = (prov_acc / prov_pop) if prov_pop > 0 else 0.0
+                inclusion_context[lbl] = (prov_acc / prov_pop) if prov_pop > 0 else 0.0
             metric_rows.extend(
                 [
-                    {"Metric": "Inclusão (contas por pessoa elegível, contexto provincial)", "District": district_a, "Value": inclusion_context[district_a]},
-                    {"Metric": "Inclusão (contas por pessoa elegível, contexto provincial)", "District": district_b, "Value": inclusion_context[district_b]},
+                    {"Metric": "Inclusão (contas por pessoa elegível, contexto provincial)", "District": label_a, "Value": inclusion_context[label_a]},
+                    {"Metric": "Inclusão (contas por pessoa elegível, contexto provincial)", "District": label_b, "Value": inclusion_context[label_b]},
                 ]
             )
 
@@ -3054,20 +2875,59 @@ with tab_decision:
             st.plotly_chart(fig_flow_compare, use_container_width=True)
 
             wide = cmp_df.pivot_table(index="Metric", columns="District", values="Value", aggfunc="sum", fill_value=0).reset_index()
-            if district_a in wide.columns and district_b in wide.columns:
+            if label_a in wide.columns and label_b in wide.columns:
                 wide["order"] = wide["Metric"].map(order_map).fillna(999)
                 wide = wide.sort_values("order").drop(columns=["order"])
-                wide["Delta"] = wide[district_a] - wide[district_b]
+                wide["Delta"] = wide[label_a] - wide[label_b]
                 wide["Delta_%"] = wide.apply(
-                    lambda r: ((r["Delta"] / r[district_b]) * 100) if r[district_b] > 0 else None,
+                    lambda r: ((r["Delta"] / r[label_b]) * 100) if r[label_b] > 0 else None,
                     axis=1,
                 )
                 show_wide = wide.copy()
-                show_wide[district_a] = show_wide[district_a].apply(format_compact)
-                show_wide[district_b] = show_wide[district_b].apply(format_compact)
+                show_wide[label_a] = show_wide[label_a].apply(format_compact)
+                show_wide[label_b] = show_wide[label_b].apply(format_compact)
                 show_wide["Delta"] = show_wide["Delta"].apply(format_compact)
                 show_wide["Delta_%"] = show_wide["Delta_%"].apply(lambda v: "N/A" if pd.isna(v) else f"{v:+.1f}%")
                 st.dataframe(show_wide, use_container_width=True, hide_index=True)
+
+    st.markdown("---")
+    st.subheader(
+        "Leitura integrada dos sinais" if st.session_state.lang == "PT" else "Integrated reading of signals",
+        help=(
+            "Síntese do recorte actual combinando inclusão, intensidade digital e infraestrutura."
+            if st.session_state.lang == "PT"
+            else "Current-scope synthesis combining inclusion, digital intensity, and infrastructure."
+        ),
+    )
+
+    denominator_pop = denominator_population(census_df[census_df["Province"].isin(selected_prov)], selected_year)
+    accounts_pc = (f_acc_snap["Total_Accounts"].sum() / denominator_pop) if denominator_pop > 0 else 0.0
+    infra_pc = ((f_atm_snap["ATMs_Number"].sum() + f_pos_snap["POSs_Number"].sum()) / denominator_pop * 100_000) if denominator_pop > 0 else 0.0
+    subs_metric = "Quantidade de subscritores"
+    mob_sub = mob_df[(mob_df["Year"] == selected_year) & (mob_df["Metric"] == subs_metric)]["Value"].sum()
+    net_sub = net_df[(net_df["Year"] == selected_year) & (net_df["Metric"] == subs_metric)]["Value"].sum()
+    digital_share = (mob_sub / (mob_sub + net_sub) * 100) if (mob_sub + net_sub) > 0 else 0.0
+
+    top_txt = ""
+    if "opp_df" in locals() and not opp_df.empty:
+        top_txt = ", ".join(opp_df.head(3)["Province"].astype(str).tolist())
+    if st.session_state.lang == "PT":
+        paragraph = (
+            f"No recorte actual, a inclusão observada é de {accounts_pc:.2f} contas por pessoa elegível, "
+            f"com intensidade digital de {digital_share:.1f}% e infraestrutura de {infra_pc:.1f} pontos por 100 mil habitantes. "
+            + (f"As maiores oportunidades concentram-se em: {top_txt}." if top_txt else "")
+        )
+    else:
+        paragraph = (
+            f"For the current scope, observed inclusion is {accounts_pc:.2f} accounts per eligible person, "
+            f"with digital intensity of {digital_share:.1f}% and infrastructure density of {infra_pc:.1f} points per 100k population. "
+            + (f"Top opportunities are concentrated in: {top_txt}." if top_txt else "")
+        )
+    st.write(paragraph)
+    a1, a2, a3 = st.columns(3)
+    a1.metric("Contas per capita" if st.session_state.lang == "PT" else "Accounts per capita", f"{accounts_pc:.2f}")
+    a2.metric("Intensidade digital (%)" if st.session_state.lang == "PT" else "Digital intensity (%)", f"{digital_share:.1f}%")
+    a3.metric("ATM+POS por 100 mil" if st.session_state.lang == "PT" else "ATM+POS per 100k", f"{infra_pc:.1f}")
 
     st.markdown("---")
     st.subheader(
