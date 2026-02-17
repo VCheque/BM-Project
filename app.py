@@ -459,7 +459,7 @@ def render_page_caveats(extra_notes: list[str] | None = None) -> None:
             st.write("- O denominador de inclusão usa extrapolação por coorte com base no Censo 2017.")
             st.write("- O detalhe distrital de Carteira Móvel cobre actualmente os anos de 2023, 2024 e 2025.")
             st.write("- A leitura distrital de Carteira Móvel cobre apenas os distritos presentes nos ficheiros oficiais reportados pelo Banco de Moçambique para os anos disponíveis.")
-            st.write("- Previsões de Carteira Móvel usam 12 observações mensais (2025), adequadas sobretudo para curto prazo.")
+            st.write("- Previsões de Carteira Móvel usam a série mensal disponível (actualmente 2023-2025, 36 observações), adequadas sobretudo para curto prazo.")
             st.write("- Cidade de Maputo é incluída em Província de Maputo para harmonização geográfica.")
             st.markdown(
                 f"Fontes oficiais: [INCM Acervo]({INCM_SOURCE_TELECOM_URL}) · "
@@ -475,7 +475,7 @@ def render_page_caveats(extra_notes: list[str] | None = None) -> None:
             st.write("- Inclusion denominator uses Census 2017 cohort extrapolation.")
             st.write("- Mobile Wallet district depth currently covers years 2023, 2024 and 2025.")
             st.write("- District-level Mobile Wallet reading covers only districts present in official files reported by Banco de Moçambique for available years.")
-            st.write("- Mobile Wallet forecasts use 12 monthly observations (2025), mainly suitable for short-term reading.")
+            st.write("- Mobile Wallet forecasts use the available monthly series (currently 2023-2025, 36 observations), mainly suitable for short-term reading.")
             st.write("- Cidade de Maputo is included under Província de Maputo for harmonized geographic reporting.")
             st.markdown(
                 f"Official sources: [INCM Acervo]({INCM_SOURCE_TELECOM_URL}) · "
@@ -701,6 +701,7 @@ def render_deterministic_qa_panel(opp_df: pd.DataFrame | None = None, key_prefix
         ("Mobile Banking cresce mais em valor do que Internet Banking (YoY)?", "mobile_vs_internet_yoy"),
         ("Levantamentos ATM de fundos em telemóveis estão a aumentar ao longo dos anos?", "atm_wallet_withdrawals_trend"),
         ("No Mobile Banking, como evoluem as transferências para telemóveis (valor e volume)?", "mb_to_wallet_trend"),
+        ("Como evoluem as transacções entre Carteira Móvel, Mobile Banking e Internet Banking (volume e valor)?", "cross_channel_flow_trend"),
         ("Como evoluiu o indicador oficial de contas por adulto desde 2020?", "official_accounts_change"),
         ("Como evoluiu o indicador oficial de cartões por adulto desde 2020?", "official_cards_change"),
         ("Quais são as 3 províncias com maior pontuação de oportunidade?", "opp_top3"),
@@ -719,6 +720,7 @@ def render_deterministic_qa_panel(opp_df: pd.DataFrame | None = None, key_prefix
         ("Is Mobile Banking value growing faster YoY than Internet Banking?", "mobile_vs_internet_yoy"),
         ("Are ATM withdrawals of mobile-wallet funds increasing over time?", "atm_wallet_withdrawals_trend"),
         ("How are Mobile Banking transfers to mobile numbers evolving (value and volume)?", "mb_to_wallet_trend"),
+        ("How are transactions evolving across Mobile Wallet, Mobile Banking and Internet Banking (volume and value)?", "cross_channel_flow_trend"),
         ("How has the official accounts-per-adult indicator changed since 2020?", "official_accounts_change"),
         ("How has the official cards-per-adult indicator changed since 2020?", "official_cards_change"),
         ("Which are the top 3 provinces by opportunity score?", "opp_top3"),
@@ -743,6 +745,7 @@ def render_deterministic_qa_panel(opp_df: pd.DataFrame | None = None, key_prefix
     source = ""
     caveat = ""
     chart = None
+    extra_charts: list = []
 
     if opp_df is None:
         opp_df = build_scope_opportunity_df(selected_year)
@@ -985,35 +988,142 @@ def render_deterministic_qa_panel(opp_df: pd.DataFrame | None = None, key_prefix
                 if st.session_state.lang == "PT"
                 else f"A {direction} pattern is observed: between {int(first['Year'])} and {int(last['Year'])}, value changed {v_pct:+.1f}% and volume changed {q_pct:+.1f}%."
             )
-            mb_long = bridge.melt(
-                id_vars=["Year"],
-                value_vars=[v_col, q_col],
-                var_name="Metric",
-                value_name="Value",
+            fig = go.Figure()
+            fig.add_bar(
+                x=bridge["Year"],
+                y=bridge[q_col],
+                name="Volume",
+                marker_color="#2563eb",
             )
-            metric_labels = {
-                v_col: "Valor" if st.session_state.lang == "PT" else "Value",
-                q_col: "Volume",
-            }
-            mb_long["Metric"] = mb_long["Metric"].map(metric_labels)
-            chart = px.line(
-                mb_long,
-                x="Year",
-                y="Value",
-                color="Metric",
-                markers=True,
+            fig.add_scatter(
+                x=bridge["Year"],
+                y=bridge[v_col],
+                name="Valor" if st.session_state.lang == "PT" else "Value",
+                mode="lines+markers",
+                yaxis="y2",
+                line=dict(color="#f97316", width=3),
+            )
+            fig.update_layout(
                 title=(
                     "Mobile Banking para telemóveis: evolução anual"
                     if st.session_state.lang == "PT"
                     else "Mobile Banking to mobile numbers: annual trend"
                 ),
+                yaxis=dict(rangemode="tozero"),
+                yaxis2=dict(overlaying="y", side="right", rangemode="tozero"),
+                xaxis=dict(dtick=1),
+                legend=dict(orientation="h", y=1.08, x=0),
             )
-            chart.update_layout(xaxis=dict(dtick=1), yaxis=dict(rangemode="tozero"))
+            chart = fig
         source = "Mobile_Banking_2020_2025.csv"
         caveat = (
             "Indicador de Mobile Banking refere-se a aplicações bancárias e não ao total de contas de carteira móvel."
             if st.session_state.lang == "PT"
             else "Mobile Banking indicator refers to bank apps, not total mobile-wallet accounts."
+        )
+    elif q_id == "cross_channel_flow_trend":
+        ime_scope = apply_geo_only(ime_txn_district_df.copy()) if not ime_txn_district_df.empty else pd.DataFrame()
+
+        if ime_scope.empty:
+            answer = (
+                "Sem dados suficientes para comparar canais."
+                if st.session_state.lang == "PT"
+                else "Insufficient data for cross-channel comparison."
+            )
+        else:
+            ime_vol = ime_scope.groupby("Year", as_index=False)["Volume"].sum().rename(columns={"Volume": "Metric_Value"})
+            ime_vol["Channel"] = "Carteira Móvel" if st.session_state.lang == "PT" else "Mobile Wallet"
+            ime_val = ime_scope.groupby("Year", as_index=False)["Value"].sum().rename(columns={"Value": "Metric_Value"})
+            ime_val["Channel"] = "Carteira Móvel" if st.session_state.lang == "PT" else "Mobile Wallet"
+
+            mb_vol = (
+                mob_df[mob_df["Metric"].astype(str).str.contains("Volume", case=False, na=False)]
+                .groupby("Year", as_index=False)["Value"]
+                .sum()
+                .rename(columns={"Value": "Metric_Value"})
+            )
+            mb_vol["Channel"] = "Mobile Banking"
+            mb_val = (
+                mob_df[mob_df["Metric"].astype(str).str.contains("Valor", case=False, na=False)]
+                .groupby("Year", as_index=False)["Value"]
+                .sum()
+                .rename(columns={"Value": "Metric_Value"})
+            )
+            mb_val["Channel"] = "Mobile Banking"
+
+            ib_vol = (
+                net_df[net_df["Metric"].astype(str).str.contains("Volume", case=False, na=False)]
+                .groupby("Year", as_index=False)["Value"]
+                .sum()
+                .rename(columns={"Value": "Metric_Value"})
+            )
+            ib_vol["Channel"] = "Internet Banking"
+            ib_val = (
+                net_df[net_df["Metric"].astype(str).str.contains("Valor", case=False, na=False)]
+                .groupby("Year", as_index=False)["Value"]
+                .sum()
+                .rename(columns={"Value": "Metric_Value"})
+            )
+            ib_val["Channel"] = "Internet Banking"
+
+            vol_df_cmp = pd.concat([ime_vol, mb_vol, ib_vol], ignore_index=True)
+            val_df_cmp = pd.concat([ime_val, mb_val, ib_val], ignore_index=True)
+            vol_df_cmp["Year"] = pd.to_numeric(vol_df_cmp["Year"], errors="coerce")
+            val_df_cmp["Year"] = pd.to_numeric(val_df_cmp["Year"], errors="coerce")
+            vol_df_cmp = vol_df_cmp.dropna(subset=["Year"]).copy()
+            val_df_cmp = val_df_cmp.dropna(subset=["Year"]).copy()
+            vol_df_cmp["Year"] = vol_df_cmp["Year"].astype(int)
+            val_df_cmp["Year"] = val_df_cmp["Year"].astype(int)
+            common_years = sorted(set(ime_vol["Year"].astype(int).tolist()) & set(mb_vol["Year"].astype(int).tolist()) & set(ib_vol["Year"].astype(int).tolist()))
+            if common_years:
+                vol_df_cmp = vol_df_cmp[vol_df_cmp["Year"].isin(common_years)].copy()
+                val_df_cmp = val_df_cmp[val_df_cmp["Year"].isin(common_years)].copy()
+
+            if vol_df_cmp.empty or val_df_cmp.empty:
+                answer = (
+                    "Sem dados suficientes para comparar canais."
+                    if st.session_state.lang == "PT"
+                    else "Insufficient data for cross-channel comparison."
+                )
+            else:
+                span = f"{int(vol_df_cmp['Year'].min())}-{int(vol_df_cmp['Year'].max())}"
+                answer = (
+                    f"No período {span}, observa-se evolução diferenciada por canal em volume e valor."
+                    if st.session_state.lang == "PT"
+                    else f"Across {span}, channels show differentiated trajectories in both volume and value."
+                )
+                fig_vol = px.bar(
+                    vol_df_cmp.sort_values("Year"),
+                    x="Year",
+                    y="Metric_Value",
+                    color="Channel",
+                    barmode="stack",
+                    title=(
+                        "Comparação por canal — Volume (anual)"
+                        if st.session_state.lang == "PT"
+                        else "Cross-channel comparison — Volume (annual)"
+                    ),
+                )
+                fig_vol.update_layout(xaxis=dict(dtick=1), yaxis=dict(rangemode="tozero"))
+                fig_val = px.line(
+                    val_df_cmp.sort_values("Year"),
+                    x="Year",
+                    y="Metric_Value",
+                    color="Channel",
+                    markers=True,
+                    title=(
+                        "Comparação por canal — Valor (anual)"
+                        if st.session_state.lang == "PT"
+                        else "Cross-channel comparison — Value (annual)"
+                    ),
+                )
+                fig_val.update_layout(xaxis=dict(dtick=1), yaxis=dict(rangemode="tozero"))
+                extra_charts = [fig_vol, fig_val]
+        source = "IME_Transactions_District_2023_2025.csv + Mobile_Banking_2020_2025.csv + Internet_Banking_2020_2025.csv"
+        caveat = (
+            "Comparação entre canais com escopos de reporte diferentes; usar como leitura direccional."
+            if st.session_state.lang == "PT"
+            else "Cross-channel comparison uses different reporting scopes; treat as directional reading."
         )
     elif q_id in {"official_accounts_change", "official_cards_change"}:
         indicator = "Contas bancárias (por 100 adultos)" if q_id == "official_accounts_change" else "Cartões bancários (por 100 adultos)"
@@ -1324,6 +1434,9 @@ def render_deterministic_qa_panel(opp_df: pd.DataFrame | None = None, key_prefix
     st.info(answer)
     if chart is not None:
         plot_chart(chart, use_container_width=True)
+    if extra_charts:
+        for extra_chart in extra_charts:
+            plot_chart(extra_chart, use_container_width=True)
     if caveat:
         st.caption(("Nota: " if st.session_state.lang == "PT" else "Caveat: ") + caveat)
     # Keep source internally mapped in the logic, but do not display source tags in the UI.
@@ -2049,6 +2162,7 @@ with tab_ime:
         sub_geo = _ime_geo_filter(sub_year)
         ag_geo = _ime_geo_filter(ag_year)
         tx_geo = _ime_geo_filter(tx_year)
+        tx_all_geo = _ime_geo_filter(ime_txn_district_df.copy())
 
         effective_month_ref = (
             ime_month
@@ -2414,22 +2528,43 @@ with tab_ime:
                 fig_tx_trend.update_layout(yaxis=dict(rangemode="tozero"), height=420)
                 plot_chart(fig_tx_trend, use_container_width=True)
         with t2:
-            subs_trend = sub_geo.groupby("Month", as_index=False)["Subscribers"].sum()
-            ag_trend = ag_geo.groupby("Month", as_index=False)["Agents"].sum()
-            trend_join = pd.merge(subs_trend, ag_trend, on="Month", how="outer")
-            trend_join = localize_month_df(trend_join, source_col="Month", target_col="Month_Display")
-            trend_join["Subscribers"] = pd.to_numeric(trend_join["Subscribers"], errors="coerce").fillna(0)
-            trend_join["Agents"] = pd.to_numeric(trend_join["Agents"], errors="coerce").fillna(0)
-            if not trend_join.empty:
-                fig_sa = go.Figure()
-                fig_sa.add_trace(go.Scatter(x=trend_join["Month_Display"], y=trend_join["Subscribers"], mode="lines+markers", name="Subscritores" if st.session_state.lang == "PT" else "Subscribers"))
-                fig_sa.add_trace(go.Scatter(x=trend_join["Month_Display"], y=trend_join["Agents"], mode="lines+markers", name="Agentes" if st.session_state.lang == "PT" else "Agents"))
-                fig_sa.update_layout(
-                    title="Subscritores e Agentes (tendência mensal)" if st.session_state.lang == "PT" else "Subscribers and Agents (monthly trend)",
+            year_mix = (
+                tx_all_geo.groupby("Year", as_index=False)
+                .agg(Volume=("Volume", "sum"), Value=("Value", "sum"))
+                .sort_values("Year")
+            )
+            if not year_mix.empty:
+                fig_mix = go.Figure()
+                fig_mix.add_trace(
+                    go.Bar(
+                        x=year_mix["Year"],
+                        y=year_mix["Volume"],
+                        name="Volume",
+                        marker_color="#2563eb",
+                    )
+                )
+                fig_mix.add_trace(
+                    go.Scatter(
+                        x=year_mix["Year"],
+                        y=year_mix["Value"],
+                        name="Valor" if st.session_state.lang == "PT" else "Value",
+                        mode="lines+markers",
+                        yaxis="y2",
+                        line=dict(color="#f97316", width=3),
+                    )
+                )
+                fig_mix.update_layout(
+                    title=(
+                        "Tendência anual de transacções de carteira móvel"
+                        if st.session_state.lang == "PT"
+                        else "Annual trend of mobile wallet transactions"
+                    ),
                     yaxis=dict(rangemode="tozero"),
+                    yaxis2=dict(overlaying="y", side="right", rangemode="tozero"),
+                    xaxis=dict(dtick=1),
                     height=420,
                 )
-                plot_chart(fig_sa, use_container_width=True)
+                plot_chart(fig_mix, use_container_width=True)
 
         if not ime_sub_demo_df.empty and effective_month_ref is not None:
             demo_scope = ime_sub_demo_df[
@@ -3256,18 +3391,18 @@ with tab_forecast:
             "Horizonte (meses)" if st.session_state.lang == "PT" else "Horizon (months)",
             1,
             24,
-            3,
+            6,
             key="wallet_forecast_months",
         )
         forecast_horizon_years = max(1, math.ceil(wallet_forecast_months / 12))
         if wallet_scope_hint:
             st.caption(wallet_scope_hint)
         st.caption(
-            "ℹ️ As previsões de Carteira Móvel baseiam-se em 12 observações mensais (2025). "
+            "ℹ️ As previsões de Carteira Móvel baseiam-se na série mensal disponível (actualmente 2023-2025, 36 observações). "
             "A leitura é indicativa e mais adequada para curto prazo; não deve ser usada isoladamente "
             "para decisões de investimento de médio/longo prazo."
             if st.session_state.lang == "PT"
-            else "ℹ️ Mobile Wallet forecasts are based on 12 monthly observations (2025). "
+            else "ℹ️ Mobile Wallet forecasts use the available monthly series (currently 2023-2025, 36 observations). "
             "Interpretation is indicative and better suited for short-term use; it should not be used alone "
             "for medium/long-term investment decisions."
         )
@@ -3387,9 +3522,10 @@ with tab_forecast:
                     )
                     plot_chart(fig_fc, use_container_width=True)
 
-                holdout_label = (
-                    "N/A" if model_meta["holdout_mape"] is None else f"{model_meta['holdout_mape']:.2f}%"
-                )
+                holdout_smape = model_meta.get("holdout_smape")
+                holdout_mae = model_meta.get("holdout_mae")
+                holdout_smape_label = "N/A" if holdout_smape is None else f"{holdout_smape:.2f}%"
+                holdout_mae_label = "N/A" if holdout_mae is None else format_compact(holdout_mae)
                 r2_label = "N/A" if r2 is None else f"{r2:.3f}"
                 if is_wallet_indicator:
                     hist_tail = combined[combined["Tipo"] == hist_tag].sort_values("t")
@@ -3425,11 +3561,10 @@ with tab_forecast:
                 else:
                     trend_pt, trend_en = "estabilidade", "stability"
 
-                if model_meta["holdout_mape"] is not None:
-                    mape = model_meta["holdout_mape"]
-                    if mape <= 8:
+                if holdout_smape is not None:
+                    if holdout_smape <= 10:
                         conf_pt, conf_en = "elevada", "high"
-                    elif mape <= 15:
+                    elif holdout_smape <= 20:
                         conf_pt, conf_en = "moderada", "moderate"
                     else:
                         conf_pt, conf_en = "baixa", "low"
@@ -3494,10 +3629,12 @@ with tab_forecast:
                 with st.expander("Detalhes técnicos" if st.session_state.lang == "PT" else "Technical details"):
                     st.write(
                         f"**Model:** {model_meta['model_label']} · "
-                        f"**Holdout MAPE:** {holdout_label} · "
+                        f"**Walk-forward sMAPE:** {holdout_smape_label} · "
+                        f"**Walk-forward MAE:** {holdout_mae_label} · "
                         f"**R²:** {r2_label} · "
                         f"**{T('indicator')}:** {tipo_label} · "
-                        f"**Data points:** {len(monthly_series)}"
+                        f"**Data points:** {len(monthly_series)} · "
+                        f"**Eval points:** {model_meta.get('n_eval', 'N/A')}"
                     )
     else:
         st.warning(T("insufficient_data"))
@@ -4262,12 +4399,13 @@ with tab_decision:
             "Average annual change" if st.session_state.lang == "EN" else "Variação média anual",
             f"{avg_pct:+.1f}%",
         )
-        holdout_mape = model_meta.get("holdout_mape")
-        if holdout_mape is None:
-            robustness = "Sem validação holdout" if st.session_state.lang == "PT" else "No holdout validation"
-        elif holdout_mape <= 8:
+        holdout_smape = model_meta.get("holdout_smape")
+        holdout_mae = model_meta.get("holdout_mae")
+        if holdout_smape is None:
+            robustness = "Sem validação walk-forward" if st.session_state.lang == "PT" else "No walk-forward validation"
+        elif holdout_smape <= 10:
             robustness = "Robustez estatística: alta" if st.session_state.lang == "PT" else "Statistical robustness: high"
-        elif holdout_mape <= 15:
+        elif holdout_smape <= 20:
             robustness = "Robustez estatística: moderada" if st.session_state.lang == "PT" else "Statistical robustness: moderate"
         else:
             robustness = "Robustez estatística: baixa" if st.session_state.lang == "PT" else "Statistical robustness: low"
@@ -4277,8 +4415,9 @@ with tab_decision:
         )
         with st.expander("Detalhe estatístico" if st.session_state.lang == "PT" else "Statistical detail"):
             st.write(
-                f"Modelo seleccionado: {model_meta.get('model_label', 'N/A')} · Holdout MAPE: "
-                f"{'N/A' if holdout_mape is None else f'{holdout_mape:.1f}%'}"
+                f"Modelo seleccionado: {model_meta.get('model_label', 'N/A')} · Walk-forward sMAPE: "
+                f"{'N/A' if holdout_smape is None else f'{holdout_smape:.1f}%'} · "
+                f"Walk-forward MAE: {'N/A' if holdout_mae is None else format_compact(holdout_mae)}"
             )
 
     st.markdown("---")

@@ -61,6 +61,8 @@ def build_baseline_forecast_yearly(
     model_meta = {
         "r2": r2,
         "model_label": meta.get("model_label"),
+        "holdout_smape": meta.get("holdout_smape"),
+        "holdout_mae": meta.get("holdout_mae"),
         "holdout_mape": meta.get("holdout_mape"),
     }
     return yearly, model_meta

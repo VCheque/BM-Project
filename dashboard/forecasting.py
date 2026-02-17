@@ -2,8 +2,18 @@
 
 from __future__ import annotations
 
+import warnings
+
 import numpy as np
 import pandas as pd
+
+try:
+    from statsmodels.tsa.holtwinters import ExponentialSmoothing
+    from statsmodels.tsa.statespace.sarimax import SARIMAX
+except Exception:  # pragma: no cover
+    ExponentialSmoothing = None
+    SARIMAX = None
+
 
 STOCK_INDICATORS = {"Contas Bancárias", "Cartões Bancários", "ATMs", "POS"}
 
@@ -41,43 +51,34 @@ def build_monthly_series(df: pd.DataFrame, metric_col: str) -> pd.DataFrame:
 
 
 def poly_forecast(monthly_series: pd.DataFrame, n_future_years: int = 5, degree: int = 2):
+    """Legacy polynomial forecast helper kept for backward compatibility."""
     if len(monthly_series) < 3:
         return None, None, None, None
 
     t = monthly_series["t"].to_numpy()
     y = monthly_series["Value"].values
-
     coeffs = np.polyfit(t, y, degree)
-    y_pred_hist = np.polyval(coeffs, t)
+    y_pred_hist = np.polyval(coeffs, t).clip(min=0)
     r2 = _r2_score(y, y_pred_hist)
-    residual_std = np.std(y - y_pred_hist)
+    residual_std = float(np.std(y - y_pred_hist))
 
     hist_df = monthly_series[["t", "Value"]].copy()
     hist_df["Tipo"] = "historic"
-    hist_df["Year_Label"] = monthly_series["t"].apply(lambda x: int(x))
+    hist_df["Year_Label"] = monthly_series["t"].astype(int)
 
-    last_t = monthly_series["t"].max()
-    last_year = int(last_t)
-    future_ts = []
-    for yr_offset in range(1, n_future_years + 1):
-        for m in range(12):
-            future_ts.append(last_year + yr_offset + m / 12)
-    future_t = np.array(future_ts)
+    future_t = _future_t(float(monthly_series["t"].max()), n_future_years)
     future_vals = np.polyval(coeffs, future_t).clip(min=0)
-
     pred_df = pd.DataFrame(
         {
-            "t": future_t.flatten(),
+            "t": future_t,
             "Value": future_vals,
             "Tipo": "forecast",
-            "Year_Label": [int(x) for x in future_t],
+            "Year_Label": future_t.astype(int),
         }
     )
-
     combined = pd.concat([hist_df, pred_df], ignore_index=True)
     combined["Upper"] = (combined["Value"] + 1.96 * residual_std).clip(lower=0)
     combined["Lower"] = (combined["Value"] - 1.96 * residual_std).clip(lower=0)
-
     return combined, r2, residual_std, {"degree": degree, "coefficients": coeffs.tolist()}
 
 
@@ -87,13 +88,23 @@ def _future_t(last_t: float, n_future_years: int) -> np.ndarray:
     for yr_offset in range(1, n_future_years + 1):
         for m in range(12):
             future_ts.append(last_year + yr_offset + m / 12)
-    return np.array(future_ts)
+    return np.array(future_ts, dtype=float)
 
 
 def _mape(y_true: np.ndarray, y_pred: np.ndarray) -> float:
     eps = 1e-9
     denom = np.maximum(np.abs(y_true), eps)
     return float(np.mean(np.abs((y_true - y_pred) / denom)) * 100)
+
+
+def _smape(y_true: np.ndarray, y_pred: np.ndarray) -> float:
+    eps = 1e-9
+    denom = np.maximum((np.abs(y_true) + np.abs(y_pred)) / 2.0, eps)
+    return float(np.mean(np.abs(y_true - y_pred) / denom) * 100)
+
+
+def _mae(y_true: np.ndarray, y_pred: np.ndarray) -> float:
+    return float(np.mean(np.abs(y_true - y_pred)))
 
 
 def _r2_score(y_true: np.ndarray, y_pred: np.ndarray) -> float:
@@ -103,12 +114,6 @@ def _r2_score(y_true: np.ndarray, y_pred: np.ndarray) -> float:
         return 0.0
     ss_res = float(np.sum((y_true - y_pred) ** 2))
     return 1.0 - (ss_res / ss_tot)
-
-
-def _poly_predict(train_t: np.ndarray, train_y: np.ndarray, test_t: np.ndarray, degree: int) -> np.ndarray:
-    coeffs = np.polyfit(train_t, train_y, degree)
-    pred = np.polyval(coeffs, test_t)
-    return np.clip(pred, a_min=0, a_max=None)
 
 
 def _naive_predict(train_y: np.ndarray, horizon: int) -> np.ndarray:
@@ -121,48 +126,183 @@ def _seasonal_naive_predict(train_y: np.ndarray, horizon: int, season: int = 12)
     out = []
     for i in range(horizon):
         out.append(train_y[-season + (i % season)])
-    return np.array(out)
+    return np.array(out, dtype=float)
+
+
+def _fit_ets(train_y: np.ndarray):
+    if ExponentialSmoothing is None:
+        raise RuntimeError("statsmodels not available")
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        if len(train_y) >= 24:
+            try:
+                model = ExponentialSmoothing(
+                    train_y,
+                    trend="add",
+                    seasonal="add",
+                    seasonal_periods=12,
+                    initialization_method="estimated",
+                )
+                return model.fit(optimized=True)
+            except Exception:
+                pass
+        model = ExponentialSmoothing(
+            train_y,
+            trend="add",
+            seasonal=None,
+            initialization_method="estimated",
+        )
+        return model.fit(optimized=True)
+
+
+def _fit_sarima(train_y: np.ndarray):
+    if SARIMAX is None:
+        raise RuntimeError("statsmodels not available")
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        if len(train_y) >= 24:
+            try:
+                model = SARIMAX(
+                    train_y,
+                    order=(1, 1, 1),
+                    seasonal_order=(1, 1, 1, 12),
+                    enforce_stationarity=False,
+                    enforce_invertibility=False,
+                )
+                return model.fit(disp=False)
+            except Exception:
+                pass
+        try:
+            model = SARIMAX(
+                train_y,
+                order=(1, 1, 1),
+                seasonal_order=(0, 0, 0, 0),
+                enforce_stationarity=False,
+                enforce_invertibility=False,
+            )
+            return model.fit(disp=False)
+        except Exception:
+            model = SARIMAX(
+                train_y,
+                order=(1, 0, 0),
+                seasonal_order=(0, 0, 0, 0),
+                enforce_stationarity=False,
+                enforce_invertibility=False,
+            )
+            return model.fit(disp=False)
+
+
+def _predict_one_step(train_y: np.ndarray, model_name: str) -> float | None:
+    if len(train_y) == 0:
+        return None
+    if model_name == "naive":
+        return float(train_y[-1])
+    if model_name == "seasonal_naive":
+        return float(_seasonal_naive_predict(train_y, 1, season=12)[0])
+    if model_name == "ets":
+        try:
+            fit = _fit_ets(train_y)
+            return float(np.asarray(fit.forecast(1))[0])
+        except Exception:
+            return None
+    if model_name == "sarima":
+        try:
+            fit = _fit_sarima(train_y)
+            return float(np.asarray(fit.forecast(1))[0])
+        except Exception:
+            return None
+    return None
+
+
+def _predict_horizon(train_y: np.ndarray, model_name: str, horizon: int) -> np.ndarray:
+    if model_name == "naive":
+        return _naive_predict(train_y, horizon)
+    if model_name == "seasonal_naive":
+        return _seasonal_naive_predict(train_y, horizon, season=12)
+    if model_name == "ets":
+        try:
+            fit = _fit_ets(train_y)
+            return np.asarray(fit.forecast(horizon), dtype=float)
+        except Exception:
+            return _naive_predict(train_y, horizon)
+    if model_name == "sarima":
+        try:
+            fit = _fit_sarima(train_y)
+            return np.asarray(fit.forecast(horizon), dtype=float)
+        except Exception:
+            return _seasonal_naive_predict(train_y, horizon, season=12)
+    return _naive_predict(train_y, horizon)
+
+
+def _walk_forward_metrics(y: np.ndarray, model_name: str) -> dict | None:
+    n = len(y)
+    if n < 8:
+        return None
+
+    eval_points = min(12, max(3, n // 4))
+    split = n - eval_points
+    min_train = 12 if model_name in {"seasonal_naive", "ets", "sarima"} else 6
+    if split < min_train:
+        split = min_train
+    if split >= n - 1:
+        return None
+
+    preds = []
+    actual = []
+    for i in range(split, n):
+        p = _predict_one_step(y[:i], model_name)
+        if p is None or not np.isfinite(p):
+            continue
+        preds.append(max(float(p), 0.0))
+        actual.append(float(y[i]))
+
+    if len(actual) < 3:
+        return None
+
+    y_true = np.array(actual, dtype=float)
+    y_pred = np.array(preds, dtype=float)
+    return {
+        "smape": _smape(y_true, y_pred),
+        "mae": _mae(y_true, y_pred),
+        "mape": _mape(y_true, y_pred),
+        "n_eval": int(len(y_true)),
+    }
+
+
+def _historical_one_step_preds(y: np.ndarray, model_name: str) -> tuple[np.ndarray, np.ndarray]:
+    n = len(y)
+    pred_hist = np.full(n, np.nan, dtype=float)
+    start = 12 if model_name in {"seasonal_naive", "ets", "sarima"} else 1
+    start = min(start, max(1, n - 1))
+    for i in range(start, n):
+        p = _predict_one_step(y[:i], model_name)
+        if p is None or not np.isfinite(p):
+            continue
+        pred_hist[i] = max(float(p), 0.0)
+    valid_mask = ~np.isnan(pred_hist)
+    pred_filled = np.where(valid_mask, pred_hist, y)
+    return pred_filled, valid_mask
 
 
 def _fit_predict_full(monthly_series: pd.DataFrame, model_name: str, n_future_years: int):
-    t = monthly_series["t"].to_numpy()
-    y = monthly_series["Value"].to_numpy()
+    t = monthly_series["t"].to_numpy(dtype=float)
+    y = monthly_series["Value"].to_numpy(dtype=float)
 
-    if model_name == "poly2":
-        pred_hist = _poly_predict(t, y, t, degree=2)
-        r2 = _r2_score(y, pred_hist)
-    elif model_name == "poly1":
-        pred_hist = _poly_predict(t, y, t, degree=1)
-        r2 = _r2_score(y, pred_hist)
-    elif model_name == "seasonal_naive":
-        season = 12 if len(y) >= 12 else max(1, len(y) // 2)
-        pred_hist = y.copy()
-        if len(y) > season:
-            pred_hist[season:] = y[:-season]
+    pred_hist, valid_mask = _historical_one_step_preds(y, model_name)
+    if valid_mask.sum() >= 2:
+        r2 = _r2_score(y[valid_mask], pred_hist[valid_mask])
+        residual_std = float(np.nanstd(y[valid_mask] - pred_hist[valid_mask]))
+    else:
         r2 = None
-    else:  # naive
-        pred_hist = y.copy()
-        if len(y) > 1:
-            pred_hist[1:] = y[:-1]
-        r2 = None
-
-    residual = y - pred_hist
-    residual_std = float(np.nanstd(residual))
+        residual_std = float(np.nanstd(y - pred_hist))
 
     future_t = _future_t(float(t.max()), n_future_years)
-    if model_name == "poly2":
-        future_vals = _poly_predict(t, y, future_t, degree=2)
-    elif model_name == "poly1":
-        future_vals = _poly_predict(t, y, future_t, degree=1)
-    elif model_name == "seasonal_naive":
-        future_vals = _seasonal_naive_predict(y, len(future_t), season=12)
-    else:
-        future_vals = _naive_predict(y, len(future_t))
-    future_vals = np.clip(future_vals, a_min=0, a_max=None)
+    future_vals = _predict_horizon(y, model_name, len(future_t)).clip(min=0)
 
     hist_df = monthly_series[["t", "Value"]].copy()
     hist_df["Tipo"] = "historic"
     hist_df["Year_Label"] = hist_df["t"].astype(int)
+
     pred_df = pd.DataFrame(
         {
             "t": future_t,
@@ -178,63 +318,62 @@ def _fit_predict_full(monthly_series: pd.DataFrame, model_name: str, n_future_ye
 
 
 def select_best_forecast_model(monthly_series: pd.DataFrame, n_future_years: int, indicator_name: str):
-    """Select the best forecasting model using holdout MAPE and return forecast output.
-
-    Candidate set:
-    - `naive`: last observed value
-    - `seasonal_naive`: repeats last seasonal pattern (12)
-    - `poly1`: linear trend
-    - `poly2`: quadratic trend
-    """
+    """Select best model via walk-forward sMAPE + MAE and return forecast output."""
     n = len(monthly_series)
     if n < 3:
         return None, None, None, None
 
-    # Conservative guardrail for stock indicators with sparse annual points.
-    if indicator_name in STOCK_INDICATORS and n <= 6:
-        combined, r2, residual_std = _fit_predict_full(monthly_series, "poly1", n_future_years)
-        meta = {
-            "model": "poly1",
-            "model_label": "Linear trend (poly1)",
-            "holdout_mape": None,
-            "candidates": {},
-            "reason": "sparse_stock_series",
-        }
-        return combined, r2, residual_std, meta
+    candidates: list[str] = ["naive"]
+    if n >= 12:
+        candidates.append("seasonal_naive")
+    if ExponentialSmoothing is not None and n >= 12:
+        candidates.append("ets")
+    if SARIMAX is not None and n >= 18:
+        candidates.append("sarima")
 
-    holdout = 12 if n >= 24 else max(3, min(6, n // 3))
-    split = n - holdout
-    train = monthly_series.iloc[:split].copy()
-    test = monthly_series.iloc[split:].copy()
+    scored: dict[str, dict] = {}
+    for model_name in candidates:
+        metrics = _walk_forward_metrics(monthly_series["Value"].to_numpy(dtype=float), model_name)
+        if metrics is not None:
+            scored[model_name] = metrics
 
-    t_train = train["t"].to_numpy()
-    y_train = train["Value"].to_numpy()
-    t_test = test["t"].to_numpy()
-    y_test = test["Value"].to_numpy()
+    if not scored:
+        scored["naive"] = {"smape": np.nan, "mae": np.nan, "mape": np.nan, "n_eval": 0}
 
-    candidates: dict[str, float] = {}
-    candidates["naive"] = _mape(y_test, _naive_predict(y_train, len(y_test)))
-    if len(y_train) >= 12:
-        candidates["seasonal_naive"] = _mape(y_test, _seasonal_naive_predict(y_train, len(y_test), season=12))
-    if len(y_train) >= 6:
-        candidates["poly1"] = _mape(y_test, _poly_predict(t_train, y_train, t_test, degree=1))
-    if len(y_train) >= 8:
-        candidates["poly2"] = _mape(y_test, _poly_predict(t_train, y_train, t_test, degree=2))
+    best_model = min(
+        scored.keys(),
+        key=lambda m: (
+            float(scored[m]["smape"]) if np.isfinite(scored[m]["smape"]) else float("inf"),
+            float(scored[m]["mae"]) if np.isfinite(scored[m]["mae"]) else float("inf"),
+        ),
+    )
 
-    best_model = min(candidates, key=candidates.get)
     combined, r2, residual_std = _fit_predict_full(monthly_series, best_model, n_future_years)
     labels = {
         "naive": "Naive (last value)",
         "seasonal_naive": "Seasonal Naive (12)",
-        "poly1": "Linear trend (poly1)",
-        "poly2": "Quadratic trend (poly2)",
+        "ets": "ETS",
+        "sarima": "SARIMA",
     }
+    selected_metrics = scored.get(best_model, {})
     meta = {
         "model": best_model,
-        "model_label": labels[best_model],
-        "holdout_mape": float(candidates[best_model]),
-        "candidates": {k: float(v) for k, v in candidates.items()},
-        "reason": "holdout_selection",
+        "model_label": labels.get(best_model, best_model),
+        "holdout_smape": float(selected_metrics["smape"]) if selected_metrics.get("smape") is not None else None,
+        "holdout_mae": float(selected_metrics["mae"]) if selected_metrics.get("mae") is not None else None,
+        "holdout_mape": float(selected_metrics["mape"]) if selected_metrics.get("mape") is not None else None,
+        "n_eval": int(selected_metrics.get("n_eval", 0)),
+        "candidates": {
+            m: {
+                "smape": float(v.get("smape", np.nan)),
+                "mae": float(v.get("mae", np.nan)),
+                "mape": float(v.get("mape", np.nan)),
+                "n_eval": int(v.get("n_eval", 0)),
+            }
+            for m, v in scored.items()
+        },
+        "reason": "walk_forward_selection",
+        "indicator_name": indicator_name,
     }
     return combined, r2, residual_std, meta
 
