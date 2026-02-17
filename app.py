@@ -1698,18 +1698,41 @@ with tab_ime:
         if not ime_dist:
             ime_dist = available_dist
         use_district_axis = len(selected_dist_valid) > 0
+        all_month_fallback = (
+            "Dezembro" if "Dezembro" in available_months else (available_months[-1] if available_months else None)
+        )
 
         tx_metric_col = "Value" if ime_measure == T("value") else "Volume"
 
         st.caption(
             (
                 f"Filtros aplicados: {len(ime_prov)} província(s), "
-                f"{len(ime_dist)} distrito(s), mês: {localize_month(ime_month) if ime_month else 'todos'}."
+                + (
+                    (
+                        f"{len(ime_dist)} distrito(s), mês: {localize_month(ime_month)}."
+                        if ime_month is not None
+                        else (
+                            f"{len(ime_dist)} distrito(s), mês: todos (KPIs/rankings usam {localize_month(all_month_fallback)})."
+                            if all_month_fallback is not None
+                            else f"{len(ime_dist)} distrito(s), mês: todos."
+                        )
+                    )
+                )
             )
             if st.session_state.lang == "PT"
             else (
                 f"Applied filters: {len(ime_prov)} province(s), "
-                f"{len(ime_dist)} district(s), month: {localize_month(ime_month) if ime_month else 'all'}."
+                + (
+                    (
+                        f"{len(ime_dist)} district(s), month: {localize_month(ime_month)}."
+                        if ime_month is not None
+                        else (
+                            f"{len(ime_dist)} district(s), month: all (KPIs/rankings use {localize_month(all_month_fallback)})."
+                            if all_month_fallback is not None
+                            else f"{len(ime_dist)} district(s), month: all."
+                        )
+                    )
+                )
             )
         )
 
@@ -1723,12 +1746,16 @@ with tab_ime:
         ag_geo = _ime_geo_filter(ag_year)
         tx_geo = _ime_geo_filter(tx_year)
 
-        if ime_month is not None:
-            tx_month = tx_geo[tx_geo["Month"].astype(str) == ime_month].copy()
+        effective_month_ref = (
+            ime_month
+            if ime_month is not None else all_month_fallback
+        )
+        if effective_month_ref is not None:
+            tx_month = tx_geo[tx_geo["Month"].astype(str) == effective_month_ref].copy()
         else:
             tx_month = tx_geo.copy()
 
-        stock_month_ref = ime_month if ime_month is not None else ("Dezembro" if "Dezembro" in available_months else None)
+        stock_month_ref = effective_month_ref
         sub_stock = (
             sub_geo[sub_geo["Month"].astype(str) == stock_month_ref].copy()
             if stock_month_ref is not None
@@ -2100,10 +2127,10 @@ with tab_ime:
                 )
                 plot_chart(fig_sa, use_container_width=True)
 
-        if not ime_sub_demo_df.empty and ime_month is not None:
+        if not ime_sub_demo_df.empty and effective_month_ref is not None:
             demo_scope = ime_sub_demo_df[
                 (ime_sub_demo_df["Year"] == ime_year)
-                & (ime_sub_demo_df["Month"].astype(str) == ime_month)
+                & (ime_sub_demo_df["Month"].astype(str) == effective_month_ref)
                 & (ime_sub_demo_df["Province"].isin(ime_prov))
                 & (ime_sub_demo_df["District"].isin(ime_dist))
             ].copy()
