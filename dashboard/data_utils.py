@@ -18,10 +18,22 @@ FILE_PATHS = {
 }
 
 OPTIONAL_FILE_PATHS = {
-    "ime_subscribers_district": "IME_Subscribers_District_2025.csv",
-    "ime_subscribers_district_demo": "IME_Subscribers_District_Demographics_2025.csv",
-    "ime_agents_district": "IME_Agents_District_2025.csv",
-    "ime_transactions_district": "IME_Transactions_District_2025.csv",
+    "ime_subscribers_district": [
+        "IME_Subscribers_District_2023_2025.csv",
+        "IME_Subscribers_District_2025.csv",
+    ],
+    "ime_subscribers_district_demo": [
+        "IME_Subscribers_District_Demographics_2023_2025.csv",
+        "IME_Subscribers_District_Demographics_2025.csv",
+    ],
+    "ime_agents_district": [
+        "IME_Agents_District_2023_2025.csv",
+        "IME_Agents_District_2025.csv",
+    ],
+    "ime_transactions_district": [
+        "IME_Transactions_District_2023_2025.csv",
+        "IME_Transactions_District_2025.csv",
+    ],
     "access_points_district": "Access_Points_District_2025Q3.csv",
     "fi_indicators_2020_2025q3": "Financial_Inclusion_Indicators_2020_2025Q3.csv",
     "sectoral_growth_2020_2025": "Sectoral_Growth_Rates_2020_2025.csv",
@@ -49,6 +61,7 @@ MONTH_ORDER = [
     "Novembro",
     "Dezembro",
 ]
+DECEMBER_LABEL = "Dezembro"
 GENDER_ORDER = ["Mulheres", "Homens", "Outros"]
 
 
@@ -113,23 +126,28 @@ def load_dataframes() -> tuple[dict[str, pd.DataFrame], pd.DataFrame]:
         )
     dataframes = {name: process_df(pd.read_csv(path)) for name, path in FILE_PATHS.items()}
     for name, path in OPTIONAL_FILE_PATHS.items():
-        if pd.io.common.file_exists(path):
+        if isinstance(path, list):
+            selected = next((p for p in path if pd.io.common.file_exists(p)), None)
+            if selected is not None:
+                dataframes[name] = process_df(pd.read_csv(selected))
+        elif pd.io.common.file_exists(path):
             dataframes[name] = process_df(pd.read_csv(path))
     census_df = sanitize_census_df(process_df(pd.read_csv("census_2017_provinces.csv")))
     return dataframes, census_df
 
 
 def last_month_snapshot(df: pd.DataFrame) -> pd.DataFrame:
+    """Return strict December snapshot for stock indicators."""
     if "Month" not in df.columns or df.empty:
         return df
-    return df[df["Month"] == df["Month"].max()]
+    return df[df["Month"].astype(str) == DECEMBER_LABEL].copy()
 
 
 def last_month_snapshot_all_years(df: pd.DataFrame) -> pd.DataFrame:
+    """Return strict December rows across years for stock indicator trends."""
     if "Month" not in df.columns or df.empty:
         return df
-    idx = df.groupby("Year")["Month"].transform("max")
-    return df[df["Month"] == idx]
+    return df[df["Month"].astype(str) == DECEMBER_LABEL].copy()
 
 
 def normalize_atm_txn(df: pd.DataFrame) -> pd.DataFrame:

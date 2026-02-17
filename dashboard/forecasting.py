@@ -6,18 +6,6 @@ import numpy as np
 import pandas as pd
 
 STOCK_INDICATORS = {"Contas Bancárias", "Cartões Bancários", "ATMs", "POS"}
-FLOW_INDICATORS = {
-    "Mobile Banking",
-    "Internet Banking",
-    "Transações ATM (Volume)",
-    "Transações ATM (Valor)",
-    "Transações POS (Volume)",
-    "Transações POS (Valor)",
-    "Transações Mobile Banking (Volume)",
-    "Transações Mobile Banking (Valor)",
-    "Transações Internet Banking (Volume)",
-    "Transações Internet Banking (Valor)",
-}
 
 MONTH_NUM = {
     "Janeiro": 1,
