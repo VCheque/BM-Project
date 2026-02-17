@@ -260,7 +260,7 @@ def clean_ime_district_rows(df: pd.DataFrame) -> pd.DataFrame:
 
 
 # ── Data loading (cached so Streamlit doesn't re-read CSVs on every rerun) ──
-CACHE_VERSION = "2026-02-17-ime-province-boundary-v4"
+CACHE_VERSION = "2026-02-17-etl-2023-and-ime-multiyear-v5"
 
 
 @st.cache_data
@@ -369,12 +369,12 @@ title_suffix = f"{T('per_by')} {geo_axis_label}"
 
 def _population_geq_age_2017(row: pd.Series, threshold_age: float) -> float:
     """Estimate population >= threshold age using Census 2017 grouped-age buckets."""
-    total = float(row.get("Population_Total", 0))
     p15 = float(row.get("Population_15plus_2017", 0))
     p10_14 = float(row.get("Population_10_14_2017", 0))
     p15_19 = float(row.get("Population_15_19_2017", 0))
 
     p20_plus = max(0.0, p15 - p15_19)
+    # Note to self: keep this interpolation transparent; I prefer explainable approximation over opaque smoothing.
     if threshold_age <= 10:
         frac_10_14 = min(1.0, max(0.0, (15 - threshold_age) / 5))
         return p20_plus + p15_19 + p10_14 * frac_10_14
@@ -457,8 +457,8 @@ def render_page_caveats(extra_notes: list[str] | None = None) -> None:
         with st.expander("Pressupostos e limitações"):
             st.write("- A leitura é feita ao nível do sistema; não há dados por banco/provedor.")
             st.write("- O denominador de inclusão usa extrapolação por coorte com base no Censo 2017.")
-            st.write("- A série histórica contém lacuna anual (2023), podendo afectar continuidade.")
-            st.write("- O detalhe distrital de Carteira Móvel cobre 2025 e é usado como fotografia de profundidade.")
+            st.write("- O detalhe distrital de Carteira Móvel cobre actualmente os anos de 2023 e 2025.")
+            st.write("- A leitura distrital de Carteira Móvel cobre apenas os distritos presentes no ficheiro oficial de 2025 reportado pelo Banco de Moçambique.")
             st.write("- Previsões de Carteira Móvel usam 12 observações mensais (2025), adequadas sobretudo para curto prazo.")
             st.write("- Cidade de Maputo é incluída em Província de Maputo para harmonização geográfica.")
             st.markdown(
@@ -473,8 +473,8 @@ def render_page_caveats(extra_notes: list[str] | None = None) -> None:
         with st.expander("Assumptions and limitations"):
             st.write("- Interpretation is at system level; no bank/provider-level dataset is available.")
             st.write("- Inclusion denominator uses Census 2017 cohort extrapolation.")
-            st.write("- Historical series has an annual gap (2023), which may affect continuity.")
-            st.write("- Mobile Wallet district depth currently covers 2025 and is treated as a current-state view.")
+            st.write("- Mobile Wallet district depth currently covers years 2023 and 2025.")
+            st.write("- District-level Mobile Wallet reading covers only districts present in the official 2025 file reported by Banco de Moçambique.")
             st.write("- Mobile Wallet forecasts use 12 monthly observations (2025), mainly suitable for short-term reading.")
             st.write("- Cidade de Maputo is included under Província de Maputo for harmonized geographic reporting.")
             st.markdown(
@@ -617,6 +617,68 @@ def build_scope_opportunity_df(year: int) -> pd.DataFrame:
     )
 
 
+def build_wallet_bridge_annual() -> pd.DataFrame:
+    """Build annual national bridge series between bank and mobile-wallet rails."""
+    atm_val = normalize_atm_txn(val_df)
+    atm_vol = normalize_atm_txn(vol_df)
+
+    atm_wallet_val = (
+        atm_val[
+            (atm_val["Metric"].astype(str) == "Levantamentos")
+            & (atm_val["Sub_Metric"].astype(str) == "de fundos depositados em telemóveis")
+        ]
+        .groupby("Year", as_index=False)["Transactions_Amount"]
+        .sum()
+        .rename(columns={"Transactions_Amount": "ATM_Wallet_Withdrawals_Value"})
+    )
+    atm_wallet_vol = (
+        atm_vol[
+            (atm_vol["Metric"].astype(str) == "Levantamentos")
+            & (atm_vol["Sub_Metric"].astype(str) == "de fundos depositados em telemóveis")
+        ]
+        .groupby("Year", as_index=False)["Total_Transactions"]
+        .sum()
+        .rename(columns={"Total_Transactions": "ATM_Wallet_Withdrawals_Volume"})
+    )
+    mb_wallet_val = (
+        mob_df[
+            mob_df["Metric"].astype(str).str.contains(
+                "Valor das transferências efectuadas para telemóveis", case=False, na=False
+            )
+        ]
+        .groupby("Year", as_index=False)["Value"]
+        .sum()
+        .rename(columns={"Value": "MB_To_Wallet_Value"})
+    )
+    mb_wallet_vol = (
+        mob_df[
+            mob_df["Metric"].astype(str).str.contains(
+                "Volume das transferências efectuadas para telemóveis", case=False, na=False
+            )
+        ]
+        .groupby("Year", as_index=False)["Value"]
+        .sum()
+        .rename(columns={"Value": "MB_To_Wallet_Volume"})
+    )
+
+    bridge = (
+        pd.merge(atm_wallet_val, atm_wallet_vol, on="Year", how="outer")
+        .merge(mb_wallet_val, on="Year", how="outer")
+        .merge(mb_wallet_vol, on="Year", how="outer")
+    )
+    for col in [
+        "ATM_Wallet_Withdrawals_Value",
+        "ATM_Wallet_Withdrawals_Volume",
+        "MB_To_Wallet_Value",
+        "MB_To_Wallet_Volume",
+    ]:
+        bridge[col] = pd.to_numeric(bridge[col], errors="coerce").fillna(0.0)
+    bridge["Year"] = pd.to_numeric(bridge["Year"], errors="coerce")
+    bridge = bridge.dropna(subset=["Year"]).copy()
+    bridge["Year"] = bridge["Year"].astype(int)
+    return bridge.sort_values("Year")
+
+
 def render_deterministic_qa_panel(opp_df: pd.DataFrame | None = None, key_prefix: str = "overview") -> None:
     """Render deterministic Q&A with one dynamic chart per selected question."""
     st.subheader(
@@ -637,24 +699,26 @@ def render_deterministic_qa_panel(opp_df: pd.DataFrame | None = None, key_prefix
         ("Qual distrito lidera em valor de transacções de Carteira Móvel no último mês disponível?", "ime_top_value"),
         ("Qual distrito tem maior rácio de subscritores por agente de Carteira Móvel?", "ime_top_subs_per_agent"),
         ("Mobile Banking cresce mais em valor do que Internet Banking (YoY)?", "mobile_vs_internet_yoy"),
+        ("Levantamentos ATM de fundos em telemóveis estão a aumentar ao longo dos anos?", "atm_wallet_withdrawals_trend"),
+        ("No Mobile Banking, como evoluem as transferências para telemóveis (valor e volume)?", "mb_to_wallet_trend"),
         ("Como evoluiu o indicador oficial de contas por adulto desde 2020?", "official_accounts_change"),
         ("Como evoluiu o indicador oficial de cartões por adulto desde 2020?", "official_cards_change"),
         ("Quais são as 3 províncias com maior pontuação de oportunidade?", "opp_top3"),
         ("Que província lidera no índice IME/INCM (subscrições por 100)?", "incm_top_index"),
         ("Que província tem menor capacidade de agentes por 10 mil subscritores móveis?", "incm_low_agent_capacity"),
-        ("Qual a quota feminina de contas e cartões no recorte atual?", "gender_shares"),
-        ("Qual a quota da faixa 17-21 em contas e cartões no recorte atual?", "age_17_21_shares"),
+        ("Qual a quota feminina de contas e cartões no recorte actual?", "gender_shares"),
+        ("Qual a quota da faixa 17-21 em contas e cartões no recorte actual?", "age_17_21_shares"),
         ("[Stock] Quantas contas existem no snapshot de Dezembro?", "stock_accounts"),
         ("[Stock] Quantos cartões existem no snapshot de Dezembro?", "stock_cards"),
         ("[Stock] Quantos ATM existem no snapshot de Dezembro?", "stock_atm"),
         ("[Stock] Quantos POS existem no snapshot de Dezembro?", "stock_pos"),
-        ("[Stock] Que província lidera em ATM no recorte atual?", "stock_top_atm_prov"),
-        ("[Stock] Que província lidera em POS no recorte atual?", "stock_top_pos_prov"),
     ]
     question_bank_en = [
         ("Which district leads Mobile Wallet transaction value in the latest available month?", "ime_top_value"),
         ("Which district has the highest Mobile Wallet subscribers-per-agent ratio?", "ime_top_subs_per_agent"),
         ("Is Mobile Banking value growing faster YoY than Internet Banking?", "mobile_vs_internet_yoy"),
+        ("Are ATM withdrawals of mobile-wallet funds increasing over time?", "atm_wallet_withdrawals_trend"),
+        ("How are Mobile Banking transfers to mobile numbers evolving (value and volume)?", "mb_to_wallet_trend"),
         ("How has the official accounts-per-adult indicator changed since 2020?", "official_accounts_change"),
         ("How has the official cards-per-adult indicator changed since 2020?", "official_cards_change"),
         ("Which are the top 3 provinces by opportunity score?", "opp_top3"),
@@ -666,8 +730,6 @@ def render_deterministic_qa_panel(opp_df: pd.DataFrame | None = None, key_prefix
         ("[Stock] How many cards exist in the December snapshot?", "stock_cards"),
         ("[Stock] How many ATMs exist in the December snapshot?", "stock_atm"),
         ("[Stock] How many POS exist in the December snapshot?", "stock_pos"),
-        ("[Stock] Which province leads ATM count in the current scope?", "stock_top_atm_prov"),
-        ("[Stock] Which province leads POS count in the current scope?", "stock_top_pos_prov"),
     ]
     q_bank = question_bank_pt if st.session_state.lang == "PT" else question_bank_en
     q_label = st.selectbox(
@@ -745,7 +807,7 @@ def render_deterministic_qa_panel(opp_df: pd.DataFrame | None = None, key_prefix
 
     if q_id == "ime_top_value":
         if ime_tx_q.empty:
-            answer = "Sem dados de Carteira Móvel no recorte atual." if st.session_state.lang == "PT" else "No Mobile Wallet data for current scope."
+            answer = "Sem dados de Carteira Móvel no recorte actual." if st.session_state.lang == "PT" else "No Mobile Wallet data for current scope."
         else:
             tx = ime_tx_q.copy()
             tx["Month_Ord"] = tx["Month"].astype(str).map(MONTH_RANK)
@@ -779,7 +841,7 @@ def render_deterministic_qa_panel(opp_df: pd.DataFrame | None = None, key_prefix
             caveat = "Cobertura distrital de Carteira Móvel de 2025." if st.session_state.lang == "PT" else "Mobile Wallet district coverage is for 2025."
     elif q_id == "ime_top_subs_per_agent":
         if ime_sub_q.empty or ime_agents_q.empty:
-            answer = "Sem dados de Carteira Móvel no recorte atual." if st.session_state.lang == "PT" else "No Mobile Wallet data for current scope."
+            answer = "Sem dados de Carteira Móvel no recorte actual." if st.session_state.lang == "PT" else "No Mobile Wallet data for current scope."
         else:
             sub_a = ime_sub_q.groupby("District", as_index=False)["Subscribers"].sum()
             ag_a = ime_agents_q.groupby("District", as_index=False)["Agents"].sum()
@@ -840,6 +902,119 @@ def render_deterministic_qa_panel(opp_df: pd.DataFrame | None = None, key_prefix
             answer = "Sem histórico suficiente para YoY." if st.session_state.lang == "PT" else "Insufficient history for YoY."
         source = "Mobile_Banking_2020_2025.csv + Internet_Banking_2020_2025.csv"
         caveat = "Comparação nacional agregada por canal." if st.session_state.lang == "PT" else "National channel-level aggregate comparison."
+    elif q_id == "atm_wallet_withdrawals_trend":
+        bridge = build_wallet_bridge_annual()
+        if bridge.empty:
+            answer = (
+                "Sem histórico suficiente para levantamentos ATM ligados a telemóveis."
+                if st.session_state.lang == "PT"
+                else "Insufficient history for ATM withdrawals linked to mobile-wallet funds."
+            )
+        else:
+            v_col = "ATM_Wallet_Withdrawals_Value"
+            q_col = "ATM_Wallet_Withdrawals_Volume"
+            first = bridge.iloc[0]
+            last = bridge.iloc[-1]
+            v_pct = ((last[v_col] - first[v_col]) / first[v_col] * 100) if first[v_col] > 0 else 0.0
+            q_pct = ((last[q_col] - first[q_col]) / first[q_col] * 100) if first[q_col] > 0 else 0.0
+            direction = (
+                ("crescimento" if v_pct >= 0 else "redução")
+                if st.session_state.lang == "PT"
+                else ("growth" if v_pct >= 0 else "decline")
+            )
+            answer = (
+                f"Há {direction}: no período {int(first['Year'])}-{int(last['Year'])}, o valor variou {v_pct:+.1f}% e o volume {q_pct:+.1f}%."
+                if st.session_state.lang == "PT"
+                else f"There is a {direction} pattern: from {int(first['Year'])} to {int(last['Year'])}, value changed {v_pct:+.1f}% and volume {q_pct:+.1f}%."
+            )
+            fig = go.Figure()
+            fig.add_bar(
+                x=bridge["Year"],
+                y=bridge[v_col],
+                name="Valor" if st.session_state.lang == "PT" else "Value",
+                marker_color="#2563eb",
+            )
+            fig.add_scatter(
+                x=bridge["Year"],
+                y=bridge[q_col],
+                name="Volume",
+                mode="lines+markers",
+                yaxis="y2",
+                line=dict(color="#16a34a", width=3),
+            )
+            fig.update_layout(
+                title=(
+                    "Levantamentos ATM de fundos em telemóveis: valor e volume"
+                    if st.session_state.lang == "PT"
+                    else "ATM withdrawals of mobile-wallet funds: value and volume"
+                ),
+                yaxis=dict(rangemode="tozero"),
+                yaxis2=dict(overlaying="y", side="right", rangemode="tozero"),
+                xaxis=dict(dtick=1),
+                legend=dict(orientation="h", y=1.08, x=0),
+            )
+            chart = fig
+        source = "transactions_val_2020_2025.csv + transactions_vol_2020_2025.csv"
+        caveat = (
+            "Leitura nacional agregada da ponte ATM↔carteira móvel; não implica causalidade."
+            if st.session_state.lang == "PT"
+            else "National aggregate ATM↔mobile-wallet bridge reading; does not imply causality."
+        )
+    elif q_id == "mb_to_wallet_trend":
+        bridge = build_wallet_bridge_annual()
+        if bridge.empty:
+            answer = (
+                "Sem histórico suficiente para transferências Mobile Banking para telemóveis."
+                if st.session_state.lang == "PT"
+                else "Insufficient history for Mobile Banking transfers to mobile numbers."
+            )
+        else:
+            v_col = "MB_To_Wallet_Value"
+            q_col = "MB_To_Wallet_Volume"
+            first = bridge.iloc[0]
+            last = bridge.iloc[-1]
+            v_pct = ((last[v_col] - first[v_col]) / first[v_col] * 100) if first[v_col] > 0 else 0.0
+            q_pct = ((last[q_col] - first[q_col]) / first[q_col] * 100) if first[q_col] > 0 else 0.0
+            direction = (
+                ("crescimento" if v_pct >= 0 else "redução")
+                if st.session_state.lang == "PT"
+                else ("growth" if v_pct >= 0 else "decline")
+            )
+            answer = (
+                f"Observa-se {direction}: entre {int(first['Year'])} e {int(last['Year'])}, o valor variou {v_pct:+.1f}% e o volume {q_pct:+.1f}%."
+                if st.session_state.lang == "PT"
+                else f"A {direction} pattern is observed: between {int(first['Year'])} and {int(last['Year'])}, value changed {v_pct:+.1f}% and volume changed {q_pct:+.1f}%."
+            )
+            mb_long = bridge.melt(
+                id_vars=["Year"],
+                value_vars=[v_col, q_col],
+                var_name="Metric",
+                value_name="Value",
+            )
+            metric_labels = {
+                v_col: "Valor" if st.session_state.lang == "PT" else "Value",
+                q_col: "Volume",
+            }
+            mb_long["Metric"] = mb_long["Metric"].map(metric_labels)
+            chart = px.line(
+                mb_long,
+                x="Year",
+                y="Value",
+                color="Metric",
+                markers=True,
+                title=(
+                    "Mobile Banking para telemóveis: evolução anual"
+                    if st.session_state.lang == "PT"
+                    else "Mobile Banking to mobile numbers: annual trend"
+                ),
+            )
+            chart.update_layout(xaxis=dict(dtick=1), yaxis=dict(rangemode="tozero"))
+        source = "Mobile_Banking_2020_2025.csv"
+        caveat = (
+            "Indicador de Mobile Banking refere-se a aplicações bancárias e não ao total de contas de carteira móvel."
+            if st.session_state.lang == "PT"
+            else "Mobile Banking indicator refers to bank apps, not total mobile-wallet accounts."
+        )
     elif q_id in {"official_accounts_change", "official_cards_change"}:
         indicator = "Contas bancárias (por 100 adultos)" if q_id == "official_accounts_change" else "Cartões bancários (por 100 adultos)"
         idf = fi_indicators_df[fi_indicators_df["Indicator"].astype(str).apply(lambda x: _norm_key(x) == _norm_key(indicator))].copy()
@@ -904,12 +1079,12 @@ def render_deterministic_qa_panel(opp_df: pd.DataFrame | None = None, key_prefix
             )
             chart.update_layout(yaxis=dict(rangemode="tozero"))
         else:
-            answer = "Sem dados de oportunidade no recorte atual." if st.session_state.lang == "PT" else "No opportunity data for current scope."
+            answer = "Sem dados de oportunidade no recorte actual." if st.session_state.lang == "PT" else "No opportunity data for current scope."
         source = "Opportunity score (derived from Mobile Wallet + stock + infrastructure datasets)"
         caveat = "Pontuação de priorização, não causalidade." if st.session_state.lang == "PT" else "Prioritization score, not causality."
     elif q_id == "incm_top_index":
         if incm_benchmark_q.empty:
-            answer = "Sem dados INCM/IME suficientes no recorte atual." if st.session_state.lang == "PT" else "Insufficient INCM/IME data in current scope."
+            answer = "Sem dados INCM/IME suficientes no recorte actual." if st.session_state.lang == "PT" else "Insufficient INCM/IME data in current scope."
         else:
             top = incm_benchmark_q.sort_values("IME_INCM_Index_per_100", ascending=False)
             prov = str(top.iloc[0]["Province"])
@@ -939,7 +1114,7 @@ def render_deterministic_qa_panel(opp_df: pd.DataFrame | None = None, key_prefix
         )
     elif q_id == "incm_low_agent_capacity":
         if incm_benchmark_q.empty:
-            answer = "Sem dados INCM/IME suficientes no recorte atual." if st.session_state.lang == "PT" else "Insufficient INCM/IME data in current scope."
+            answer = "Sem dados INCM/IME suficientes no recorte actual." if st.session_state.lang == "PT" else "Insufficient INCM/IME data in current scope."
         else:
             low = incm_benchmark_q.sort_values("Agents_per_10k_Mobile", ascending=True)
             prov = str(low.iloc[0]["Province"])
@@ -1610,6 +1785,122 @@ with tab_overview:
             plot_chart(fig_ov_opp, use_container_width=True)
 
     st.markdown("---")
+    st.subheader(
+        "Relação Banca ↔ Carteira Móvel" if st.session_state.lang == "PT" else "Banking ↔ Mobile Wallet Relationship",
+        help=(
+            "Compara transferências de Mobile Banking para telemóveis com levantamentos ATM de fundos depositados em telemóveis."
+            if st.session_state.lang == "PT"
+            else "Compares Mobile Banking transfers to mobile numbers against ATM withdrawals of mobile-wallet funds."
+        ),
+    )
+    st.caption(
+        "Leitura nacional agregada para acompanhar sinal de entrada (bank-to-wallet) e saída (wallet-to-cash)."
+        if st.session_state.lang == "PT"
+        else "National aggregate view to track inflow (bank-to-wallet) and outflow (wallet-to-cash) signals."
+    )
+
+    bridge_annual = build_wallet_bridge_annual()
+    if bridge_annual.empty:
+        st.info(
+            "Sem histórico suficiente para análise de relação entre canais."
+            if st.session_state.lang == "PT"
+            else "Insufficient history for cross-channel relationship analysis."
+        )
+    else:
+        bridge_row = bridge_annual[bridge_annual["Year"] == selected_year]
+        if bridge_row.empty:
+            bridge_row = bridge_annual.tail(1)
+        bridge_row = bridge_row.iloc[0]
+
+        bridge_m1, bridge_m2, bridge_m3 = st.columns(3)
+        bridge_m1.metric(
+            "Transferências MB → telemóveis (valor)" if st.session_state.lang == "PT" else "MB transfers → mobile (value)",
+            format_compact(float(bridge_row["MB_To_Wallet_Value"])),
+        )
+        bridge_m2.metric(
+            "Levantamentos ATM de fundos em telemóveis (valor)" if st.session_state.lang == "PT" else "ATM withdrawals of mobile-wallet funds (value)",
+            format_compact(float(bridge_row["ATM_Wallet_Withdrawals_Value"])),
+        )
+        cashout_ratio = (
+            float(bridge_row["ATM_Wallet_Withdrawals_Value"]) / float(bridge_row["MB_To_Wallet_Value"])
+            if float(bridge_row["MB_To_Wallet_Value"]) > 0
+            else math.nan
+        )
+        bridge_m3.metric(
+            "Rácio saída/entrada" if st.session_state.lang == "PT" else "Outflow/inflow ratio",
+            "N/A" if math.isnan(cashout_ratio) else f"{cashout_ratio:.2f}x",
+        )
+
+        bridge_c1, bridge_c2 = st.columns(2)
+        with bridge_c1:
+            value_long = bridge_annual.melt(
+                id_vars=["Year"],
+                value_vars=["MB_To_Wallet_Value", "ATM_Wallet_Withdrawals_Value"],
+                var_name="Metric",
+                value_name="Value",
+            )
+            value_labels = {
+                "MB_To_Wallet_Value": "MB → telemóveis" if st.session_state.lang == "PT" else "MB → mobile",
+                "ATM_Wallet_Withdrawals_Value": (
+                    "Levantamentos ATM (fundos em telemóveis)"
+                    if st.session_state.lang == "PT"
+                    else "ATM withdrawals (mobile-wallet funds)"
+                ),
+            }
+            value_long["Metric"] = value_long["Metric"].map(value_labels)
+            fig_bridge_value = px.line(
+                value_long,
+                x="Year",
+                y="Value",
+                color="Metric",
+                markers=True,
+                title=(
+                    "Série anual (valor)"
+                    if st.session_state.lang == "PT"
+                    else "Annual series (value)"
+                ),
+            )
+            fig_bridge_value.update_layout(xaxis=dict(dtick=1), yaxis=dict(rangemode="tozero"))
+            plot_chart(fig_bridge_value, use_container_width=True)
+
+        with bridge_c2:
+            vol_long = bridge_annual.melt(
+                id_vars=["Year"],
+                value_vars=["MB_To_Wallet_Volume", "ATM_Wallet_Withdrawals_Volume"],
+                var_name="Metric",
+                value_name="Value",
+            )
+            vol_labels = {
+                "MB_To_Wallet_Volume": "MB → telemóveis" if st.session_state.lang == "PT" else "MB → mobile",
+                "ATM_Wallet_Withdrawals_Volume": (
+                    "Levantamentos ATM (fundos em telemóveis)"
+                    if st.session_state.lang == "PT"
+                    else "ATM withdrawals (mobile-wallet funds)"
+                ),
+            }
+            vol_long["Metric"] = vol_long["Metric"].map(vol_labels)
+            fig_bridge_vol = px.line(
+                vol_long,
+                x="Year",
+                y="Value",
+                color="Metric",
+                markers=True,
+                title=(
+                    "Série anual (volume)"
+                    if st.session_state.lang == "PT"
+                    else "Annual series (volume)"
+                ),
+            )
+            fig_bridge_vol.update_layout(xaxis=dict(dtick=1), yaxis=dict(rangemode="tozero"))
+            plot_chart(fig_bridge_vol, use_container_width=True)
+
+        st.caption(
+            "Nota: a leitura mostra co-movimento estatístico entre séries; não estabelece relação causal."
+            if st.session_state.lang == "PT"
+            else "Note: this is a statistical co-movement reading between series; it does not establish causality."
+        )
+
+    st.markdown("---")
     render_deterministic_qa_panel(opp_df=opp_df_overview, key_prefix="overview")
     render_page_caveats()
 
@@ -1701,6 +1992,7 @@ with tab_ime:
         all_month_fallback = (
             "Dezembro" if "Dezembro" in available_months else (available_months[-1] if available_months else None)
         )
+        # Note to self: 'Todos' is for trends; stock KPIs/rankings must still anchor to one month (December first).
 
         tx_metric_col = "Value" if ime_measure == T("value") else "Volume"
 
@@ -1857,7 +2149,7 @@ with tab_ime:
             plot_chart(fig_incm, use_container_width=True)
         else:
             st.info(
-                "Sem dados INCM no recorte geográfico atual."
+                "Sem dados INCM no recorte geográfico actual."
                 if st.session_state.lang == "PT"
                 else "No INCM data for current geographic scope."
             )
@@ -2396,14 +2688,14 @@ with tab_channels:
     if usage_view == usage_opt_digital:
         st.caption(T("caption_digital"))
         mobile_context_pt = (
-            "ℹ️ Contexto metodológico (Moçambique): o indicador de Mobile Banking pode incluir utilizadores de "
-            "M-Pesa, mKesh, e-Mola e Conta Móvel. Como as plataformas são contabilizadas por conta/serviço, "
-            "uma mesma pessoa pode ter registo em mais de uma plataforma."
+            "ℹ️ Contexto metodológico (Moçambique): no ficheiro Banca Electrónica, o indicador de Mobile Banking "
+            "refere-se exclusivamente às aplicações móveis da banca comercial (ex.: NetPlus, IZI, Daki). "
+            "Não inclui carteiras móveis IME (M-Pesa, mKesh, e-Mola, Conta Móvel)."
         )
         mobile_context_en = (
-            "ℹ️ Methodology context (Mozambique): the Mobile Banking indicator may include users from "
-            "M-Pesa, mKesh, e-Mola, and Conta Móvel. Because platforms are counted by account/service, "
-            "one person may appear in more than one platform."
+            "ℹ️ Methodology context (Mozambique): in the Banca Electrónica file, the Mobile Banking indicator "
+            "refers only to commercial bank mobile apps (e.g., NetPlus, IZI, Daki). "
+            "It does not include IME mobile wallets (M-Pesa, mKesh, e-Mola, Conta Móvel)."
         )
         st.info(mobile_context_pt if st.session_state.lang == "PT" else mobile_context_en)
 
