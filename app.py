@@ -260,7 +260,7 @@ def clean_ime_district_rows(df: pd.DataFrame) -> pd.DataFrame:
 
 
 # ── Data loading (cached so Streamlit doesn't re-read CSVs on every rerun) ──
-CACHE_VERSION = "2026-02-16-maputo-province-v3"
+CACHE_VERSION = "2026-02-17-ime-province-boundary-v4"
 
 
 @st.cache_data
@@ -574,7 +574,7 @@ def apply_geo_only(df):
 filtered_data = {key: apply_filters(df) for key, df in dataframes.items() if key in ['accounts', 'cards', 'atm', 'pos']}
 f_acc, f_card, f_atm, f_pos = filtered_data["accounts"], filtered_data["cards"], filtered_data["atm"], filtered_data["pos"]
 
-# Stock-metric snapshots: last month only (for KPIs, totals, per-capita)
+# Stock-metric snapshots: strict December only (for KPIs, totals, per-capita)
 f_acc_snap = last_month_snapshot(f_acc)
 f_card_snap = last_month_snapshot(f_card)
 f_atm_snap = last_month_snapshot(f_atm)
@@ -644,10 +644,10 @@ def render_deterministic_qa_panel(opp_df: pd.DataFrame | None = None, key_prefix
         ("Que província tem menor capacidade de agentes por 10 mil subscritores móveis?", "incm_low_agent_capacity"),
         ("Qual a quota feminina de contas e cartões no recorte atual?", "gender_shares"),
         ("Qual a quota da faixa 17-21 em contas e cartões no recorte atual?", "age_17_21_shares"),
-        ("[Stock] Quantas contas existem no último snapshot?", "stock_accounts"),
-        ("[Stock] Quantos cartões existem no último snapshot?", "stock_cards"),
-        ("[Stock] Quantos ATM existem no último snapshot?", "stock_atm"),
-        ("[Stock] Quantos POS existem no último snapshot?", "stock_pos"),
+        ("[Stock] Quantas contas existem no snapshot de Dezembro?", "stock_accounts"),
+        ("[Stock] Quantos cartões existem no snapshot de Dezembro?", "stock_cards"),
+        ("[Stock] Quantos ATM existem no snapshot de Dezembro?", "stock_atm"),
+        ("[Stock] Quantos POS existem no snapshot de Dezembro?", "stock_pos"),
         ("[Stock] Que província lidera em ATM no recorte atual?", "stock_top_atm_prov"),
         ("[Stock] Que província lidera em POS no recorte atual?", "stock_top_pos_prov"),
     ]
@@ -662,10 +662,10 @@ def render_deterministic_qa_panel(opp_df: pd.DataFrame | None = None, key_prefix
         ("Which province has the lowest agent capacity per 10k mobile subscribers?", "incm_low_agent_capacity"),
         ("What is the female share in accounts and cards for the current scope?", "gender_shares"),
         ("What is the 17-21 age share in accounts and cards for the current scope?", "age_17_21_shares"),
-        ("[Stock] How many accounts exist in the latest snapshot?", "stock_accounts"),
-        ("[Stock] How many cards exist in the latest snapshot?", "stock_cards"),
-        ("[Stock] How many ATMs exist in the latest snapshot?", "stock_atm"),
-        ("[Stock] How many POS exist in the latest snapshot?", "stock_pos"),
+        ("[Stock] How many accounts exist in the December snapshot?", "stock_accounts"),
+        ("[Stock] How many cards exist in the December snapshot?", "stock_cards"),
+        ("[Stock] How many ATMs exist in the December snapshot?", "stock_atm"),
+        ("[Stock] How many POS exist in the December snapshot?", "stock_pos"),
         ("[Stock] Which province leads ATM count in the current scope?", "stock_top_atm_prov"),
         ("[Stock] Which province leads POS count in the current scope?", "stock_top_pos_prov"),
     ]
@@ -706,7 +706,7 @@ def render_deterministic_qa_panel(opp_df: pd.DataFrame | None = None, key_prefix
     incm_benchmark_q = pd.DataFrame()
     if ime_year_q is not None:
         month_series = ime_sub_df[ime_sub_df["Year"] == ime_year_q]["Month"].dropna().astype(str).unique().tolist()
-        month_ref_q = "Junho" if "Junho" in month_series else (max(month_series, key=lambda m: MONTH_RANK.get(m, 0)) if month_series else None)
+        month_ref_q = "Dezembro" if "Dezembro" in month_series else None
         if month_ref_q is not None:
             ime_prov_scope_q = sorted(set(selected_prov) & set(INCM_MOBILE_SUBSCRIBERS_Q2_2025["Province"].astype(str).tolist()))
             sub_prov_q = (
@@ -1034,9 +1034,9 @@ def render_deterministic_qa_panel(opp_df: pd.DataFrame | None = None, key_prefix
     elif q_id == "stock_accounts":
         total_val = f_acc_snap["Total_Accounts"].sum()
         answer = (
-            f"O último snapshot mostra {format_compact(total_val)} contas."
+            f"O snapshot de Dezembro mostra {format_compact(total_val)} contas."
             if st.session_state.lang == "PT"
-            else f"Latest snapshot shows {format_compact(total_val)} accounts."
+            else f"December snapshot shows {format_compact(total_val)} accounts."
         )
         byp = f_acc_snap.groupby("Province", as_index=False)["Total_Accounts"].sum().sort_values("Total_Accounts", ascending=False).head(10)
         chart = px.bar(
@@ -1048,13 +1048,13 @@ def render_deterministic_qa_panel(opp_df: pd.DataFrame | None = None, key_prefix
         )
         chart.update_layout(yaxis=dict(rangemode="tozero"), xaxis_tickangle=-20)
         source = "accounts_2020_2025.csv"
-        caveat = "Stock de fim de período." if st.session_state.lang == "PT" else "End-of-period stock."
+        caveat = "Stock medido pelo valor reportado em Dezembro." if st.session_state.lang == "PT" else "Stock measured using December reported value."
     elif q_id == "stock_cards":
         total_val = f_card_snap["Total_Cards"].sum()
         answer = (
-            f"O último snapshot mostra {format_compact(total_val)} cartões."
+            f"O snapshot de Dezembro mostra {format_compact(total_val)} cartões."
             if st.session_state.lang == "PT"
-            else f"Latest snapshot shows {format_compact(total_val)} cards."
+            else f"December snapshot shows {format_compact(total_val)} cards."
         )
         byp = f_card_snap.groupby("Province", as_index=False)["Total_Cards"].sum().sort_values("Total_Cards", ascending=False).head(10)
         chart = px.bar(
@@ -1066,13 +1066,13 @@ def render_deterministic_qa_panel(opp_df: pd.DataFrame | None = None, key_prefix
         )
         chart.update_layout(yaxis=dict(rangemode="tozero"), xaxis_tickangle=-20)
         source = "cards_2020_2025.csv"
-        caveat = "Stock de fim de período." if st.session_state.lang == "PT" else "End-of-period stock."
+        caveat = "Stock medido pelo valor reportado em Dezembro." if st.session_state.lang == "PT" else "Stock measured using December reported value."
     elif q_id == "stock_atm":
         total_val = f_atm_snap["ATMs_Number"].sum()
         answer = (
-            f"O último snapshot mostra {format_compact(total_val)} ATM."
+            f"O snapshot de Dezembro mostra {format_compact(total_val)} ATM."
             if st.session_state.lang == "PT"
-            else f"Latest snapshot shows {format_compact(total_val)} ATMs."
+            else f"December snapshot shows {format_compact(total_val)} ATMs."
         )
         byp = f_atm_snap.groupby("Province", as_index=False)["ATMs_Number"].sum().sort_values("ATMs_Number", ascending=False).head(10)
         chart = px.bar(
@@ -1084,13 +1084,13 @@ def render_deterministic_qa_panel(opp_df: pd.DataFrame | None = None, key_prefix
         )
         chart.update_layout(yaxis=dict(rangemode="tozero"), xaxis_tickangle=-20)
         source = "ATM_Infrastructure_2020_2025.csv"
-        caveat = "Infraestrutura física reportada." if st.session_state.lang == "PT" else "Reported physical infrastructure."
+        caveat = "Stock medido pelo valor reportado em Dezembro." if st.session_state.lang == "PT" else "Stock measured using December reported value."
     elif q_id == "stock_pos":
         total_val = f_pos_snap["POSs_Number"].sum()
         answer = (
-            f"O último snapshot mostra {format_compact(total_val)} POS."
+            f"O snapshot de Dezembro mostra {format_compact(total_val)} POS."
             if st.session_state.lang == "PT"
-            else f"Latest snapshot shows {format_compact(total_val)} POS."
+            else f"December snapshot shows {format_compact(total_val)} POS."
         )
         byp = f_pos_snap.groupby("Province", as_index=False)["POSs_Number"].sum().sort_values("POSs_Number", ascending=False).head(10)
         chart = px.bar(
@@ -1102,7 +1102,7 @@ def render_deterministic_qa_panel(opp_df: pd.DataFrame | None = None, key_prefix
         )
         chart.update_layout(yaxis=dict(rangemode="tozero"), xaxis_tickangle=-20)
         source = "POS_Infrastructure_2020_2025.csv"
-        caveat = "Infraestrutura física reportada." if st.session_state.lang == "PT" else "Reported physical infrastructure."
+        caveat = "Stock medido pelo valor reportado em Dezembro." if st.session_state.lang == "PT" else "Stock measured using December reported value."
     elif q_id == "stock_top_atm_prov":
         atm_top = f_atm_snap.groupby("Province", as_index=False)["ATMs_Number"].sum().sort_values("ATMs_Number", ascending=False).head(1)
         if atm_top.empty:
@@ -1123,7 +1123,7 @@ def render_deterministic_qa_panel(opp_df: pd.DataFrame | None = None, key_prefix
         )
         chart.update_layout(yaxis=dict(rangemode="tozero"), xaxis_tickangle=-20)
         source = "ATM_Infrastructure_2020_2025.csv"
-        caveat = "Ranking no recorte geográfico atual." if st.session_state.lang == "PT" else "Ranking within current geographic scope."
+        caveat = "Ranking calculado com o valor reportado em Dezembro." if st.session_state.lang == "PT" else "Ranking computed using December reported value."
     elif q_id == "stock_top_pos_prov":
         pos_top = f_pos_snap.groupby("Province", as_index=False)["POSs_Number"].sum().sort_values("POSs_Number", ascending=False).head(1)
         if pos_top.empty:
@@ -1144,7 +1144,7 @@ def render_deterministic_qa_panel(opp_df: pd.DataFrame | None = None, key_prefix
         )
         chart.update_layout(yaxis=dict(rangemode="tozero"), xaxis_tickangle=-20)
         source = "POS_Infrastructure_2020_2025.csv"
-        caveat = "Ranking no recorte geográfico atual." if st.session_state.lang == "PT" else "Ranking within current geographic scope."
+        caveat = "Ranking calculado com o valor reportado em Dezembro." if st.session_state.lang == "PT" else "Ranking computed using December reported value."
 
     st.info(answer)
     if chart is not None:
@@ -1156,15 +1156,15 @@ def render_deterministic_qa_panel(opp_df: pd.DataFrame | None = None, key_prefix
 
 
 # ── Dashboard tabs ──────────────────────────────────────────────────────────
-tab_overview, tab_ime, tab_decision, tab_demo, tab_accounts_cards, tab_infra, tab_channels, tab_trends, tab_forecast = st.tabs(
+tab_overview, tab_ime, tab_decision, tab_demo, tab_channels, tab_accounts_cards, tab_infra, tab_trends, tab_forecast = st.tabs(
     [
         T("tab_overview"),
         T("tab_ime"),
         T("tab_decision"),
         T("tab_demo"),
+        f"{T('tab_digital')} + {T('tab_txn')}",
         f"{T('tab_accounts')} + {T('tab_cards')}",
         T("tab_infra"),
-        f"{T('tab_digital')} + {T('tab_txn')}",
         T("tab_trends"),
         T("tab_forecast"),
     ]
@@ -1196,6 +1196,19 @@ with tab_demo:
     d3.metric(
         "Uso de Internet (%)" if st.session_state.lang == "PT" else "Internet Usage (%)",
         f"{demo_internet_avg:.1f}%",
+    )
+    st.caption(
+        (
+            "ℹ️ A população nesta secção usa o total do Censo 2017 no recorte geográfico seleccionado "
+            "(com Cidade de Maputo agregada em Província de Maputo). Nos indicadores de inclusão financeira, "
+            "o denominador pode ser diferente conforme o cenário 15+/18+/21+."
+        )
+        if st.session_state.lang == "PT"
+        else (
+            "ℹ️ Population in this section uses Census 2017 totals for the selected geographic scope "
+            "(with Cidade de Maputo aggregated into Província de Maputo). Financial inclusion indicators may "
+            "use a different denominator depending on the 15+/18+/21+ scenario."
+        )
     )
 
     # --- Population overview bar chart ---
@@ -1255,14 +1268,14 @@ with tab_demo:
         ),
     )
 
-    # Compute per-capita from the latest year banking data (last month snapshot only)
+    # Compute per-capita from the latest year banking data (December snapshot only)
     latest_year = max(all_years)
     latest_acc = acc_df[acc_df['Year'] == latest_year]
     latest_card = card_df[card_df['Year'] == latest_year]
     latest_atm = atm_df[atm_df['Year'] == latest_year]
     latest_pos = pos_df[pos_df['Year'] == latest_year]
 
-    # Use last-month snapshot to avoid 12x inflation on stock metrics
+    # Use strict December snapshot to avoid 12x inflation on stock metrics
     latest_acc = last_month_snapshot(latest_acc)
     latest_card = last_month_snapshot(latest_card)
     latest_atm = last_month_snapshot(latest_atm)
@@ -1488,15 +1501,13 @@ with tab_overview:
         ime_year_overview = int(pd.to_numeric(ime_sub_df["Year"], errors="coerce").dropna().max())
         ime_sub_scope = apply_geo_only(ime_sub_df[ime_sub_df["Year"] == ime_year_overview].copy())
         if not ime_sub_scope.empty:
-            ime_sub_scope["Month_Ord"] = ime_sub_scope["Month"].astype(str).map(MONTH_RANK)
-            ime_sub_scope = ime_sub_scope[ime_sub_scope["Month_Ord"] == ime_sub_scope["Month_Ord"].max()]
+            ime_sub_scope = ime_sub_scope[ime_sub_scope["Month"].astype(str) == "Dezembro"]
             wallet_subs_total = float(ime_sub_scope["Subscribers"].sum())
     if not ime_agents_df.empty:
         ime_year_agents = int(pd.to_numeric(ime_agents_df["Year"], errors="coerce").dropna().max())
         ime_agents_scope = apply_geo_only(ime_agents_df[ime_agents_df["Year"] == ime_year_agents].copy())
         if not ime_agents_scope.empty:
-            ime_agents_scope["Month_Ord"] = ime_agents_scope["Month"].astype(str).map(MONTH_RANK)
-            ime_agents_scope = ime_agents_scope[ime_agents_scope["Month_Ord"] == ime_agents_scope["Month_Ord"].max()]
+            ime_agents_scope = ime_agents_scope[ime_agents_scope["Month"].astype(str) == "Dezembro"]
             wallet_agents_total = float(ime_agents_scope["Agents"].sum())
 
     mobile_value_total = float(
@@ -1713,20 +1724,34 @@ with tab_ime:
         tx_geo = _ime_geo_filter(tx_year)
 
         if ime_month is not None:
-            sub_month = sub_geo[sub_geo["Month"].astype(str) == ime_month].copy()
-            ag_month = ag_geo[ag_geo["Month"].astype(str) == ime_month].copy()
             tx_month = tx_geo[tx_geo["Month"].astype(str) == ime_month].copy()
         else:
-            sub_month = sub_geo.copy()
-            ag_month = ag_geo.copy()
             tx_month = tx_geo.copy()
 
-        subs_total = sub_month["Subscribers"].sum() if "Subscribers" in sub_month.columns else 0
-        agents_total = ag_month["Agents"].sum() if "Agents" in ag_month.columns else 0
+        stock_month_ref = ime_month if ime_month is not None else ("Dezembro" if "Dezembro" in available_months else None)
+        sub_stock = (
+            sub_geo[sub_geo["Month"].astype(str) == stock_month_ref].copy()
+            if stock_month_ref is not None
+            else pd.DataFrame(columns=sub_geo.columns)
+        )
+        ag_stock = (
+            ag_geo[ag_geo["Month"].astype(str) == stock_month_ref].copy()
+            if stock_month_ref is not None
+            else pd.DataFrame(columns=ag_geo.columns)
+        )
+
+        subs_total = sub_stock["Subscribers"].sum() if "Subscribers" in sub_stock.columns else 0
+        agents_total = ag_stock["Agents"].sum() if "Agents" in ag_stock.columns else 0
         tx_types = ["Depósitos", "Levantamentos", "Transferências", "Pagamentos"]
         tx_totals = {
             t: float(tx_month.loc[tx_month["Transaction_Type"] == t, tx_metric_col].sum()) for t in tx_types
         }
+        if stock_month_ref is None:
+            st.info(
+                "Sem dados de Dezembro para indicadores de stock (Subscritores/Agentes)."
+                if st.session_state.lang == "PT"
+                else "No December data found for stock indicators (Subscribers/Agents)."
+            )
 
         k1, k2, k3 = st.columns(3)
         k4, k5, k6 = st.columns(3)
@@ -1747,6 +1772,19 @@ with tab_ime:
         k6.metric(
             f"Pagamentos ({ime_measure})",
             format_compact(tx_totals["Pagamentos"]),
+        )
+        st.caption(
+            (
+                f"ℹ️ Subscritores e Agentes (stock) usam o valor reportado em {localize_month(stock_month_ref)}."
+                if stock_month_ref is not None
+                else "ℹ️ Subscritores e Agentes (stock) sem mês de referência disponível."
+            )
+            if st.session_state.lang == "PT"
+            else (
+                f"ℹ️ Subscribers and Agents (stock) use the reported value from {localize_month(stock_month_ref)}."
+                if stock_month_ref is not None
+                else "ℹ️ Subscribers and Agents (stock) have no reference month available."
+            )
         )
 
         st.markdown("---")
@@ -1797,7 +1835,7 @@ with tab_ime:
                 else "No INCM data for current geographic scope."
             )
 
-        ratio_month_ref = "Junho" if "Junho" in available_months else (ime_month if ime_month else (available_months[-1] if available_months else None))
+        ratio_month_ref = stock_month_ref
         if ratio_month_ref is not None:
             sub_prov_ref = (
                 sub_year[(sub_year["Province"].isin(ime_prov)) & (sub_year["Month"].astype(str) == ratio_month_ref)]
@@ -1907,8 +1945,8 @@ with tab_ime:
         with c1:
             group_axis = "District" if use_district_axis else "Province"
             eff_df = pd.merge(
-                sub_month.groupby(group_axis, as_index=False)["Subscribers"].sum(),
-                ag_month.groupby(group_axis, as_index=False)["Agents"].sum(),
+                sub_stock.groupby(group_axis, as_index=False)["Subscribers"].sum(),
+                ag_stock.groupby(group_axis, as_index=False)["Agents"].sum(),
                 on=group_axis,
                 how="outer",
             )
@@ -1974,9 +2012,9 @@ with tab_ime:
                 key="ime_top_metric",
             )
             if top_metric in ["Subscritores", "Subscribers"]:
-                top_df = sub_month.groupby("District", as_index=False)["Subscribers"].sum().rename(columns={"Subscribers": "Total"})
+                top_df = sub_stock.groupby("District", as_index=False)["Subscribers"].sum().rename(columns={"Subscribers": "Total"})
             elif top_metric in ["Agentes", "Agents"]:
-                top_df = ag_month.groupby("District", as_index=False)["Agents"].sum().rename(columns={"Agents": "Total"})
+                top_df = ag_stock.groupby("District", as_index=False)["Agents"].sum().rename(columns={"Agents": "Total"})
             else:
                 tx_label_map = {
                     f"Depósitos ({ime_measure})": "Depósitos",
@@ -2284,11 +2322,12 @@ with tab_infra:
     i2.metric(T("num_pos"), format_compact(curr_pos_total))
     i3.metric("POS/ATM", f"{infra_ratio:.1f}")
 
-    # Per-capita infrastructure from census (last-month snapshot)
-    if total_pop_sel > 0:
+    # Per-capita infrastructure from census (December snapshot)
+    infra_pop_sel = denominator_population(census_df[census_df["Province"].isin(selected_prov)], selected_year)
+    if infra_pop_sel > 0:
         inf_k1, inf_k2 = st.columns(2)
-        inf_k1.metric(T("atm_per_100k"), f"{curr_atm_total / total_pop_sel * 100_000:.1f}")
-        inf_k2.metric(T("pos_per_100k"), f"{curr_pos_total / total_pop_sel * 100_000:.1f}")
+        inf_k1.metric(T("atm_per_100k"), f"{curr_atm_total / infra_pop_sel * 100_000:.1f}")
+        inf_k2.metric(T("pos_per_100k"), f"{curr_pos_total / infra_pop_sel * 100_000:.1f}")
         st.caption(T("census_note_short"))
         st.caption(f"ℹ️ {inclusion_method_note(selected_year)}")
 
@@ -3488,11 +3527,9 @@ with tab_decision:
                 latest_m = tx_cmp["Month_Ord"].max()
                 tx_cmp = tx_cmp[tx_cmp["Month_Ord"] == latest_m].copy()
             if not sub_cmp.empty:
-                sub_cmp["Month_Ord"] = sub_cmp["Month"].astype(str).map(MONTH_RANK)
-                sub_cmp = sub_cmp[sub_cmp["Month_Ord"] == sub_cmp["Month_Ord"].max()].copy()
+                sub_cmp = sub_cmp[sub_cmp["Month"].astype(str) == "Dezembro"].copy()
             if not ag_cmp.empty:
-                ag_cmp["Month_Ord"] = ag_cmp["Month"].astype(str).map(MONTH_RANK)
-                ag_cmp = ag_cmp[ag_cmp["Month_Ord"] == ag_cmp["Month_Ord"].max()].copy()
+                ag_cmp = ag_cmp[ag_cmp["Month"].astype(str) == "Dezembro"].copy()
 
             def _dist_sum(df: pd.DataFrame, value_col: str) -> dict[str, float]:
                 if df.empty or value_col not in df.columns:

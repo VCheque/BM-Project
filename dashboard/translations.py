@@ -93,19 +93,19 @@ _TRANSLATIONS = {
     "model_moderate": {"PT": "⚠️ Ajuste do modelo: **Moderado** — as previsões devem ser interpretadas com cautela.", "EN": "⚠️ Model fit: **Moderate** — forecasts should be interpreted with caution."},
     "model_weak": {"PT": "❌ Ajuste do modelo: **Fraco** — os dados apresentam padrões não lineares complexos. Use o simulador manual como alternativa.", "EN": "❌ Model fit: **Weak** — data shows complex non-linear patterns. Use the manual simulator as an alternative."},
     "insufficient_data": {"PT": "Dados insuficientes para previsão (necessário pelo menos 3 observações mensais).", "EN": "Insufficient data for forecasting (at least 3 monthly observations required)."},
-    "stock_label": {"PT": "stock (fim de período)", "EN": "stock (end of period)"},
+    "stock_label": {"PT": "stock (valor reportado em Dezembro)", "EN": "stock (December reported value)"},
     "flow_label": {"PT": "fluxo (soma anual)", "EN": "flow (annual sum)"},
     # Methodology
     "methodology": {
         "PT": (
             "As previsões são calculadas através de regressão polinomial de grau 2 aplicada à série temporal mensal "
-            "de cada indicador. Para indicadores de stock (contas, cartões, ATMs, POS), utiliza-se o valor de "
-            "fim de período; para indicadores de fluxo (transacções), utiliza-se a soma anual. "
+            "de cada indicador. Para indicadores de stock (contas, cartões, ATMs, POS), utiliza-se o valor "
+            "reportado em Dezembro; para indicadores de fluxo (transacções), utiliza-se a soma anual. "
             "A banda de confiança a 95% (±1,96σ) reflecte a dispersão dos resíduos do modelo."
         ),
         "EN": (
             "📐 **Methodology** — Forecasts use **degree-2 polynomial regression** on monthly time series. "
-            "For *stock* indicators (accounts, cards, ATMs, POS), end-of-period values are used; "
+            "For *stock* indicators (accounts, cards, ATMs, POS), December reported values are used; "
             "for *flow* indicators (transactions), annual sums are used. "
             "The 95% confidence band (±1.96σ) reflects the dispersion of model residuals."
         ),
@@ -162,8 +162,8 @@ _TRANSLATIONS = {
     },
     # Demographic Context page
     "census_source": {
-        "PT": "📋 **Fonte demográfica:** IV Recenseamento Geral da População e Habitação, 2017 — Instituto Nacional de Estatística (INE). População de referência: 1 de Agosto de 2017 (27,9 milhões).",
-        "EN": "📋 **Demographic source:** IV General Census of Population and Housing, 2017 — National Statistics Institute (INE). Reference population: 1 August 2017 (27.9 million)."
+        "PT": "📋 **Fonte demográfica:** IV Recenseamento Geral da População e Habitação, 2017 — Instituto Nacional de Estatística (INE).",
+        "EN": "📋 **Demographic source:** IV General Census of Population and Housing, 2017 — National Statistics Institute (INE)."
     },
     "population_by_province": {"PT": "População por Província (Censo 2017)", "EN": "Population by Province (Census 2017)"},
     "gender_split": {"PT": "Distribuição por Género", "EN": "Gender Distribution"},

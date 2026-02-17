@@ -79,7 +79,12 @@ PROVINCE_NAMES = {
     "Inhambane",
     "Gaza",
     "Província de Maputo",
-    "Cidade de Maputo",
+}
+
+GEO_NAME_ALIASES = {
+    "Cabo-Delgado": "Cabo Delgado",
+    "Cidade de de Maputo": "Cidade de Maputo",
+    "Zambezia": "Zambézia",
 }
 
 # Province-level census aggregates aligned to the banking geography used by the app.
@@ -321,6 +326,20 @@ def _normalize_month(month_token: str) -> str | None:
     return None
 
 
+def _normalize_geo_label(raw_label) -> str | None:
+    if pd.isna(raw_label):
+        return None
+    token = str(raw_label).strip()
+    if not token or token.lower() == "nan":
+        return None
+    return GEO_NAME_ALIASES.get(token, token)
+
+
+def _is_province_header(name: str, current_province: str | None) -> bool:
+    # Province blocks are identified by label transitions; this avoids relying on blank separators.
+    return name in PROVINCE_NAMES and name != current_province
+
+
 def _extract_ime_volume_value_sheet(
     source_path: Path,
     sheet_name: str,
@@ -355,21 +374,12 @@ def _extract_ime_volume_value_sheet(
     records: list[dict] = []
     current_province: str | None = None
 
-    for pos, row in table.iterrows():
-        raw_name = row.iloc[0]
-        if pd.isna(raw_name):
-            continue
-        name = str(raw_name).strip()
-        if not name or name.lower() == "nan":
+    for _, row in table.iterrows():
+        name = _normalize_geo_label(row.iloc[0])
+        if name is None:
             continue
 
-        prev_blank = True
-        if pos > table.index.min():
-            prev_raw = table.at[pos - 1, 0]
-            prev_blank = pd.isna(prev_raw) or str(prev_raw).strip() in {"", "0"}
-
-        is_province_header = name in PROVINCE_NAMES and (pos == table.index.min() or prev_blank)
-        if is_province_header:
+        if _is_province_header(name, current_province):
             current_province = name
             continue
         if current_province is None:
@@ -413,21 +423,12 @@ def _extract_ime_agents_sheet(source_path: Path, year: int = 2025) -> pd.DataFra
     records: list[dict] = []
     current_province: str | None = None
 
-    for pos, row in table.iterrows():
-        raw_name = row.iloc[0]
-        if pd.isna(raw_name):
-            continue
-        name = str(raw_name).strip()
-        if not name or name.lower() == "nan":
+    for _, row in table.iterrows():
+        name = _normalize_geo_label(row.iloc[0])
+        if name is None:
             continue
 
-        prev_blank = True
-        if pos > table.index.min():
-            prev_raw = table.at[pos - 1, 0]
-            prev_blank = pd.isna(prev_raw) or str(prev_raw).strip() in {"", "0"}
-
-        is_province_header = name in PROVINCE_NAMES and (pos == table.index.min() or prev_blank)
-        if is_province_header:
+        if _is_province_header(name, current_province):
             current_province = name
             continue
         if current_province is None:
@@ -472,21 +473,12 @@ def _extract_ime_subscribers_demographics(source_path: Path, year: int = 2025) -
     current_province: str | None = None
     age_labels = ["0 a 16", "17 a 21", "22 a 60", "Mais de 60"]
 
-    for pos, row in table.iterrows():
-        raw_name = row.iloc[0]
-        if pd.isna(raw_name):
-            continue
-        name = str(raw_name).strip()
-        if not name or name.lower() == "nan":
+    for _, row in table.iterrows():
+        name = _normalize_geo_label(row.iloc[0])
+        if name is None:
             continue
 
-        prev_blank = True
-        if pos > table.index.min():
-            prev_raw = table.at[pos - 1, 0]
-            prev_blank = pd.isna(prev_raw) or str(prev_raw).strip() in {"", "0"}
-
-        is_province_header = name in PROVINCE_NAMES and (pos == table.index.min() or prev_blank)
-        if is_province_header:
+        if _is_province_header(name, current_province):
             current_province = name
             continue
         if current_province is None:
@@ -614,21 +606,12 @@ def export_access_points_2025q3_csv(
 
     records: list[dict] = []
     current_province: str | None = None
-    for pos, row in table.iterrows():
-        raw_name = row.iloc[0]
-        if pd.isna(raw_name):
-            continue
-        name = str(raw_name).strip()
-        if not name or name.lower() == "nan":
+    for _, row in table.iterrows():
+        name = _normalize_geo_label(row.iloc[0])
+        if name is None:
             continue
 
-        prev_blank = True
-        if pos > table.index.min():
-            prev_raw = table.at[pos - 1, 0]
-            prev_blank = pd.isna(prev_raw) or str(prev_raw).strip() == ""
-
-        is_province_header = name in PROVINCE_NAMES and (pos == table.index.min() or prev_blank)
-        if is_province_header:
+        if _is_province_header(name, current_province):
             current_province = name
             level = "Province"
             district_val = None
@@ -828,6 +811,9 @@ def postprocess_csv(path: Path) -> None:
                 "Cabo-Delgado": "Cabo Delgado",
             }
         )
+    if "Province" in df.columns:
+        df["Province"] = df["Province"].astype(str).str.strip().replace(GEO_NAME_ALIASES)
+    if "District" in df.columns:
         if "Province" in df.columns:
             maputo_city_mask = (df["Province"] == "Província de Maputo") & (df["District"] == "Maputo")
             df.loc[maputo_city_mask, "District"] = "Cidade de Maputo"

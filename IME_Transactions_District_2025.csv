@@ -1463,222 +1463,210 @@ Year,Month,Province,District,Transaction_Type,Volume,Value
 2025,Outubro,Nampula,Larde,Depósitos,27977.0,17631505.0
 2025,Novembro,Nampula,Larde,Depósitos,28461.0,10653937.0
 2025,Dezembro,Nampula,Larde,Depósitos,26804.0,9339870.0
-2025,Janeiro,Nampula,Cabo-Delgado,Depósitos,4658330.0,2939557717.54
-2025,Fevereiro,Nampula,Cabo-Delgado,Depósitos,4844725.0,3354301004.4900002
-2025,Março,Nampula,Cabo-Delgado,Depósitos,5405705.0,3348519879.25
-2025,Abril,Nampula,Cabo-Delgado,Depósitos,5350665.0,3128024101.36
-2025,Maio,Nampula,Cabo-Delgado,Depósitos,6172474.0,3770082341.0699997
-2025,Junho,Nampula,Cabo-Delgado,Depósitos,6231142.0,3649186684.9800005
-2025,Julho,Nampula,Cabo-Delgado,Depósitos,8461904.0,5148750687.05
-2025,Agosto,Nampula,Cabo-Delgado,Depósitos,8708884.0,4781520762.2699995
-2025,Setembro,Nampula,Cabo-Delgado,Depósitos,6667028.0,3383569884.1499996
-2025,Outubro,Nampula,Cabo-Delgado,Depósitos,9327745.0,5484413980.08
-2025,Novembro,Nampula,Cabo-Delgado,Depósitos,7557388.0,4144233768.58
-2025,Dezembro,Nampula,Cabo-Delgado,Depósitos,7934070.0,4947098384.86
-2025,Janeiro,Nampula,Cidade de Pemba,Depósitos,1600607.0,1234763742.47
-2025,Fevereiro,Nampula,Cidade de Pemba,Depósitos,1636676.0,1314832776.99
-2025,Março,Nampula,Cidade de Pemba,Depósitos,1825955.0,1345099638.48
-2025,Abril,Nampula,Cidade de Pemba,Depósitos,1745618.0,1247799354.42
-2025,Maio,Nampula,Cidade de Pemba,Depósitos,1994373.0,1521162345.35
-2025,Junho,Nampula,Cidade de Pemba,Depósitos,1894570.0,1366119641.71
-2025,Julho,Nampula,Cidade de Pemba,Depósitos,2044820.0,1507638223.07
-2025,Agosto,Nampula,Cidade de Pemba,Depósitos,2093818.0,1417523888.78
-2025,Setembro,Nampula,Cidade de Pemba,Depósitos,1945378.0,1363728930.7
-2025,Outubro,Nampula,Cidade de Pemba,Depósitos,2225722.0,1621111996.45
-2025,Novembro,Nampula,Cidade de Pemba,Depósitos,2270650.0,1587348107.64
-2025,Dezembro,Nampula,Cidade de Pemba,Depósitos,2405970.0,1932734599.31
-2025,Janeiro,Nampula,Ancuabe,Depósitos,258370.0,105467599.24
-2025,Fevereiro,Nampula,Ancuabe,Depósitos,276528.0,140160500.6
-2025,Março,Nampula,Ancuabe,Depósitos,315273.0,137007486.38
-2025,Abril,Nampula,Ancuabe,Depósitos,311425.0,122234115.06
-2025,Maio,Nampula,Ancuabe,Depósitos,371498.0,154447210.61
-2025,Junho,Nampula,Ancuabe,Depósitos,380756.0,148986106.01
-2025,Julho,Nampula,Ancuabe,Depósitos,425993.0,157770177.91
-2025,Agosto,Nampula,Ancuabe,Depósitos,466198.0,143906106.87
-2025,Setembro,Nampula,Ancuabe,Depósitos,445160.0,145728970.21
-2025,Outubro,Nampula,Ancuabe,Depósitos,479402.0,162857640.07
-2025,Novembro,Nampula,Ancuabe,Depósitos,475227.0,154526507.21
-2025,Dezembro,Nampula,Ancuabe,Depósitos,484107.0,182107745.16
-2025,Janeiro,Nampula,Balama,Depósitos,138632.0,67399394.08
-2025,Fevereiro,Nampula,Balama,Depósitos,141345.0,80724383.87
-2025,Março,Nampula,Balama,Depósitos,153718.0,72012344.46000001
-2025,Abril,Nampula,Balama,Depósitos,162215.0,75627825.06
-2025,Maio,Nampula,Balama,Depósitos,190228.0,95616913.35
-2025,Junho,Nampula,Balama,Depósitos,239287.0,138086600.65
-2025,Julho,Nampula,Balama,Depósitos,283496.0,141962603.93
-2025,Agosto,Nampula,Balama,Depósitos,301405.0,138663796.57
-2025,Setembro,Nampula,Balama,Depósitos,294305.0,114144933.38
-2025,Outubro,Nampula,Balama,Depósitos,328760.0,133292904.75
-2025,Novembro,Nampula,Balama,Depósitos,288964.0,113907554.63
-2025,Dezembro,Nampula,Balama,Depósitos,290467.0,129197958.74
-2025,Janeiro,Nampula,Chiúre,Depósitos,296110.0,145451818.51
-2025,Fevereiro,Nampula,Chiúre,Depósitos,309792.0,170688788.92
-2025,Março,Nampula,Chiúre,Depósitos,354020.0,168615327.48
-2025,Abril,Nampula,Chiúre,Depósitos,409517.0,218004671.38
-2025,Maio,Nampula,Chiúre,Depósitos,476156.0,229819662.99
-2025,Junho,Nampula,Chiúre,Depósitos,499415.0,232308878.46
-2025,Julho,Nampula,Chiúre,Depósitos,590047.0,233953622.57
-2025,Agosto,Nampula,Chiúre,Depósitos,610239.0,217170553.28
-2025,Setembro,Nampula,Chiúre,Depósitos,554341.0,180168352.57
-2025,Outubro,Nampula,Chiúre,Depósitos,629148.0,219221317.33
-2025,Novembro,Nampula,Chiúre,Depósitos,593634.0,225376853.24
-2025,Dezembro,Nampula,Chiúre,Depósitos,559676.0,246021735.96
-2025,Janeiro,Nampula,Ibo,Depósitos,41580.0,32417948.43
-2025,Fevereiro,Nampula,Ibo,Depósitos,44209.0,33060638.41
-2025,Março,Nampula,Ibo,Depósitos,53318.0,38380628.18
-2025,Abril,Nampula,Ibo,Depósitos,47393.0,32305508.2
-2025,Maio,Nampula,Ibo,Depósitos,37289.0,24759917.98
-2025,Junho,Nampula,Ibo,Depósitos,45344.0,28222358.02
-2025,Julho,Nampula,Ibo,Depósitos,47487.0,27410555.66
-2025,Agosto,Nampula,Ibo,Depósitos,51877.0,26727157.48
-2025,Setembro,Nampula,Ibo,Depósitos,52901.0,28189472.81
-2025,Outubro,Nampula,Ibo,Depósitos,60058.0,35807535.66
-2025,Novembro,Nampula,Ibo,Depósitos,59889.0,34149833.28
-2025,Dezembro,Nampula,Ibo,Depósitos,62146.0,36278925.83
-2025,Janeiro,Nampula,Macomia,Depósitos,99344.0,61159120.71
-2025,Fevereiro,Nampula,Macomia,Depósitos,109369.0,79970075.09
-2025,Março,Nampula,Macomia,Depósitos,117644.0,79434829.17
-2025,Abril,Nampula,Macomia,Depósitos,113014.0,67293605.44
-2025,Maio,Nampula,Macomia,Depósitos,124509.0,73186027.97
-2025,Junho,Nampula,Macomia,Depósitos,121243.0,75492618.61
-2025,Julho,Nampula,Macomia,Depósitos,128842.0,77448508.48
-2025,Agosto,Nampula,Macomia,Depósitos,135711.0,61826352.87
-2025,Setembro,Nampula,Macomia,Depósitos,145090.0,73175724.75
-2025,Outubro,Nampula,Macomia,Depósitos,156332.0,75422245.46
-2025,Novembro,Nampula,Macomia,Depósitos,163242.0,81205743.91
-2025,Dezembro,Nampula,Macomia,Depósitos,174128.0,100695119.89
-2025,Janeiro,Nampula,Mecufi,Depósitos,55152.0,18325662.35
-2025,Fevereiro,Nampula,Mecufi,Depósitos,62753.0,23031857.58
-2025,Março,Nampula,Mecufi,Depósitos,76484.0,22338785.77
-2025,Abril,Nampula,Mecufi,Depósitos,80059.0,23590221.94
-2025,Maio,Nampula,Mecufi,Depósitos,86070.0,23331939.4
-2025,Junho,Nampula,Mecufi,Depósitos,95548.0,25366031.44
-2025,Julho,Nampula,Mecufi,Depósitos,106006.0,25650082.69
-2025,Agosto,Nampula,Mecufi,Depósitos,104014.0,25646841.28
-2025,Setembro,Nampula,Mecufi,Depósitos,119254.0,24589365.3
-2025,Outubro,Nampula,Mecufi,Depósitos,145225.0,33820814.65
-2025,Novembro,Nampula,Mecufi,Depósitos,151280.0,34605311.3
-2025,Dezembro,Nampula,Mecufi,Depósitos,163172.0,44740434.43
-2025,Janeiro,Nampula,Meluco,Depósitos,31957.0,15830838.14
-2025,Fevereiro,Nampula,Meluco,Depósitos,39405.0,26955781.77
-2025,Março,Nampula,Meluco,Depósitos,46984.0,23099849.58
-2025,Abril,Nampula,Meluco,Depósitos,43941.0,20094291.09
-2025,Maio,Nampula,Meluco,Depósitos,47036.0,24421780.78
-2025,Junho,Nampula,Meluco,Depósitos,50426.0,21880548.66
-2025,Julho,Nampula,Meluco,Depósitos,59048.0,32531689.46
-2025,Agosto,Nampula,Meluco,Depósitos,63321.0,32372272.3
-2025,Setembro,Nampula,Meluco,Depósitos,61852.0,30770249.69
-2025,Outubro,Nampula,Meluco,Depósitos,73521.0,44218523.33
-2025,Novembro,Nampula,Meluco,Depósitos,72363.0,43623083.16
-2025,Dezembro,Nampula,Meluco,Depósitos,68363.0,40365067.32
-2025,Janeiro,Nampula,Mocimboa da Praia,Depósitos,184389.0,143835113.87
-2025,Fevereiro,Nampula,Mocimboa da Praia,Depósitos,191613.0,165523841.65
-2025,Março,Nampula,Mocimboa da Praia,Depósitos,212192.0,159224639.59
-2025,Abril,Nampula,Mocimboa da Praia,Depósitos,187458.0,136530364.13
-2025,Maio,Nampula,Mocimboa da Praia,Depósitos,206937.0,158023582.78
-2025,Junho,Nampula,Mocimboa da Praia,Depósitos,196798.0,152584826.97
-2025,Julho,Nampula,Mocimboa da Praia,Depósitos,197839.0,147169047.8
-2025,Agosto,Nampula,Mocimboa da Praia,Depósitos,202721.0,140031822.74
-2025,Setembro,Nampula,Mocimboa da Praia,Depósitos,187373.0,126813404.33
-2025,Outubro,Nampula,Mocimboa da Praia,Depósitos,159501.0,100548807.62
-2025,Novembro,Nampula,Mocimboa da Praia,Depósitos,178158.0,128610535.72
-2025,Dezembro,Nampula,Mocimboa da Praia,Depósitos,197537.0,161176677.1
-2025,Janeiro,Nampula,Montepuez,Depósitos,785545.0,486773312.18
-2025,Fevereiro,Nampula,Montepuez,Depósitos,797266.0,547175032.19
-2025,Março,Nampula,Montepuez,Depósitos,844167.0,577949748.25
-2025,Abril,Nampula,Montepuez,Depósitos,866539.0,544044884.62
-2025,Maio,Nampula,Montepuez,Depósitos,989384.0,621388050.7
-2025,Junho,Nampula,Montepuez,Depósitos,999954.0,602751346.74
-2025,Julho,Nampula,Montepuez,Depósitos,1078536.0,609377632.35
-2025,Agosto,Nampula,Montepuez,Depósitos,1112335.0,566852378.3399999
-2025,Setembro,Nampula,Montepuez,Depósitos,1060960.0,537240812.7
-2025,Outubro,Nampula,Montepuez,Depósitos,1218905.0,691479630.18
-2025,Novembro,Nampula,Montepuez,Depósitos,1209916.0,670200677.21
-2025,Dezembro,Nampula,Montepuez,Depósitos,1283597.0,848664666.81
-2025,Janeiro,Nampula,Mueda,Depósitos,485868.0,280915886.57
-2025,Fevereiro,Nampula,Mueda,Depósitos,511848.0,346531221.25
-2025,Março,Nampula,Mueda,Depósitos,593330.0,301680587.5
-2025,Abril,Nampula,Mueda,Depósitos,565671.0,245852955.37
-2025,Maio,Nampula,Mueda,Depósitos,679101.0,365244993.4
-2025,Junho,Nampula,Mueda,Depósitos,668163.0,350128734.6
-2025,Julho,Nampula,Mueda,Depósitos,706687.0,346275320.09
-2025,Agosto,Nampula,Mueda,Depósitos,706875.0,289976951.15
-2025,Setembro,Nampula,Mueda,Depósitos,669323.0,297402791.1
-2025,Outubro,Nampula,Mueda,Depósitos,774753.0,363029189.62
-2025,Novembro,Nampula,Mueda,Depósitos,776569.0,418353430.24
-2025,Dezembro,Nampula,Mueda,Depósitos,846498.0,513410721.68
-2025,Janeiro,Nampula,Muidumbe,Depósitos,84939.0,33975721.83
-2025,Fevereiro,Nampula,Muidumbe,Depósitos,95351.0,56730439.27
-2025,Março,Nampula,Muidumbe,Depósitos,99119.0,46148244.23
-2025,Abril,Nampula,Muidumbe,Depósitos,95292.0,36439346.33
-2025,Maio,Nampula,Muidumbe,Depósitos,114053.0,57859276.44
-2025,Junho,Nampula,Muidumbe,Depósitos,119969.0,51221983.55
-2025,Julho,Nampula,Muidumbe,Depósitos,123957.0,51795912.8
-2025,Agosto,Nampula,Muidumbe,Depósitos,125680.0,42120509.93
-2025,Setembro,Nampula,Muidumbe,Depósitos,130284.0,51535236.08
-2025,Outubro,Nampula,Muidumbe,Depósitos,145295.0,63769046.12
-2025,Novembro,Nampula,Muidumbe,Depósitos,150122.0,58100304.11
-2025,Dezembro,Nampula,Muidumbe,Depósitos,162815.0,70728656.85
-2025,Janeiro,Nampula,Namuno,Depósitos,191400.0,80038604.23
-2025,Fevereiro,Nampula,Namuno,Depósitos,192778.0,89664641.89
-2025,Março,Nampula,Namuno,Depósitos,231399.0,102133348.23
-2025,Abril,Nampula,Namuno,Depósitos,250754.0,110110496.0
-2025,Maio,Nampula,Namuno,Depósitos,291624.0,118343678.7
-2025,Junho,Nampula,Namuno,Depósitos,338139.0,149826183.67
-2025,Julho,Nampula,Namuno,Depósitos,381261.0,138730762.37
-2025,Agosto,Nampula,Namuno,Depósitos,404669.0,124548969.63
-2025,Setembro,Nampula,Namuno,Depósitos,373622.0,112966579.82
-2025,Outubro,Nampula,Namuno,Depósitos,416862.0,148056577.61
-2025,Novembro,Nampula,Namuno,Depósitos,399620.0,137484827.3
-2025,Dezembro,Nampula,Namuno,Depósitos,396346.0,157011155.17
-2025,Janeiro,Nampula,Nangade,Depósitos,137982.0,65311198.88
-2025,Fevereiro,Nampula,Nangade,Depósitos,149224.0,78992859.77
-2025,Março,Nampula,Nangade,Depósitos,148424.0,61385195.89
-2025,Abril,Nampula,Nangade,Depósitos,145883.0,50336150.37
-2025,Maio,Nampula,Nangade,Depósitos,165492.0,68466435.45
-2025,Junho,Nampula,Nangade,Depósitos,172153.0,74604959.2
-2025,Julho,Nampula,Nangade,Depósitos,182913.0,65639241.4
-2025,Agosto,Nampula,Nangade,Depósitos,165316.0,49091290.84
-2025,Setembro,Nampula,Nangade,Depósitos,165762.0,54438221.35
-2025,Outubro,Nampula,Nangade,Depósitos,197387.0,75899940.45
-2025,Novembro,Nampula,Nangade,Depósitos,233029.0,155359648.93
-2025,Dezembro,Nampula,Nangade,Depósitos,269640.0,127026150.78
-2025,Janeiro,Nampula,Palma,Depósitos,99160.0,101487338.86
-2025,Fevereiro,Nampula,Palma,Depósitos,106071.0,122956828.28999999
-2025,Março,Nampula,Palma,Depósitos,123965.0,142154629.49
-2025,Abril,Nampula,Palma,Depósitos,111241.0,127047603.15
-2025,Maio,Nampula,Palma,Depósitos,120109.0,124381004.83
-2025,Junho,Nampula,Palma,Depósitos,120019.0,127031431.52
-2025,Julho,Nampula,Palma,Depósitos,129045.0,146797492.19
-2025,Agosto,Nampula,Palma,Depósitos,141076.0,145817626.95
-2025,Setembro,Nampula,Palma,Depósitos,139533.0,144176539.02
-2025,Outubro,Nampula,Palma,Depósitos,135078.0,146255578.86
-2025,Novembro,Nampula,Palma,Depósitos,142196.0,181124050.82
-2025,Dezembro,Nampula,Palma,Depósitos,165369.0,215276705.46
-2025,Janeiro,Nampula,Pemba-Metuge,Depósitos,143241.0,53060719.24
-2025,Fevereiro,Nampula,Pemba-Metuge,Depósitos,153710.0,63226057.78
-2025,Março,Nampula,Pemba-Metuge,Depósitos,182854.0,58820542.66
-2025,Abril,Nampula,Pemba-Metuge,Depósitos,187118.0,57500952.03
-2025,Maio,Nampula,Pemba-Metuge,Depósitos,226569.0,82879453.04
-2025,Junho,Nampula,Pemba-Metuge,Depósitos,236049.0,78760458.05
-2025,Julho,Nampula,Pemba-Metuge,Depósitos,1910556.0,1407998615.07
-2025,Agosto,Nampula,Pemba-Metuge,Depósitos,1954378.0,1330535795.78
-2025,Setembro,Nampula,Pemba-Metuge,Depósitos,252155.0,71223213.04
-2025,Outubro,Nampula,Pemba-Metuge,Depósitos,2098700.0,1537675081.45
-2025,Novembro,Nampula,Pemba-Metuge,Depósitos,310195.0,88093047.89
-2025,Dezembro,Nampula,Pemba-Metuge,Depósitos,317639.0,104981230.55
-2025,Janeiro,Nampula,Quissanga,Depósitos,24054.0,13343697.95
-2025,Fevereiro,Nampula,Quissanga,Depósitos,26787.0,14075279.17
-2025,Março,Nampula,Quissanga,Depósitos,26859.0,13034053.91
-2025,Abril,Nampula,Quissanga,Depósitos,27527.0,13211756.77
-2025,Maio,Nampula,Quissanga,Depósitos,52046.0,26750067.3
-2025,Junho,Nampula,Quissanga,Depósitos,53309.0,25813977.12
-2025,Julho,Nampula,Quissanga,Depósitos,65371.0,30601199.21
-2025,Agosto,Nampula,Quissanga,Depósitos,69251.0,28708447.48
-2025,Setembro,Nampula,Quissanga,Depósitos,69735.0,27277087.3
-2025,Outubro,Nampula,Quissanga,Depósitos,83096.0,31947150.47
-2025,Novembro,Nampula,Quissanga,Depósitos,82334.0,32164251.99
-2025,Dezembro,Nampula,Quissanga,Depósitos,86600.0,36680833.82
+2025,Janeiro,Cabo Delgado,Cidade de Pemba,Depósitos,1600607.0,1234763742.47
+2025,Fevereiro,Cabo Delgado,Cidade de Pemba,Depósitos,1636676.0,1314832776.99
+2025,Março,Cabo Delgado,Cidade de Pemba,Depósitos,1825955.0,1345099638.48
+2025,Abril,Cabo Delgado,Cidade de Pemba,Depósitos,1745618.0,1247799354.42
+2025,Maio,Cabo Delgado,Cidade de Pemba,Depósitos,1994373.0,1521162345.35
+2025,Junho,Cabo Delgado,Cidade de Pemba,Depósitos,1894570.0,1366119641.71
+2025,Julho,Cabo Delgado,Cidade de Pemba,Depósitos,2044820.0,1507638223.07
+2025,Agosto,Cabo Delgado,Cidade de Pemba,Depósitos,2093818.0,1417523888.78
+2025,Setembro,Cabo Delgado,Cidade de Pemba,Depósitos,1945378.0,1363728930.7
+2025,Outubro,Cabo Delgado,Cidade de Pemba,Depósitos,2225722.0,1621111996.45
+2025,Novembro,Cabo Delgado,Cidade de Pemba,Depósitos,2270650.0,1587348107.64
+2025,Dezembro,Cabo Delgado,Cidade de Pemba,Depósitos,2405970.0,1932734599.31
+2025,Janeiro,Cabo Delgado,Ancuabe,Depósitos,258370.0,105467599.24
+2025,Fevereiro,Cabo Delgado,Ancuabe,Depósitos,276528.0,140160500.6
+2025,Março,Cabo Delgado,Ancuabe,Depósitos,315273.0,137007486.38
+2025,Abril,Cabo Delgado,Ancuabe,Depósitos,311425.0,122234115.06
+2025,Maio,Cabo Delgado,Ancuabe,Depósitos,371498.0,154447210.61
+2025,Junho,Cabo Delgado,Ancuabe,Depósitos,380756.0,148986106.01
+2025,Julho,Cabo Delgado,Ancuabe,Depósitos,425993.0,157770177.91
+2025,Agosto,Cabo Delgado,Ancuabe,Depósitos,466198.0,143906106.87
+2025,Setembro,Cabo Delgado,Ancuabe,Depósitos,445160.0,145728970.21
+2025,Outubro,Cabo Delgado,Ancuabe,Depósitos,479402.0,162857640.07
+2025,Novembro,Cabo Delgado,Ancuabe,Depósitos,475227.0,154526507.21
+2025,Dezembro,Cabo Delgado,Ancuabe,Depósitos,484107.0,182107745.16
+2025,Janeiro,Cabo Delgado,Balama,Depósitos,138632.0,67399394.08
+2025,Fevereiro,Cabo Delgado,Balama,Depósitos,141345.0,80724383.87
+2025,Março,Cabo Delgado,Balama,Depósitos,153718.0,72012344.46000001
+2025,Abril,Cabo Delgado,Balama,Depósitos,162215.0,75627825.06
+2025,Maio,Cabo Delgado,Balama,Depósitos,190228.0,95616913.35
+2025,Junho,Cabo Delgado,Balama,Depósitos,239287.0,138086600.65
+2025,Julho,Cabo Delgado,Balama,Depósitos,283496.0,141962603.93
+2025,Agosto,Cabo Delgado,Balama,Depósitos,301405.0,138663796.57
+2025,Setembro,Cabo Delgado,Balama,Depósitos,294305.0,114144933.38
+2025,Outubro,Cabo Delgado,Balama,Depósitos,328760.0,133292904.75
+2025,Novembro,Cabo Delgado,Balama,Depósitos,288964.0,113907554.63
+2025,Dezembro,Cabo Delgado,Balama,Depósitos,290467.0,129197958.74
+2025,Janeiro,Cabo Delgado,Chiúre,Depósitos,296110.0,145451818.51
+2025,Fevereiro,Cabo Delgado,Chiúre,Depósitos,309792.0,170688788.92
+2025,Março,Cabo Delgado,Chiúre,Depósitos,354020.0,168615327.48
+2025,Abril,Cabo Delgado,Chiúre,Depósitos,409517.0,218004671.38
+2025,Maio,Cabo Delgado,Chiúre,Depósitos,476156.0,229819662.99
+2025,Junho,Cabo Delgado,Chiúre,Depósitos,499415.0,232308878.46
+2025,Julho,Cabo Delgado,Chiúre,Depósitos,590047.0,233953622.57
+2025,Agosto,Cabo Delgado,Chiúre,Depósitos,610239.0,217170553.28
+2025,Setembro,Cabo Delgado,Chiúre,Depósitos,554341.0,180168352.57
+2025,Outubro,Cabo Delgado,Chiúre,Depósitos,629148.0,219221317.33
+2025,Novembro,Cabo Delgado,Chiúre,Depósitos,593634.0,225376853.24
+2025,Dezembro,Cabo Delgado,Chiúre,Depósitos,559676.0,246021735.96
+2025,Janeiro,Cabo Delgado,Ibo,Depósitos,41580.0,32417948.43
+2025,Fevereiro,Cabo Delgado,Ibo,Depósitos,44209.0,33060638.41
+2025,Março,Cabo Delgado,Ibo,Depósitos,53318.0,38380628.18
+2025,Abril,Cabo Delgado,Ibo,Depósitos,47393.0,32305508.2
+2025,Maio,Cabo Delgado,Ibo,Depósitos,37289.0,24759917.98
+2025,Junho,Cabo Delgado,Ibo,Depósitos,45344.0,28222358.02
+2025,Julho,Cabo Delgado,Ibo,Depósitos,47487.0,27410555.66
+2025,Agosto,Cabo Delgado,Ibo,Depósitos,51877.0,26727157.48
+2025,Setembro,Cabo Delgado,Ibo,Depósitos,52901.0,28189472.81
+2025,Outubro,Cabo Delgado,Ibo,Depósitos,60058.0,35807535.66
+2025,Novembro,Cabo Delgado,Ibo,Depósitos,59889.0,34149833.28
+2025,Dezembro,Cabo Delgado,Ibo,Depósitos,62146.0,36278925.83
+2025,Janeiro,Cabo Delgado,Macomia,Depósitos,99344.0,61159120.71
+2025,Fevereiro,Cabo Delgado,Macomia,Depósitos,109369.0,79970075.09
+2025,Março,Cabo Delgado,Macomia,Depósitos,117644.0,79434829.17
+2025,Abril,Cabo Delgado,Macomia,Depósitos,113014.0,67293605.44
+2025,Maio,Cabo Delgado,Macomia,Depósitos,124509.0,73186027.97
+2025,Junho,Cabo Delgado,Macomia,Depósitos,121243.0,75492618.61
+2025,Julho,Cabo Delgado,Macomia,Depósitos,128842.0,77448508.48
+2025,Agosto,Cabo Delgado,Macomia,Depósitos,135711.0,61826352.87
+2025,Setembro,Cabo Delgado,Macomia,Depósitos,145090.0,73175724.75
+2025,Outubro,Cabo Delgado,Macomia,Depósitos,156332.0,75422245.46
+2025,Novembro,Cabo Delgado,Macomia,Depósitos,163242.0,81205743.91
+2025,Dezembro,Cabo Delgado,Macomia,Depósitos,174128.0,100695119.89
+2025,Janeiro,Cabo Delgado,Mecufi,Depósitos,55152.0,18325662.35
+2025,Fevereiro,Cabo Delgado,Mecufi,Depósitos,62753.0,23031857.58
+2025,Março,Cabo Delgado,Mecufi,Depósitos,76484.0,22338785.77
+2025,Abril,Cabo Delgado,Mecufi,Depósitos,80059.0,23590221.94
+2025,Maio,Cabo Delgado,Mecufi,Depósitos,86070.0,23331939.4
+2025,Junho,Cabo Delgado,Mecufi,Depósitos,95548.0,25366031.44
+2025,Julho,Cabo Delgado,Mecufi,Depósitos,106006.0,25650082.69
+2025,Agosto,Cabo Delgado,Mecufi,Depósitos,104014.0,25646841.28
+2025,Setembro,Cabo Delgado,Mecufi,Depósitos,119254.0,24589365.3
+2025,Outubro,Cabo Delgado,Mecufi,Depósitos,145225.0,33820814.65
+2025,Novembro,Cabo Delgado,Mecufi,Depósitos,151280.0,34605311.3
+2025,Dezembro,Cabo Delgado,Mecufi,Depósitos,163172.0,44740434.43
+2025,Janeiro,Cabo Delgado,Meluco,Depósitos,31957.0,15830838.14
+2025,Fevereiro,Cabo Delgado,Meluco,Depósitos,39405.0,26955781.77
+2025,Março,Cabo Delgado,Meluco,Depósitos,46984.0,23099849.58
+2025,Abril,Cabo Delgado,Meluco,Depósitos,43941.0,20094291.09
+2025,Maio,Cabo Delgado,Meluco,Depósitos,47036.0,24421780.78
+2025,Junho,Cabo Delgado,Meluco,Depósitos,50426.0,21880548.66
+2025,Julho,Cabo Delgado,Meluco,Depósitos,59048.0,32531689.46
+2025,Agosto,Cabo Delgado,Meluco,Depósitos,63321.0,32372272.3
+2025,Setembro,Cabo Delgado,Meluco,Depósitos,61852.0,30770249.69
+2025,Outubro,Cabo Delgado,Meluco,Depósitos,73521.0,44218523.33
+2025,Novembro,Cabo Delgado,Meluco,Depósitos,72363.0,43623083.16
+2025,Dezembro,Cabo Delgado,Meluco,Depósitos,68363.0,40365067.32
+2025,Janeiro,Cabo Delgado,Mocimboa da Praia,Depósitos,184389.0,143835113.87
+2025,Fevereiro,Cabo Delgado,Mocimboa da Praia,Depósitos,191613.0,165523841.65
+2025,Março,Cabo Delgado,Mocimboa da Praia,Depósitos,212192.0,159224639.59
+2025,Abril,Cabo Delgado,Mocimboa da Praia,Depósitos,187458.0,136530364.13
+2025,Maio,Cabo Delgado,Mocimboa da Praia,Depósitos,206937.0,158023582.78
+2025,Junho,Cabo Delgado,Mocimboa da Praia,Depósitos,196798.0,152584826.97
+2025,Julho,Cabo Delgado,Mocimboa da Praia,Depósitos,197839.0,147169047.8
+2025,Agosto,Cabo Delgado,Mocimboa da Praia,Depósitos,202721.0,140031822.74
+2025,Setembro,Cabo Delgado,Mocimboa da Praia,Depósitos,187373.0,126813404.33
+2025,Outubro,Cabo Delgado,Mocimboa da Praia,Depósitos,159501.0,100548807.62
+2025,Novembro,Cabo Delgado,Mocimboa da Praia,Depósitos,178158.0,128610535.72
+2025,Dezembro,Cabo Delgado,Mocimboa da Praia,Depósitos,197537.0,161176677.1
+2025,Janeiro,Cabo Delgado,Montepuez,Depósitos,785545.0,486773312.18
+2025,Fevereiro,Cabo Delgado,Montepuez,Depósitos,797266.0,547175032.19
+2025,Março,Cabo Delgado,Montepuez,Depósitos,844167.0,577949748.25
+2025,Abril,Cabo Delgado,Montepuez,Depósitos,866539.0,544044884.62
+2025,Maio,Cabo Delgado,Montepuez,Depósitos,989384.0,621388050.7
+2025,Junho,Cabo Delgado,Montepuez,Depósitos,999954.0,602751346.74
+2025,Julho,Cabo Delgado,Montepuez,Depósitos,1078536.0,609377632.35
+2025,Agosto,Cabo Delgado,Montepuez,Depósitos,1112335.0,566852378.3399999
+2025,Setembro,Cabo Delgado,Montepuez,Depósitos,1060960.0,537240812.7
+2025,Outubro,Cabo Delgado,Montepuez,Depósitos,1218905.0,691479630.18
+2025,Novembro,Cabo Delgado,Montepuez,Depósitos,1209916.0,670200677.21
+2025,Dezembro,Cabo Delgado,Montepuez,Depósitos,1283597.0,848664666.81
+2025,Janeiro,Cabo Delgado,Mueda,Depósitos,485868.0,280915886.57
+2025,Fevereiro,Cabo Delgado,Mueda,Depósitos,511848.0,346531221.25
+2025,Março,Cabo Delgado,Mueda,Depósitos,593330.0,301680587.5
+2025,Abril,Cabo Delgado,Mueda,Depósitos,565671.0,245852955.37
+2025,Maio,Cabo Delgado,Mueda,Depósitos,679101.0,365244993.4
+2025,Junho,Cabo Delgado,Mueda,Depósitos,668163.0,350128734.6
+2025,Julho,Cabo Delgado,Mueda,Depósitos,706687.0,346275320.09
+2025,Agosto,Cabo Delgado,Mueda,Depósitos,706875.0,289976951.15
+2025,Setembro,Cabo Delgado,Mueda,Depósitos,669323.0,297402791.1
+2025,Outubro,Cabo Delgado,Mueda,Depósitos,774753.0,363029189.62
+2025,Novembro,Cabo Delgado,Mueda,Depósitos,776569.0,418353430.24
+2025,Dezembro,Cabo Delgado,Mueda,Depósitos,846498.0,513410721.68
+2025,Janeiro,Cabo Delgado,Muidumbe,Depósitos,84939.0,33975721.83
+2025,Fevereiro,Cabo Delgado,Muidumbe,Depósitos,95351.0,56730439.27
+2025,Março,Cabo Delgado,Muidumbe,Depósitos,99119.0,46148244.23
+2025,Abril,Cabo Delgado,Muidumbe,Depósitos,95292.0,36439346.33
+2025,Maio,Cabo Delgado,Muidumbe,Depósitos,114053.0,57859276.44
+2025,Junho,Cabo Delgado,Muidumbe,Depósitos,119969.0,51221983.55
+2025,Julho,Cabo Delgado,Muidumbe,Depósitos,123957.0,51795912.8
+2025,Agosto,Cabo Delgado,Muidumbe,Depósitos,125680.0,42120509.93
+2025,Setembro,Cabo Delgado,Muidumbe,Depósitos,130284.0,51535236.08
+2025,Outubro,Cabo Delgado,Muidumbe,Depósitos,145295.0,63769046.12
+2025,Novembro,Cabo Delgado,Muidumbe,Depósitos,150122.0,58100304.11
+2025,Dezembro,Cabo Delgado,Muidumbe,Depósitos,162815.0,70728656.85
+2025,Janeiro,Cabo Delgado,Namuno,Depósitos,191400.0,80038604.23
+2025,Fevereiro,Cabo Delgado,Namuno,Depósitos,192778.0,89664641.89
+2025,Março,Cabo Delgado,Namuno,Depósitos,231399.0,102133348.23
+2025,Abril,Cabo Delgado,Namuno,Depósitos,250754.0,110110496.0
+2025,Maio,Cabo Delgado,Namuno,Depósitos,291624.0,118343678.7
+2025,Junho,Cabo Delgado,Namuno,Depósitos,338139.0,149826183.67
+2025,Julho,Cabo Delgado,Namuno,Depósitos,381261.0,138730762.37
+2025,Agosto,Cabo Delgado,Namuno,Depósitos,404669.0,124548969.63
+2025,Setembro,Cabo Delgado,Namuno,Depósitos,373622.0,112966579.82
+2025,Outubro,Cabo Delgado,Namuno,Depósitos,416862.0,148056577.61
+2025,Novembro,Cabo Delgado,Namuno,Depósitos,399620.0,137484827.3
+2025,Dezembro,Cabo Delgado,Namuno,Depósitos,396346.0,157011155.17
+2025,Janeiro,Cabo Delgado,Nangade,Depósitos,137982.0,65311198.88
+2025,Fevereiro,Cabo Delgado,Nangade,Depósitos,149224.0,78992859.77
+2025,Março,Cabo Delgado,Nangade,Depósitos,148424.0,61385195.89
+2025,Abril,Cabo Delgado,Nangade,Depósitos,145883.0,50336150.37
+2025,Maio,Cabo Delgado,Nangade,Depósitos,165492.0,68466435.45
+2025,Junho,Cabo Delgado,Nangade,Depósitos,172153.0,74604959.2
+2025,Julho,Cabo Delgado,Nangade,Depósitos,182913.0,65639241.4
+2025,Agosto,Cabo Delgado,Nangade,Depósitos,165316.0,49091290.84
+2025,Setembro,Cabo Delgado,Nangade,Depósitos,165762.0,54438221.35
+2025,Outubro,Cabo Delgado,Nangade,Depósitos,197387.0,75899940.45
+2025,Novembro,Cabo Delgado,Nangade,Depósitos,233029.0,155359648.93
+2025,Dezembro,Cabo Delgado,Nangade,Depósitos,269640.0,127026150.78
+2025,Janeiro,Cabo Delgado,Palma,Depósitos,99160.0,101487338.86
+2025,Fevereiro,Cabo Delgado,Palma,Depósitos,106071.0,122956828.28999999
+2025,Março,Cabo Delgado,Palma,Depósitos,123965.0,142154629.49
+2025,Abril,Cabo Delgado,Palma,Depósitos,111241.0,127047603.15
+2025,Maio,Cabo Delgado,Palma,Depósitos,120109.0,124381004.83
+2025,Junho,Cabo Delgado,Palma,Depósitos,120019.0,127031431.52
+2025,Julho,Cabo Delgado,Palma,Depósitos,129045.0,146797492.19
+2025,Agosto,Cabo Delgado,Palma,Depósitos,141076.0,145817626.95
+2025,Setembro,Cabo Delgado,Palma,Depósitos,139533.0,144176539.02
+2025,Outubro,Cabo Delgado,Palma,Depósitos,135078.0,146255578.86
+2025,Novembro,Cabo Delgado,Palma,Depósitos,142196.0,181124050.82
+2025,Dezembro,Cabo Delgado,Palma,Depósitos,165369.0,215276705.46
+2025,Janeiro,Cabo Delgado,Pemba-Metuge,Depósitos,143241.0,53060719.24
+2025,Fevereiro,Cabo Delgado,Pemba-Metuge,Depósitos,153710.0,63226057.78
+2025,Março,Cabo Delgado,Pemba-Metuge,Depósitos,182854.0,58820542.66
+2025,Abril,Cabo Delgado,Pemba-Metuge,Depósitos,187118.0,57500952.03
+2025,Maio,Cabo Delgado,Pemba-Metuge,Depósitos,226569.0,82879453.04
+2025,Junho,Cabo Delgado,Pemba-Metuge,Depósitos,236049.0,78760458.05
+2025,Julho,Cabo Delgado,Pemba-Metuge,Depósitos,1910556.0,1407998615.07
+2025,Agosto,Cabo Delgado,Pemba-Metuge,Depósitos,1954378.0,1330535795.78
+2025,Setembro,Cabo Delgado,Pemba-Metuge,Depósitos,252155.0,71223213.04
+2025,Outubro,Cabo Delgado,Pemba-Metuge,Depósitos,2098700.0,1537675081.45
+2025,Novembro,Cabo Delgado,Pemba-Metuge,Depósitos,310195.0,88093047.89
+2025,Dezembro,Cabo Delgado,Pemba-Metuge,Depósitos,317639.0,104981230.55
+2025,Janeiro,Cabo Delgado,Quissanga,Depósitos,24054.0,13343697.95
+2025,Fevereiro,Cabo Delgado,Quissanga,Depósitos,26787.0,14075279.17
+2025,Março,Cabo Delgado,Quissanga,Depósitos,26859.0,13034053.91
+2025,Abril,Cabo Delgado,Quissanga,Depósitos,27527.0,13211756.77
+2025,Maio,Cabo Delgado,Quissanga,Depósitos,52046.0,26750067.3
+2025,Junho,Cabo Delgado,Quissanga,Depósitos,53309.0,25813977.12
+2025,Julho,Cabo Delgado,Quissanga,Depósitos,65371.0,30601199.21
+2025,Agosto,Cabo Delgado,Quissanga,Depósitos,69251.0,28708447.48
+2025,Setembro,Cabo Delgado,Quissanga,Depósitos,69735.0,27277087.3
+2025,Outubro,Cabo Delgado,Quissanga,Depósitos,83096.0,31947150.47
+2025,Novembro,Cabo Delgado,Quissanga,Depósitos,82334.0,32164251.99
+2025,Dezembro,Cabo Delgado,Quissanga,Depósitos,86600.0,36680833.82
 2025,Janeiro,Niassa,Cidade de Lichinga,Depósitos,1376205.0,683663200.5699999
 2025,Fevereiro,Niassa,Cidade de Lichinga,Depósitos,1401753.0,782560583.1700001
 2025,Março,Niassa,Cidade de Lichinga,Depósitos,1565129.0,842403529.1500001
@@ -3335,222 +3323,210 @@ Year,Month,Province,District,Transaction_Type,Volume,Value
 2025,Outubro,Nampula,Larde,Levantamentos,16037.0,12517524.0
 2025,Novembro,Nampula,Larde,Levantamentos,13715.0,8295165.0
 2025,Dezembro,Nampula,Larde,Levantamentos,11882.0,8673888.0
-2025,Janeiro,Nampula,Cabo-Delgado,Levantamentos,2310232.0,1742459177.01
-2025,Fevereiro,Nampula,Cabo-Delgado,Levantamentos,2622245.0,1997820629.0000002
-2025,Março,Nampula,Cabo-Delgado,Levantamentos,2877755.0,2139937488.42
-2025,Abril,Nampula,Cabo-Delgado,Levantamentos,2926989.0,1995814968.85
-2025,Maio,Nampula,Cabo-Delgado,Levantamentos,3253838.0,2325395983.96
-2025,Junho,Nampula,Cabo-Delgado,Levantamentos,3172827.0,2224289926.6899996
-2025,Julho,Nampula,Cabo-Delgado,Levantamentos,4397698.0,2847915259.74
-2025,Agosto,Nampula,Cabo-Delgado,Levantamentos,4365680.0,2693607631.96
-2025,Setembro,Nampula,Cabo-Delgado,Levantamentos,3123051.0,2011976738.1399996
-2025,Outubro,Nampula,Cabo-Delgado,Levantamentos,4895578.0,3134928471.71
-2025,Novembro,Nampula,Cabo-Delgado,Levantamentos,3575033.0,2432929004.85
-2025,Dezembro,Nampula,Cabo-Delgado,Levantamentos,3588169.0,2777516472.4700003
-2025,Janeiro,Nampula,Cidade de Pemba,Levantamentos,1005981.0,695663445.78
-2025,Fevereiro,Nampula,Cidade de Pemba,Levantamentos,1080784.0,739462563.11
-2025,Março,Nampula,Cidade de Pemba,Levantamentos,1221290.0,804902675.66
-2025,Abril,Nampula,Cidade de Pemba,Levantamentos,1273476.0,784918720.34
-2025,Maio,Nampula,Cidade de Pemba,Levantamentos,1385212.0,867926315.19
-2025,Junho,Nampula,Cidade de Pemba,Levantamentos,1324209.0,795980094.65
-2025,Julho,Nampula,Cidade de Pemba,Levantamentos,1371006.0,822034383.61
-2025,Agosto,Nampula,Cidade de Pemba,Levantamentos,1372317.0,778297513.63
-2025,Setembro,Nampula,Cidade de Pemba,Levantamentos,1290484.0,748943175.6
-2025,Outubro,Nampula,Cidade de Pemba,Levantamentos,1502425.0,895314962.83
-2025,Novembro,Nampula,Cidade de Pemba,Levantamentos,1503202.0,874635020.35
-2025,Dezembro,Nampula,Cidade de Pemba,Levantamentos,1486607.0,1024660228.64
-2025,Janeiro,Nampula,Ancuabe,Levantamentos,104353.0,65191476.0
-2025,Fevereiro,Nampula,Ancuabe,Levantamentos,128109.0,84864207.0
-2025,Março,Nampula,Ancuabe,Levantamentos,134666.0,93040674.0
-2025,Abril,Nampula,Ancuabe,Levantamentos,128824.0,80271445.25
-2025,Maio,Nampula,Ancuabe,Levantamentos,147553.0,101520376.0
-2025,Junho,Nampula,Ancuabe,Levantamentos,147512.0,98951027.0
-2025,Julho,Nampula,Ancuabe,Levantamentos,152790.0,96605807.0
-2025,Agosto,Nampula,Ancuabe,Levantamentos,148633.0,89372611.0
-2025,Setembro,Nampula,Ancuabe,Levantamentos,154107.0,93726803.0
-2025,Outubro,Nampula,Ancuabe,Levantamentos,178583.0,105511652.0
-2025,Novembro,Nampula,Ancuabe,Levantamentos,173883.0,105164332.0
-2025,Dezembro,Nampula,Ancuabe,Levantamentos,176188.0,115124492.66
-2025,Janeiro,Nampula,Balama,Levantamentos,50490.0,36255543.91
-2025,Fevereiro,Nampula,Balama,Levantamentos,59228.0,41833319.79
-2025,Março,Nampula,Balama,Levantamentos,64754.0,42589966.68
-2025,Abril,Nampula,Balama,Levantamentos,65340.0,43331244.1
-2025,Maio,Nampula,Balama,Levantamentos,71332.0,52832851.0
-2025,Junho,Nampula,Balama,Levantamentos,74399.0,65409681.0
-2025,Julho,Nampula,Balama,Levantamentos,83468.0,68612118.0
-2025,Agosto,Nampula,Balama,Levantamentos,82424.0,69342726.65
-2025,Setembro,Nampula,Balama,Levantamentos,84542.0,63633077.0
-2025,Outubro,Nampula,Balama,Levantamentos,101947.0,69810461.0
-2025,Novembro,Nampula,Balama,Levantamentos,97272.0,65313852.0
-2025,Dezembro,Nampula,Balama,Levantamentos,96239.0,73778286.0
-2025,Janeiro,Nampula,Chiúre,Levantamentos,118445.0,95511168.2
-2025,Fevereiro,Nampula,Chiúre,Levantamentos,139691.0,110008871.45
-2025,Março,Nampula,Chiúre,Levantamentos,147719.0,113726750.66
-2025,Abril,Nampula,Chiúre,Levantamentos,160408.0,141182130.0
-2025,Maio,Nampula,Chiúre,Levantamentos,179125.0,155681868.0
-2025,Junho,Nampula,Chiúre,Levantamentos,179252.0,144845084.0
-2025,Julho,Nampula,Chiúre,Levantamentos,186358.0,133150917.0
-2025,Agosto,Nampula,Chiúre,Levantamentos,172899.0,122035759.38
-2025,Setembro,Nampula,Chiúre,Levantamentos,163851.0,109406171.0
-2025,Outubro,Nampula,Chiúre,Levantamentos,200968.0,139899021.83
-2025,Novembro,Nampula,Chiúre,Levantamentos,193223.0,147634825.32999998
-2025,Dezembro,Nampula,Chiúre,Levantamentos,184224.0,163913701.24
-2025,Janeiro,Nampula,Ibo,Levantamentos,22421.0,20783248.0
-2025,Fevereiro,Nampula,Ibo,Levantamentos,25034.0,22410329.0
-2025,Março,Nampula,Ibo,Levantamentos,29472.0,29626634.0
-2025,Abril,Nampula,Ibo,Levantamentos,27463.0,23642948.0
-2025,Maio,Nampula,Ibo,Levantamentos,19939.0,17944247.0
-2025,Junho,Nampula,Ibo,Levantamentos,19359.0,19165423.0
-2025,Julho,Nampula,Ibo,Levantamentos,19996.0,16791923.0
-2025,Agosto,Nampula,Ibo,Levantamentos,19931.0,19728056.0
-2025,Setembro,Nampula,Ibo,Levantamentos,19865.0,19626836.0
-2025,Outubro,Nampula,Ibo,Levantamentos,23236.0,23256546.0
-2025,Novembro,Nampula,Ibo,Levantamentos,23764.0,25776289.0
-2025,Dezembro,Nampula,Ibo,Levantamentos,23150.0,25175957.0
-2025,Janeiro,Nampula,Macomia,Levantamentos,43860.0,36876468.0
-2025,Fevereiro,Nampula,Macomia,Levantamentos,53290.0,45622288.0
-2025,Março,Nampula,Macomia,Levantamentos,59316.0,47753025.89
-2025,Abril,Nampula,Macomia,Levantamentos,55704.0,40655046.0
-2025,Maio,Nampula,Macomia,Levantamentos,59309.0,45878496.0
-2025,Junho,Nampula,Macomia,Levantamentos,58703.0,46925441.0
-2025,Julho,Nampula,Macomia,Levantamentos,58296.0,42881879.0
-2025,Agosto,Nampula,Macomia,Levantamentos,54191.0,35923264.0
-2025,Setembro,Nampula,Macomia,Levantamentos,57051.0,39204906.0
-2025,Outubro,Nampula,Macomia,Levantamentos,64405.0,44950562.0
-2025,Novembro,Nampula,Macomia,Levantamentos,65966.0,49866488.0
-2025,Dezembro,Nampula,Macomia,Levantamentos,70032.0,55186170.0
-2025,Janeiro,Nampula,Mecufi,Levantamentos,25989.0,14881503.0
-2025,Fevereiro,Nampula,Mecufi,Levantamentos,34626.0,19779964.0
-2025,Março,Nampula,Mecufi,Levantamentos,38528.0,19282247.0
-2025,Abril,Nampula,Mecufi,Levantamentos,37240.0,18838478.0
-2025,Maio,Nampula,Mecufi,Levantamentos,38469.0,19704315.0
-2025,Junho,Nampula,Mecufi,Levantamentos,40590.0,20357256.0
-2025,Julho,Nampula,Mecufi,Levantamentos,41689.0,21022708.0
-2025,Agosto,Nampula,Mecufi,Levantamentos,43139.0,22176275.0
-2025,Setembro,Nampula,Mecufi,Levantamentos,47623.0,23638326.0
-2025,Outubro,Nampula,Mecufi,Levantamentos,59863.0,31461410.0
-2025,Novembro,Nampula,Mecufi,Levantamentos,60962.0,34336689.0
-2025,Dezembro,Nampula,Mecufi,Levantamentos,64689.0,41903220.0
-2025,Janeiro,Nampula,Meluco,Levantamentos,10971.0,9499876.0
-2025,Fevereiro,Nampula,Meluco,Levantamentos,15433.0,13976467.0
-2025,Março,Nampula,Meluco,Levantamentos,16644.0,13026963.0
-2025,Abril,Nampula,Meluco,Levantamentos,17346.0,10836775.0
-2025,Maio,Nampula,Meluco,Levantamentos,18432.0,13944580.0
-2025,Junho,Nampula,Meluco,Levantamentos,19436.0,12211518.0
-2025,Julho,Nampula,Meluco,Levantamentos,21510.0,17090283.0
-2025,Agosto,Nampula,Meluco,Levantamentos,22058.0,16836164.0
-2025,Setembro,Nampula,Meluco,Levantamentos,21382.0,15877466.0
-2025,Outubro,Nampula,Meluco,Levantamentos,28664.0,21673766.0
-2025,Novembro,Nampula,Meluco,Levantamentos,27531.0,22938565.0
-2025,Dezembro,Nampula,Meluco,Levantamentos,26391.0,21854034.0
-2025,Janeiro,Nampula,Mocimboa da Praia,Levantamentos,112796.0,113340168.52000001
-2025,Fevereiro,Nampula,Mocimboa da Praia,Levantamentos,125564.0,129955105.14999999
-2025,Março,Nampula,Mocimboa da Praia,Levantamentos,139653.0,131620472.56
-2025,Abril,Nampula,Mocimboa da Praia,Levantamentos,125065.0,104580898.9
-2025,Maio,Nampula,Mocimboa da Praia,Levantamentos,140696.0,115734426.05
-2025,Junho,Nampula,Mocimboa da Praia,Levantamentos,135573.0,115408287.58
-2025,Julho,Nampula,Mocimboa da Praia,Levantamentos,134989.0,104933371.35
-2025,Agosto,Nampula,Mocimboa da Praia,Levantamentos,132862.0,102339340.75999999
-2025,Setembro,Nampula,Mocimboa da Praia,Levantamentos,119434.0,95152271.0
-2025,Outubro,Nampula,Mocimboa da Praia,Levantamentos,88701.0,79862562.0
-2025,Novembro,Nampula,Mocimboa da Praia,Levantamentos,89792.0,91653098.0
-2025,Dezembro,Nampula,Mocimboa da Praia,Levantamentos,102207.0,107057455.0
-2025,Janeiro,Nampula,Montepuez,Levantamentos,384558.0,283170392.86
-2025,Fevereiro,Nampula,Montepuez,Levantamentos,443744.0,325857406.88
-2025,Março,Nampula,Montepuez,Levantamentos,471751.0,360004159.39
-2025,Abril,Nampula,Montepuez,Levantamentos,498179.0,341419694.0
-2025,Maio,Nampula,Montepuez,Levantamentos,551408.0,386784899.7
-2025,Junho,Nampula,Montepuez,Levantamentos,538241.0,364410054.1
-2025,Julho,Nampula,Montepuez,Levantamentos,547282.0,367173973.1
-2025,Agosto,Nampula,Montepuez,Levantamentos,538862.0,338274319.7
-2025,Setembro,Nampula,Montepuez,Levantamentos,523909.0,326487554.0
-2025,Outubro,Nampula,Montepuez,Levantamentos,640533.0,421491373.0
-2025,Novembro,Nampula,Montepuez,Levantamentos,617911.0,400522737.0
-2025,Dezembro,Nampula,Montepuez,Levantamentos,618610.0,488556452.0
-2025,Janeiro,Nampula,Mueda,Levantamentos,159054.0,151329302.0
-2025,Fevereiro,Nampula,Mueda,Levantamentos,196430.0,200035674.97
-2025,Março,Nampula,Mueda,Levantamentos,202433.0,185489222.0
-2025,Abril,Nampula,Mueda,Levantamentos,192419.0,141679242.82
-2025,Maio,Nampula,Mueda,Levantamentos,239970.0,221549677.4
-2025,Junho,Nampula,Mueda,Levantamentos,233786.0,205655753.34
-2025,Julho,Nampula,Mueda,Levantamentos,233670.0,183626480.03
-2025,Agosto,Nampula,Mueda,Levantamentos,224571.0,170882692.0
-2025,Setembro,Nampula,Mueda,Levantamentos,222910.0,175360057.6
-2025,Outubro,Nampula,Mueda,Levantamentos,274546.0,213916341.2
-2025,Novembro,Nampula,Mueda,Levantamentos,254872.0,212471475.0
-2025,Dezembro,Nampula,Mueda,Levantamentos,256598.0,234418247.0
-2025,Janeiro,Nampula,Muidumbe,Levantamentos,26448.0,22056932.0
-2025,Fevereiro,Nampula,Muidumbe,Levantamentos,35037.0,33948773.0
-2025,Março,Nampula,Muidumbe,Levantamentos,33998.0,30504425.0
-2025,Abril,Nampula,Muidumbe,Levantamentos,29660.0,21493075.0
-2025,Maio,Nampula,Muidumbe,Levantamentos,40215.0,37544563.0
-2025,Junho,Nampula,Muidumbe,Levantamentos,39076.0,32305854.0
-2025,Julho,Nampula,Muidumbe,Levantamentos,39223.0,30243161.0
-2025,Agosto,Nampula,Muidumbe,Levantamentos,38162.0,26223187.0
-2025,Setembro,Nampula,Muidumbe,Levantamentos,38960.0,29925786.0
-2025,Outubro,Nampula,Muidumbe,Levantamentos,46657.0,37074825.0
-2025,Novembro,Nampula,Muidumbe,Levantamentos,44359.0,37764202.0
-2025,Dezembro,Nampula,Muidumbe,Levantamentos,47640.0,44784715.0
-2025,Janeiro,Nampula,Namuno,Levantamentos,51322.0,43103219.0
-2025,Fevereiro,Nampula,Namuno,Levantamentos,59932.0,51163266.0
-2025,Março,Nampula,Namuno,Levantamentos,68199.0,60119158.32
-2025,Abril,Nampula,Namuno,Levantamentos,75354.0,65377746.34
-2025,Maio,Nampula,Namuno,Levantamentos,78269.0,68813832.0
-2025,Junho,Nampula,Namuno,Levantamentos,79458.0,77051658.65
-2025,Julho,Nampula,Namuno,Levantamentos,84007.0,73420175.66
-2025,Agosto,Nampula,Namuno,Levantamentos,86056.0,73823673.0
-2025,Setembro,Nampula,Namuno,Levantamentos,79987.0,62810074.34
-2025,Outubro,Nampula,Namuno,Levantamentos,101974.0,85448593.0
-2025,Novembro,Nampula,Namuno,Levantamentos,96546.0,79746854.99
-2025,Dezembro,Nampula,Namuno,Levantamentos,94068.0,83828044.0
-2025,Janeiro,Nampula,Nangade,Levantamentos,31911.0,31256708.0
-2025,Fevereiro,Nampula,Nangade,Levantamentos,45762.0,41019747.0
-2025,Março,Nampula,Nangade,Levantamentos,44278.0,34764249.0
-2025,Abril,Nampula,Nangade,Levantamentos,41965.0,28614248.0
-2025,Maio,Nampula,Nangade,Levantamentos,47806.0,42677507.7
-2025,Junho,Nampula,Nangade,Levantamentos,47038.0,46699829.02
-2025,Julho,Nampula,Nangade,Levantamentos,46515.0,34844011.67
-2025,Agosto,Nampula,Nangade,Levantamentos,47054.0,29989234.66
-2025,Setembro,Nampula,Nangade,Levantamentos,52047.0,34170803.6
-2025,Outubro,Nampula,Nangade,Levantamentos,55437.0,45560934.62
-2025,Novembro,Nampula,Nangade,Levantamentos,39360.0,62675667.85
-2025,Dezembro,Nampula,Nangade,Levantamentos,43185.0,42256565.78
-2025,Janeiro,Nampula,Palma,Levantamentos,82033.0,73697937.74000001
-2025,Fevereiro,Nampula,Palma,Levantamentos,86124.0,80465505.65
-2025,Março,Nampula,Palma,Levantamentos,100950.0,113183396.26
-2025,Abril,Nampula,Palma,Levantamentos,93388.0,92144862.1
-2025,Maio,Nampula,Palma,Levantamentos,104692.0,97585450.92
-2025,Junho,Nampula,Palma,Levantamentos,105367.0,98396723.35
-2025,Julho,Nampula,Palma,Levantamentos,111287.0,105785577.32
-2025,Agosto,Nampula,Palma,Levantamentos,109745.0,102578258.18
-2025,Setembro,Nampula,Palma,Levantamentos,108331.0,97225172.0
-2025,Outubro,Nampula,Palma,Levantamentos,109946.0,104147404.9
-2025,Novembro,Nampula,Palma,Levantamentos,117364.0,127200684.0
-2025,Dezembro,Nampula,Palma,Levantamentos,128519.0,149744302.25
-2025,Janeiro,Nampula,Pemba-Metuge,Levantamentos,69245.0,40187256.0
-2025,Fevereiro,Nampula,Pemba-Metuge,Levantamentos,81034.0,46334789.0
-2025,Março,Nampula,Pemba-Metuge,Levantamentos,90536.0,48502911.0
-2025,Abril,Nampula,Pemba-Metuge,Levantamentos,91910.0,45235618.0
-2025,Maio,Nampula,Pemba-Metuge,Levantamentos,107227.0,59455234.0
-2025,Junho,Nampula,Pemba-Metuge,Levantamentos,107242.0,59453859.0
-2025,Julho,Nampula,Pemba-Metuge,Levantamentos,1240959.0,706746767.0
-2025,Agosto,Nampula,Pemba-Metuge,Levantamentos,1246561.0,674446433.0
-2025,Setembro,Nampula,Pemba-Metuge,Levantamentos,111228.0,55675302.0
-2025,Outubro,Nampula,Pemba-Metuge,Levantamentos,1384673.0,790187347.33
-2025,Novembro,Nampula,Pemba-Metuge,Levantamentos,137125.0,68808454.33
-2025,Dezembro,Nampula,Pemba-Metuge,Levantamentos,137423.0,78378361.9
-2025,Janeiro,Nampula,Quissanga,Levantamentos,10355.0,9654532.0
-2025,Fevereiro,Nampula,Quissanga,Levantamentos,12423.0,11082352.0
-2025,Março,Nampula,Quissanga,Levantamentos,13568.0,11800558.0
-2025,Abril,Nampula,Quissanga,Levantamentos,13248.0,11592797.0
-2025,Maio,Nampula,Quissanga,Levantamentos,24184.0,19817345.0
-2025,Junho,Nampula,Quissanga,Levantamentos,23586.0,21062383.0
-2025,Julho,Nampula,Quissanga,Levantamentos,24653.0,22951724.0
-2025,Agosto,Nampula,Quissanga,Levantamentos,26215.0,21338124.0
-2025,Setembro,Nampula,Quissanga,Levantamentos,27340.0,21112957.0
-2025,Outubro,Nampula,Quissanga,Levantamentos,33020.0,25360709.0
-2025,Novembro,Nampula,Quissanga,Levantamentos,31901.0,26419771.0
-2025,Dezembro,Nampula,Quissanga,Levantamentos,32399.0,26896240.0
+2025,Janeiro,Cabo Delgado,Cidade de Pemba,Levantamentos,1005981.0,695663445.78
+2025,Fevereiro,Cabo Delgado,Cidade de Pemba,Levantamentos,1080784.0,739462563.11
+2025,Março,Cabo Delgado,Cidade de Pemba,Levantamentos,1221290.0,804902675.66
+2025,Abril,Cabo Delgado,Cidade de Pemba,Levantamentos,1273476.0,784918720.34
+2025,Maio,Cabo Delgado,Cidade de Pemba,Levantamentos,1385212.0,867926315.19
+2025,Junho,Cabo Delgado,Cidade de Pemba,Levantamentos,1324209.0,795980094.65
+2025,Julho,Cabo Delgado,Cidade de Pemba,Levantamentos,1371006.0,822034383.61
+2025,Agosto,Cabo Delgado,Cidade de Pemba,Levantamentos,1372317.0,778297513.63
+2025,Setembro,Cabo Delgado,Cidade de Pemba,Levantamentos,1290484.0,748943175.6
+2025,Outubro,Cabo Delgado,Cidade de Pemba,Levantamentos,1502425.0,895314962.83
+2025,Novembro,Cabo Delgado,Cidade de Pemba,Levantamentos,1503202.0,874635020.35
+2025,Dezembro,Cabo Delgado,Cidade de Pemba,Levantamentos,1486607.0,1024660228.64
+2025,Janeiro,Cabo Delgado,Ancuabe,Levantamentos,104353.0,65191476.0
+2025,Fevereiro,Cabo Delgado,Ancuabe,Levantamentos,128109.0,84864207.0
+2025,Março,Cabo Delgado,Ancuabe,Levantamentos,134666.0,93040674.0
+2025,Abril,Cabo Delgado,Ancuabe,Levantamentos,128824.0,80271445.25
+2025,Maio,Cabo Delgado,Ancuabe,Levantamentos,147553.0,101520376.0
+2025,Junho,Cabo Delgado,Ancuabe,Levantamentos,147512.0,98951027.0
+2025,Julho,Cabo Delgado,Ancuabe,Levantamentos,152790.0,96605807.0
+2025,Agosto,Cabo Delgado,Ancuabe,Levantamentos,148633.0,89372611.0
+2025,Setembro,Cabo Delgado,Ancuabe,Levantamentos,154107.0,93726803.0
+2025,Outubro,Cabo Delgado,Ancuabe,Levantamentos,178583.0,105511652.0
+2025,Novembro,Cabo Delgado,Ancuabe,Levantamentos,173883.0,105164332.0
+2025,Dezembro,Cabo Delgado,Ancuabe,Levantamentos,176188.0,115124492.66
+2025,Janeiro,Cabo Delgado,Balama,Levantamentos,50490.0,36255543.91
+2025,Fevereiro,Cabo Delgado,Balama,Levantamentos,59228.0,41833319.79
+2025,Março,Cabo Delgado,Balama,Levantamentos,64754.0,42589966.68
+2025,Abril,Cabo Delgado,Balama,Levantamentos,65340.0,43331244.1
+2025,Maio,Cabo Delgado,Balama,Levantamentos,71332.0,52832851.0
+2025,Junho,Cabo Delgado,Balama,Levantamentos,74399.0,65409681.0
+2025,Julho,Cabo Delgado,Balama,Levantamentos,83468.0,68612118.0
+2025,Agosto,Cabo Delgado,Balama,Levantamentos,82424.0,69342726.65
+2025,Setembro,Cabo Delgado,Balama,Levantamentos,84542.0,63633077.0
+2025,Outubro,Cabo Delgado,Balama,Levantamentos,101947.0,69810461.0
+2025,Novembro,Cabo Delgado,Balama,Levantamentos,97272.0,65313852.0
+2025,Dezembro,Cabo Delgado,Balama,Levantamentos,96239.0,73778286.0
+2025,Janeiro,Cabo Delgado,Chiúre,Levantamentos,118445.0,95511168.2
+2025,Fevereiro,Cabo Delgado,Chiúre,Levantamentos,139691.0,110008871.45
+2025,Março,Cabo Delgado,Chiúre,Levantamentos,147719.0,113726750.66
+2025,Abril,Cabo Delgado,Chiúre,Levantamentos,160408.0,141182130.0
+2025,Maio,Cabo Delgado,Chiúre,Levantamentos,179125.0,155681868.0
+2025,Junho,Cabo Delgado,Chiúre,Levantamentos,179252.0,144845084.0
+2025,Julho,Cabo Delgado,Chiúre,Levantamentos,186358.0,133150917.0
+2025,Agosto,Cabo Delgado,Chiúre,Levantamentos,172899.0,122035759.38
+2025,Setembro,Cabo Delgado,Chiúre,Levantamentos,163851.0,109406171.0
+2025,Outubro,Cabo Delgado,Chiúre,Levantamentos,200968.0,139899021.83
+2025,Novembro,Cabo Delgado,Chiúre,Levantamentos,193223.0,147634825.32999998
+2025,Dezembro,Cabo Delgado,Chiúre,Levantamentos,184224.0,163913701.24
+2025,Janeiro,Cabo Delgado,Ibo,Levantamentos,22421.0,20783248.0
+2025,Fevereiro,Cabo Delgado,Ibo,Levantamentos,25034.0,22410329.0
+2025,Março,Cabo Delgado,Ibo,Levantamentos,29472.0,29626634.0
+2025,Abril,Cabo Delgado,Ibo,Levantamentos,27463.0,23642948.0
+2025,Maio,Cabo Delgado,Ibo,Levantamentos,19939.0,17944247.0
+2025,Junho,Cabo Delgado,Ibo,Levantamentos,19359.0,19165423.0
+2025,Julho,Cabo Delgado,Ibo,Levantamentos,19996.0,16791923.0
+2025,Agosto,Cabo Delgado,Ibo,Levantamentos,19931.0,19728056.0
+2025,Setembro,Cabo Delgado,Ibo,Levantamentos,19865.0,19626836.0
+2025,Outubro,Cabo Delgado,Ibo,Levantamentos,23236.0,23256546.0
+2025,Novembro,Cabo Delgado,Ibo,Levantamentos,23764.0,25776289.0
+2025,Dezembro,Cabo Delgado,Ibo,Levantamentos,23150.0,25175957.0
+2025,Janeiro,Cabo Delgado,Macomia,Levantamentos,43860.0,36876468.0
+2025,Fevereiro,Cabo Delgado,Macomia,Levantamentos,53290.0,45622288.0
+2025,Março,Cabo Delgado,Macomia,Levantamentos,59316.0,47753025.89
+2025,Abril,Cabo Delgado,Macomia,Levantamentos,55704.0,40655046.0
+2025,Maio,Cabo Delgado,Macomia,Levantamentos,59309.0,45878496.0
+2025,Junho,Cabo Delgado,Macomia,Levantamentos,58703.0,46925441.0
+2025,Julho,Cabo Delgado,Macomia,Levantamentos,58296.0,42881879.0
+2025,Agosto,Cabo Delgado,Macomia,Levantamentos,54191.0,35923264.0
+2025,Setembro,Cabo Delgado,Macomia,Levantamentos,57051.0,39204906.0
+2025,Outubro,Cabo Delgado,Macomia,Levantamentos,64405.0,44950562.0
+2025,Novembro,Cabo Delgado,Macomia,Levantamentos,65966.0,49866488.0
+2025,Dezembro,Cabo Delgado,Macomia,Levantamentos,70032.0,55186170.0
+2025,Janeiro,Cabo Delgado,Mecufi,Levantamentos,25989.0,14881503.0
+2025,Fevereiro,Cabo Delgado,Mecufi,Levantamentos,34626.0,19779964.0
+2025,Março,Cabo Delgado,Mecufi,Levantamentos,38528.0,19282247.0
+2025,Abril,Cabo Delgado,Mecufi,Levantamentos,37240.0,18838478.0
+2025,Maio,Cabo Delgado,Mecufi,Levantamentos,38469.0,19704315.0
+2025,Junho,Cabo Delgado,Mecufi,Levantamentos,40590.0,20357256.0
+2025,Julho,Cabo Delgado,Mecufi,Levantamentos,41689.0,21022708.0
+2025,Agosto,Cabo Delgado,Mecufi,Levantamentos,43139.0,22176275.0
+2025,Setembro,Cabo Delgado,Mecufi,Levantamentos,47623.0,23638326.0
+2025,Outubro,Cabo Delgado,Mecufi,Levantamentos,59863.0,31461410.0
+2025,Novembro,Cabo Delgado,Mecufi,Levantamentos,60962.0,34336689.0
+2025,Dezembro,Cabo Delgado,Mecufi,Levantamentos,64689.0,41903220.0
+2025,Janeiro,Cabo Delgado,Meluco,Levantamentos,10971.0,9499876.0
+2025,Fevereiro,Cabo Delgado,Meluco,Levantamentos,15433.0,13976467.0
+2025,Março,Cabo Delgado,Meluco,Levantamentos,16644.0,13026963.0
+2025,Abril,Cabo Delgado,Meluco,Levantamentos,17346.0,10836775.0
+2025,Maio,Cabo Delgado,Meluco,Levantamentos,18432.0,13944580.0
+2025,Junho,Cabo Delgado,Meluco,Levantamentos,19436.0,12211518.0
+2025,Julho,Cabo Delgado,Meluco,Levantamentos,21510.0,17090283.0
+2025,Agosto,Cabo Delgado,Meluco,Levantamentos,22058.0,16836164.0
+2025,Setembro,Cabo Delgado,Meluco,Levantamentos,21382.0,15877466.0
+2025,Outubro,Cabo Delgado,Meluco,Levantamentos,28664.0,21673766.0
+2025,Novembro,Cabo Delgado,Meluco,Levantamentos,27531.0,22938565.0
+2025,Dezembro,Cabo Delgado,Meluco,Levantamentos,26391.0,21854034.0
+2025,Janeiro,Cabo Delgado,Mocimboa da Praia,Levantamentos,112796.0,113340168.52000001
+2025,Fevereiro,Cabo Delgado,Mocimboa da Praia,Levantamentos,125564.0,129955105.14999999
+2025,Março,Cabo Delgado,Mocimboa da Praia,Levantamentos,139653.0,131620472.56
+2025,Abril,Cabo Delgado,Mocimboa da Praia,Levantamentos,125065.0,104580898.9
+2025,Maio,Cabo Delgado,Mocimboa da Praia,Levantamentos,140696.0,115734426.05
+2025,Junho,Cabo Delgado,Mocimboa da Praia,Levantamentos,135573.0,115408287.58
+2025,Julho,Cabo Delgado,Mocimboa da Praia,Levantamentos,134989.0,104933371.35
+2025,Agosto,Cabo Delgado,Mocimboa da Praia,Levantamentos,132862.0,102339340.75999999
+2025,Setembro,Cabo Delgado,Mocimboa da Praia,Levantamentos,119434.0,95152271.0
+2025,Outubro,Cabo Delgado,Mocimboa da Praia,Levantamentos,88701.0,79862562.0
+2025,Novembro,Cabo Delgado,Mocimboa da Praia,Levantamentos,89792.0,91653098.0
+2025,Dezembro,Cabo Delgado,Mocimboa da Praia,Levantamentos,102207.0,107057455.0
+2025,Janeiro,Cabo Delgado,Montepuez,Levantamentos,384558.0,283170392.86
+2025,Fevereiro,Cabo Delgado,Montepuez,Levantamentos,443744.0,325857406.88
+2025,Março,Cabo Delgado,Montepuez,Levantamentos,471751.0,360004159.39
+2025,Abril,Cabo Delgado,Montepuez,Levantamentos,498179.0,341419694.0
+2025,Maio,Cabo Delgado,Montepuez,Levantamentos,551408.0,386784899.7
+2025,Junho,Cabo Delgado,Montepuez,Levantamentos,538241.0,364410054.1
+2025,Julho,Cabo Delgado,Montepuez,Levantamentos,547282.0,367173973.1
+2025,Agosto,Cabo Delgado,Montepuez,Levantamentos,538862.0,338274319.7
+2025,Setembro,Cabo Delgado,Montepuez,Levantamentos,523909.0,326487554.0
+2025,Outubro,Cabo Delgado,Montepuez,Levantamentos,640533.0,421491373.0
+2025,Novembro,Cabo Delgado,Montepuez,Levantamentos,617911.0,400522737.0
+2025,Dezembro,Cabo Delgado,Montepuez,Levantamentos,618610.0,488556452.0
+2025,Janeiro,Cabo Delgado,Mueda,Levantamentos,159054.0,151329302.0
+2025,Fevereiro,Cabo Delgado,Mueda,Levantamentos,196430.0,200035674.97
+2025,Março,Cabo Delgado,Mueda,Levantamentos,202433.0,185489222.0
+2025,Abril,Cabo Delgado,Mueda,Levantamentos,192419.0,141679242.82
+2025,Maio,Cabo Delgado,Mueda,Levantamentos,239970.0,221549677.4
+2025,Junho,Cabo Delgado,Mueda,Levantamentos,233786.0,205655753.34
+2025,Julho,Cabo Delgado,Mueda,Levantamentos,233670.0,183626480.03
+2025,Agosto,Cabo Delgado,Mueda,Levantamentos,224571.0,170882692.0
+2025,Setembro,Cabo Delgado,Mueda,Levantamentos,222910.0,175360057.6
+2025,Outubro,Cabo Delgado,Mueda,Levantamentos,274546.0,213916341.2
+2025,Novembro,Cabo Delgado,Mueda,Levantamentos,254872.0,212471475.0
+2025,Dezembro,Cabo Delgado,Mueda,Levantamentos,256598.0,234418247.0
+2025,Janeiro,Cabo Delgado,Muidumbe,Levantamentos,26448.0,22056932.0
+2025,Fevereiro,Cabo Delgado,Muidumbe,Levantamentos,35037.0,33948773.0
+2025,Março,Cabo Delgado,Muidumbe,Levantamentos,33998.0,30504425.0
+2025,Abril,Cabo Delgado,Muidumbe,Levantamentos,29660.0,21493075.0
+2025,Maio,Cabo Delgado,Muidumbe,Levantamentos,40215.0,37544563.0
+2025,Junho,Cabo Delgado,Muidumbe,Levantamentos,39076.0,32305854.0
+2025,Julho,Cabo Delgado,Muidumbe,Levantamentos,39223.0,30243161.0
+2025,Agosto,Cabo Delgado,Muidumbe,Levantamentos,38162.0,26223187.0
+2025,Setembro,Cabo Delgado,Muidumbe,Levantamentos,38960.0,29925786.0
+2025,Outubro,Cabo Delgado,Muidumbe,Levantamentos,46657.0,37074825.0
+2025,Novembro,Cabo Delgado,Muidumbe,Levantamentos,44359.0,37764202.0
+2025,Dezembro,Cabo Delgado,Muidumbe,Levantamentos,47640.0,44784715.0
+2025,Janeiro,Cabo Delgado,Namuno,Levantamentos,51322.0,43103219.0
+2025,Fevereiro,Cabo Delgado,Namuno,Levantamentos,59932.0,51163266.0
+2025,Março,Cabo Delgado,Namuno,Levantamentos,68199.0,60119158.32
+2025,Abril,Cabo Delgado,Namuno,Levantamentos,75354.0,65377746.34
+2025,Maio,Cabo Delgado,Namuno,Levantamentos,78269.0,68813832.0
+2025,Junho,Cabo Delgado,Namuno,Levantamentos,79458.0,77051658.65
+2025,Julho,Cabo Delgado,Namuno,Levantamentos,84007.0,73420175.66
+2025,Agosto,Cabo Delgado,Namuno,Levantamentos,86056.0,73823673.0
+2025,Setembro,Cabo Delgado,Namuno,Levantamentos,79987.0,62810074.34
+2025,Outubro,Cabo Delgado,Namuno,Levantamentos,101974.0,85448593.0
+2025,Novembro,Cabo Delgado,Namuno,Levantamentos,96546.0,79746854.99
+2025,Dezembro,Cabo Delgado,Namuno,Levantamentos,94068.0,83828044.0
+2025,Janeiro,Cabo Delgado,Nangade,Levantamentos,31911.0,31256708.0
+2025,Fevereiro,Cabo Delgado,Nangade,Levantamentos,45762.0,41019747.0
+2025,Março,Cabo Delgado,Nangade,Levantamentos,44278.0,34764249.0
+2025,Abril,Cabo Delgado,Nangade,Levantamentos,41965.0,28614248.0
+2025,Maio,Cabo Delgado,Nangade,Levantamentos,47806.0,42677507.7
+2025,Junho,Cabo Delgado,Nangade,Levantamentos,47038.0,46699829.02
+2025,Julho,Cabo Delgado,Nangade,Levantamentos,46515.0,34844011.67
+2025,Agosto,Cabo Delgado,Nangade,Levantamentos,47054.0,29989234.66
+2025,Setembro,Cabo Delgado,Nangade,Levantamentos,52047.0,34170803.6
+2025,Outubro,Cabo Delgado,Nangade,Levantamentos,55437.0,45560934.62
+2025,Novembro,Cabo Delgado,Nangade,Levantamentos,39360.0,62675667.85
+2025,Dezembro,Cabo Delgado,Nangade,Levantamentos,43185.0,42256565.78
+2025,Janeiro,Cabo Delgado,Palma,Levantamentos,82033.0,73697937.74000001
+2025,Fevereiro,Cabo Delgado,Palma,Levantamentos,86124.0,80465505.65
+2025,Março,Cabo Delgado,Palma,Levantamentos,100950.0,113183396.26
+2025,Abril,Cabo Delgado,Palma,Levantamentos,93388.0,92144862.1
+2025,Maio,Cabo Delgado,Palma,Levantamentos,104692.0,97585450.92
+2025,Junho,Cabo Delgado,Palma,Levantamentos,105367.0,98396723.35
+2025,Julho,Cabo Delgado,Palma,Levantamentos,111287.0,105785577.32
+2025,Agosto,Cabo Delgado,Palma,Levantamentos,109745.0,102578258.18
+2025,Setembro,Cabo Delgado,Palma,Levantamentos,108331.0,97225172.0
+2025,Outubro,Cabo Delgado,Palma,Levantamentos,109946.0,104147404.9
+2025,Novembro,Cabo Delgado,Palma,Levantamentos,117364.0,127200684.0
+2025,Dezembro,Cabo Delgado,Palma,Levantamentos,128519.0,149744302.25
+2025,Janeiro,Cabo Delgado,Pemba-Metuge,Levantamentos,69245.0,40187256.0
+2025,Fevereiro,Cabo Delgado,Pemba-Metuge,Levantamentos,81034.0,46334789.0
+2025,Março,Cabo Delgado,Pemba-Metuge,Levantamentos,90536.0,48502911.0
+2025,Abril,Cabo Delgado,Pemba-Metuge,Levantamentos,91910.0,45235618.0
+2025,Maio,Cabo Delgado,Pemba-Metuge,Levantamentos,107227.0,59455234.0
+2025,Junho,Cabo Delgado,Pemba-Metuge,Levantamentos,107242.0,59453859.0
+2025,Julho,Cabo Delgado,Pemba-Metuge,Levantamentos,1240959.0,706746767.0
+2025,Agosto,Cabo Delgado,Pemba-Metuge,Levantamentos,1246561.0,674446433.0
+2025,Setembro,Cabo Delgado,Pemba-Metuge,Levantamentos,111228.0,55675302.0
+2025,Outubro,Cabo Delgado,Pemba-Metuge,Levantamentos,1384673.0,790187347.33
+2025,Novembro,Cabo Delgado,Pemba-Metuge,Levantamentos,137125.0,68808454.33
+2025,Dezembro,Cabo Delgado,Pemba-Metuge,Levantamentos,137423.0,78378361.9
+2025,Janeiro,Cabo Delgado,Quissanga,Levantamentos,10355.0,9654532.0
+2025,Fevereiro,Cabo Delgado,Quissanga,Levantamentos,12423.0,11082352.0
+2025,Março,Cabo Delgado,Quissanga,Levantamentos,13568.0,11800558.0
+2025,Abril,Cabo Delgado,Quissanga,Levantamentos,13248.0,11592797.0
+2025,Maio,Cabo Delgado,Quissanga,Levantamentos,24184.0,19817345.0
+2025,Junho,Cabo Delgado,Quissanga,Levantamentos,23586.0,21062383.0
+2025,Julho,Cabo Delgado,Quissanga,Levantamentos,24653.0,22951724.0
+2025,Agosto,Cabo Delgado,Quissanga,Levantamentos,26215.0,21338124.0
+2025,Setembro,Cabo Delgado,Quissanga,Levantamentos,27340.0,21112957.0
+2025,Outubro,Cabo Delgado,Quissanga,Levantamentos,33020.0,25360709.0
+2025,Novembro,Cabo Delgado,Quissanga,Levantamentos,31901.0,26419771.0
+2025,Dezembro,Cabo Delgado,Quissanga,Levantamentos,32399.0,26896240.0
 2025,Janeiro,Niassa,Cidade de Lichinga,Levantamentos,635788.0,412097500.8
 2025,Fevereiro,Niassa,Cidade de Lichinga,Levantamentos,724683.0,479211285.15
 2025,Março,Niassa,Cidade de Lichinga,Levantamentos,802767.0,576863604.04
@@ -5207,222 +5183,210 @@ Year,Month,Province,District,Transaction_Type,Volume,Value
 2025,Outubro,Nampula,Larde,Transferências,73369.0,62409087.01
 2025,Novembro,Nampula,Larde,Transferências,63416.0,48448730.05
 2025,Dezembro,Nampula,Larde,Transferências,53615.0,42698091.11
-2025,Janeiro,Nampula,Cabo-Delgado,Transferências,5912051.0,3831363185.640001
-2025,Fevereiro,Nampula,Cabo-Delgado,Transferências,6492058.0,4313705698.84
-2025,Março,Nampula,Cabo-Delgado,Transferências,7129853.0,4567901668.97
-2025,Abril,Nampula,Cabo-Delgado,Transferências,7460355.0,4516263562.72
-2025,Maio,Nampula,Cabo-Delgado,Transferências,8428521.0,5237288634.570001
-2025,Junho,Nampula,Cabo-Delgado,Transferências,8769589.0,5320867489.459999
-2025,Julho,Nampula,Cabo-Delgado,Transferências,12155649.0,7363769081.71
-2025,Agosto,Nampula,Cabo-Delgado,Transferências,12713910.0,7044186330.270001
-2025,Setembro,Nampula,Cabo-Delgado,Transferências,9896231.0,5156328642.450001
-2025,Outubro,Nampula,Cabo-Delgado,Transferências,11823297.0,6719837452.2699995
-2025,Novembro,Nampula,Cabo-Delgado,Transferências,11633957.0,6461819592.800001
-2025,Dezembro,Nampula,Cabo-Delgado,Transferências,12595727.0,7819571176.33
-2025,Janeiro,Nampula,Cidade de Pemba,Transferências,2177176.0,1673892438.16
-2025,Fevereiro,Nampula,Cidade de Pemba,Transferências,2285271.0,1740038197.79
-2025,Março,Nampula,Cidade de Pemba,Transferências,2487827.0,1837883331.43
-2025,Abril,Nampula,Cidade de Pemba,Transferências,2586965.0,1826853864.74
-2025,Maio,Nampula,Cidade de Pemba,Transferências,2948860.0,2123688334.07
-2025,Junho,Nampula,Cidade de Pemba,Transferências,2903390.0,2077638581.45
-2025,Julho,Nampula,Cidade de Pemba,Transferências,3190351.0,2279245027.37
-2025,Agosto,Nampula,Cidade de Pemba,Transferências,3348667.0,2190875791.73
-2025,Setembro,Nampula,Cidade de Pemba,Transferências,3185680.0,2095765184.41
-2025,Outubro,Nampula,Cidade de Pemba,Transferências,3080076.0,2053072414.98
-2025,Novembro,Nampula,Cidade de Pemba,Transferências,3861715.0,2475840055.95
-2025,Dezembro,Nampula,Cidade de Pemba,Transferências,4216539.0,3047582174.9900002
-2025,Janeiro,Nampula,Ancuabe,Transferências,358188.0,146089477.72
-2025,Fevereiro,Nampula,Ancuabe,Transferências,408745.0,190446280.63
-2025,Março,Nampula,Ancuabe,Transferências,449145.0,191828371.44
-2025,Abril,Nampula,Ancuabe,Transferências,435238.0,176886585.77
-2025,Maio,Nampula,Ancuabe,Transferências,494641.0,222371520.1
-2025,Junho,Nampula,Ancuabe,Transferências,549184.0,235022124.44
-2025,Julho,Nampula,Ancuabe,Transferências,620479.0,253961137.1
-2025,Agosto,Nampula,Ancuabe,Transferências,639823.0,228820752.65
-2025,Setembro,Nampula,Ancuabe,Transferências,636132.0,234358613.53
-2025,Outubro,Nampula,Ancuabe,Transferências,572434.0,212069050.95
-2025,Novembro,Nampula,Ancuabe,Transferências,697750.0,260283720.4
-2025,Dezembro,Nampula,Ancuabe,Transferências,740189.0,310785664.0
-2025,Janeiro,Nampula,Balama,Transferências,156314.0,77627472.64
-2025,Fevereiro,Nampula,Balama,Transferências,165397.0,86934888.85
-2025,Março,Nampula,Balama,Transferências,184577.0,84526212.35
-2025,Abril,Nampula,Balama,Transferências,199108.0,88483561.15
-2025,Maio,Nampula,Balama,Transferências,231278.0,126095735.85
-2025,Junho,Nampula,Balama,Transferências,286513.0,193947639.42000002
-2025,Julho,Nampula,Balama,Transferências,344750.0,196724885.76
-2025,Agosto,Nampula,Balama,Transferências,371942.0,211076392.29
-2025,Setembro,Nampula,Balama,Transferências,365369.0,184937301.4
-2025,Outubro,Nampula,Balama,Transferências,346793.0,176158314.01
-2025,Novembro,Nampula,Balama,Transferências,387912.0,183762947.13
-2025,Dezembro,Nampula,Balama,Transferências,405351.0,210559215.0
-2025,Janeiro,Nampula,Chiúre,Transferências,422322.0,211938226.83
-2025,Fevereiro,Nampula,Chiúre,Transferências,473573.0,230958677.13
-2025,Março,Nampula,Chiúre,Transferências,545961.0,246162687.41
-2025,Abril,Nampula,Chiúre,Transferências,653376.0,324227773.78
-2025,Maio,Nampula,Chiúre,Transferências,731302.0,340253413.65
-2025,Junho,Nampula,Chiúre,Transferências,808578.0,355953149.85
-2025,Julho,Nampula,Chiúre,Transferências,933039.0,363036741.1
-2025,Agosto,Nampula,Chiúre,Transferências,974213.0,339929237.76
-2025,Setembro,Nampula,Chiúre,Transferências,955495.0,300664424.56
-2025,Outubro,Nampula,Chiúre,Transferências,906707.0,301564250.8
-2025,Novembro,Nampula,Chiúre,Transferências,1078096.0,401220314.34000003
-2025,Dezembro,Nampula,Chiúre,Transferências,1074748.0,437992351.53
-2025,Janeiro,Nampula,Ibo,Transferências,105787.0,60136729.0
-2025,Fevereiro,Nampula,Ibo,Transferências,112078.0,61982833.0
-2025,Março,Nampula,Ibo,Transferências,129387.0,74320511.0
-2025,Abril,Nampula,Ibo,Transferências,126058.0,68918457.0
-2025,Maio,Nampula,Ibo,Transferências,98658.0,54634713.0
-2025,Junho,Nampula,Ibo,Transferências,123953.0,60827951.0
-2025,Julho,Nampula,Ibo,Transferências,118814.0,56495059.0
-2025,Agosto,Nampula,Ibo,Transferências,124025.0,57656894.0
-2025,Setembro,Nampula,Ibo,Transferências,131278.0,59150101.0
-2025,Outubro,Nampula,Ibo,Transferências,132812.0,62766678.0
-2025,Novembro,Nampula,Ibo,Transferências,177166.0,92723234.0
-2025,Dezembro,Nampula,Ibo,Transferências,185161.0,94741026.0
-2025,Janeiro,Nampula,Macomia,Transferências,124324.0,75599252.0
-2025,Fevereiro,Nampula,Macomia,Transferências,160664.0,104766334.42
-2025,Março,Nampula,Macomia,Transferências,176365.0,109040132.78999999
-2025,Abril,Nampula,Macomia,Transferências,176642.0,95230114.4
-2025,Maio,Nampula,Macomia,Transferências,190938.0,102276514.86
-2025,Junho,Nampula,Macomia,Transferências,185600.0,106347840.51
-2025,Julho,Nampula,Macomia,Transferências,199518.0,110549178.83
-2025,Agosto,Nampula,Macomia,Transferências,195761.0,95802628.67
-2025,Setembro,Nampula,Macomia,Transferências,220287.0,100955516.05
-2025,Outubro,Nampula,Macomia,Transferências,189032.0,85825091.42
-2025,Novembro,Nampula,Macomia,Transferências,246605.0,131750711.02
-2025,Dezembro,Nampula,Macomia,Transferências,276212.0,165202277.19
-2025,Janeiro,Nampula,Mecufi,Transferências,48847.0,17115042.0
-2025,Fevereiro,Nampula,Mecufi,Transferências,64522.0,25443880.38
-2025,Março,Nampula,Mecufi,Transferências,75400.0,24133610.0
-2025,Abril,Nampula,Mecufi,Transferências,90780.0,29217084.0
-2025,Maio,Nampula,Mecufi,Transferências,94963.0,29790410.0
-2025,Junho,Nampula,Mecufi,Transferências,103133.0,35901811.0
-2025,Julho,Nampula,Mecufi,Transferências,117585.0,36675556.0
-2025,Agosto,Nampula,Mecufi,Transferências,125800.0,35362215.44
-2025,Setembro,Nampula,Mecufi,Transferências,132043.0,35874342.9
-2025,Outubro,Nampula,Mecufi,Transferências,134526.0,36436351.0
-2025,Novembro,Nampula,Mecufi,Transferências,175676.0,46570712.25
-2025,Dezembro,Nampula,Mecufi,Transferências,194001.0,59547925.0
-2025,Janeiro,Nampula,Meluco,Transferências,36974.0,17404090.0
-2025,Fevereiro,Nampula,Meluco,Transferências,47206.0,30229400.4
-2025,Março,Nampula,Meluco,Transferências,55347.0,27446317.4
-2025,Abril,Nampula,Meluco,Transferências,58189.0,26591764.0
-2025,Maio,Nampula,Meluco,Transferências,61118.0,30433935.0
-2025,Junho,Nampula,Meluco,Transferências,69731.0,29628186.0
-2025,Julho,Nampula,Meluco,Transferências,83577.0,42133766.99
-2025,Agosto,Nampula,Meluco,Transferências,91426.0,45168225.07
-2025,Setembro,Nampula,Meluco,Transferências,92787.0,46373005.0
-2025,Outubro,Nampula,Meluco,Transferências,96237.0,49700937.69
-2025,Novembro,Nampula,Meluco,Transferências,118077.0,61209770.0
-2025,Dezembro,Nampula,Meluco,Transferências,116626.0,58051469.5
-2025,Janeiro,Nampula,Mocimboa da Praia,Transferências,206272.0,164279412.57
-2025,Fevereiro,Nampula,Mocimboa da Praia,Transferências,243803.0,209655658.79000002
-2025,Março,Nampula,Mocimboa da Praia,Transferências,367022.0,224267909.79
-2025,Abril,Nampula,Mocimboa da Praia,Transferências,256501.0,214726470.25
-2025,Maio,Nampula,Mocimboa da Praia,Transferências,297442.0,274687403.59000003
-2025,Junho,Nampula,Mocimboa da Praia,Transferências,300230.0,262332855.24
-2025,Julho,Nampula,Mocimboa da Praia,Transferências,302046.0,242392589.05
-2025,Agosto,Nampula,Mocimboa da Praia,Transferências,316447.0,245820219.02
-2025,Setembro,Nampula,Mocimboa da Praia,Transferências,299479.0,228152554.1
-2025,Outubro,Nampula,Mocimboa da Praia,Transferências,236220.0,187437165.06
-2025,Novembro,Nampula,Mocimboa da Praia,Transferências,272171.0,215589075.11
-2025,Dezembro,Nampula,Mocimboa da Praia,Transferências,308307.0,253563446.28
-2025,Janeiro,Nampula,Montepuez,Transferências,911507.0,597075523.97
-2025,Fevereiro,Nampula,Montepuez,Transferências,995488.0,698397054.55
-2025,Março,Nampula,Montepuez,Transferências,217148.0,168822859.84
-2025,Abril,Nampula,Montepuez,Transferências,1158500.0,752775005.34
-2025,Maio,Nampula,Montepuez,Transferências,1277462.0,837042501.71
-2025,Junho,Nampula,Montepuez,Transferências,1323777.0,831579864.36
-2025,Julho,Nampula,Montepuez,Transferências,1419209.0,844639845.4
-2025,Agosto,Nampula,Montepuez,Transferências,1487948.0,829023732.38
-2025,Setembro,Nampula,Montepuez,Transferências,1449583.0,791238910.15
-2025,Outubro,Nampula,Montepuez,Transferências,1421214.0,825497387.1
-2025,Novembro,Nampula,Montepuez,Transferências,1758287.0,1010666612.05
-2025,Dezembro,Nampula,Montepuez,Transferências,1980546.0,1328365934.87
-2025,Janeiro,Nampula,Mueda,Transferências,423587.0,286480790.26
-2025,Fevereiro,Nampula,Mueda,Transferências,486121.0,358401990.04
-2025,Março,Nampula,Mueda,Transferências,1013425.0,753794892.52
-2025,Abril,Nampula,Mueda,Transferências,534476.0,304306931.39
-2025,Maio,Nampula,Mueda,Transferências,635985.0,403575931.9
-2025,Junho,Nampula,Mueda,Transferências,648690.0,407421233.21
-2025,Julho,Nampula,Mueda,Transferências,699865.0,402266294.29
-2025,Agosto,Nampula,Mueda,Transferências,717849.0,350499519.2
-2025,Setembro,Nampula,Mueda,Transferências,702617.0,370948429.34000003
-2025,Outubro,Nampula,Mueda,Transferências,674796.0,364642227.82
-2025,Novembro,Nampula,Mueda,Transferências,815601.0,547301917.1800001
-2025,Dezembro,Nampula,Mueda,Transferências,898683.0,676929916.16
-2025,Janeiro,Nampula,Muidumbe,Transferências,116664.0,37114296.0
-2025,Fevereiro,Nampula,Muidumbe,Transferências,149151.0,62203589.0
-2025,Março,Nampula,Muidumbe,Transferências,486829.0,285798789.0
-2025,Abril,Nampula,Muidumbe,Transferências,126256.0,43061925.9
-2025,Maio,Nampula,Muidumbe,Transferências,156261.0,62831859.75
-2025,Junho,Nampula,Muidumbe,Transferências,160935.0,55025622.2
-2025,Julho,Nampula,Muidumbe,Transferências,172828.0,59216378.0
-2025,Agosto,Nampula,Muidumbe,Transferências,183239.0,50642936.0
-2025,Setembro,Nampula,Muidumbe,Transferências,197744.0,57299205.0
-2025,Outubro,Nampula,Muidumbe,Transferências,172074.0,54735313.0
-2025,Novembro,Nampula,Muidumbe,Transferências,224036.0,67073847.8
-2025,Dezembro,Nampula,Muidumbe,Transferências,252062.0,87104346.0
-2025,Janeiro,Nampula,Namuno,Transferências,251536.0,103640837.0
-2025,Fevereiro,Nampula,Namuno,Transferências,268638.0,118780599.14
-2025,Março,Nampula,Namuno,Transferências,142498.0,52687263.49
-2025,Abril,Nampula,Namuno,Transferências,366133.0,162250512.87
-2025,Maio,Nampula,Namuno,Transferências,398151.0,169986719.8
-2025,Junho,Nampula,Namuno,Transferências,472332.0,210199203.98
-2025,Julho,Nampula,Namuno,Transferências,548069.0,197775121.68
-2025,Agosto,Nampula,Namuno,Transferências,560041.0,171548848.43
-2025,Setembro,Nampula,Namuno,Transferências,533044.0,161543748.5
-2025,Outubro,Nampula,Namuno,Transferências,501092.0,163002556.05
-2025,Novembro,Nampula,Namuno,Transferências,600620.0,198462505.3
-2025,Dezembro,Nampula,Namuno,Transferências,610843.0,225173277.66
-2025,Janeiro,Nampula,Nangade,Transferências,142118.0,77372899.05
-2025,Fevereiro,Nampula,Nangade,Transferências,168962.0,88059252.56
-2025,Março,Nampula,Nangade,Transferências,317983.0,150579258.8
-2025,Abril,Nampula,Nangade,Transferências,161102.0,65129711.0
-2025,Maio,Nampula,Nangade,Transferências,175218.0,75633381.94
-2025,Junho,Nampula,Nangade,Transferências,185139.0,82414235.16
-2025,Julho,Nampula,Nangade,Transferências,199998.0,75628303.05
-2025,Agosto,Nampula,Nangade,Transferências,193912.0,60996145.519999996
-2025,Setembro,Nampula,Nangade,Transferências,212515.0,66744849.99
-2025,Outubro,Nampula,Nangade,Transferências,197188.0,74304503.53999999
-2025,Novembro,Nampula,Nangade,Transferências,268309.0,213473767.1
-2025,Dezembro,Nampula,Nangade,Transferências,303026.0,197565082.1
-2025,Janeiro,Nampula,Palma,Transferências,219884.0,195150187.44
-2025,Fevereiro,Nampula,Palma,Transferências,223768.0,201792375.16
-2025,Março,Nampula,Palma,Transferências,383695.0,290737888.71000004
-2025,Abril,Nampula,Palma,Transferências,243685.0,230191847.13
-2025,Maio,Nampula,Palma,Transferências,256550.0,227720988.77
-2025,Junho,Nampula,Palma,Transferências,249203.0,220439344.64
-2025,Julho,Nampula,Palma,Transferências,262325.0,240151088.09
-2025,Agosto,Nampula,Palma,Transferências,282989.0,248020170.11
-2025,Setembro,Nampula,Palma,Transferências,307680.0,272185210.52
-2025,Outubro,Nampula,Palma,Transferências,327795.0,306132608.19
-2025,Novembro,Nampula,Palma,Transferências,375342.0,360833398.77
-2025,Dezembro,Nampula,Palma,Transferências,411691.0,443164462.44
-2025,Janeiro,Nampula,Pemba-Metuge,Transferências,153259.0,68486773.0
-2025,Fevereiro,Nampula,Pemba-Metuge,Transferências,174835.0,80080182.0
-2025,Março,Nampula,Pemba-Metuge,Transferências,25466.0,18087069.0
-2025,Abril,Nampula,Pemba-Metuge,Transferências,211795.0,79021915.0
-2025,Maio,Nampula,Pemba-Metuge,Transferências,247081.0,103648968.58
-2025,Junho,Nampula,Pemba-Metuge,Transferências,262786.0,104588401.0
-2025,Julho,Nampula,Pemba-Metuge,Transferências,2794608.0,1907728756.0
-2025,Agosto,Nampula,Pemba-Metuge,Transferências,2940687.0,1830128218.0
-2025,Setembro,Nampula,Pemba-Metuge,Transferências,315116.0,103637069.0
-2025,Outubro,Nampula,Pemba-Metuge,Transferências,2679859.0,1720669151.66
-2025,Novembro,Nampula,Pemba-Metuge,Transferências,388217.0,138074108.62
-2025,Dezembro,Nampula,Pemba-Metuge,Transferências,417207.0,159105453.61
-2025,Janeiro,Nampula,Quissanga,Transferências,57292.0,21959738.0
-2025,Fevereiro,Nampula,Quissanga,Transferências,63836.0,25534505.0
-2025,Março,Nampula,Quissanga,Transferências,71778.0,27784564.0
-2025,Abril,Nampula,Quissanga,Transferências,75551.0,28390039.0
-2025,Maio,Nampula,Quissanga,Transferências,132613.0,52616302.0
-2025,Junho,Nampula,Quissanga,Transferências,136415.0,51599446.0
-2025,Julho,Nampula,Quissanga,Transferências,148588.0,55149354.0
-2025,Agosto,Nampula,Quissanga,Transferências,159141.0,52814404.0
-2025,Setembro,Nampula,Quissanga,Transferências,159382.0,46500177.0
-2025,Outubro,Nampula,Quissanga,Transferências,154442.0,45823451.0
-2025,Novembro,Nampula,Quissanga,Transferências,188377.0,56982895.78
-2025,Dezembro,Nampula,Quissanga,Transferências,204535.0,64137154.0
+2025,Janeiro,Cabo Delgado,Cidade de Pemba,Transferências,2177176.0,1673892438.16
+2025,Fevereiro,Cabo Delgado,Cidade de Pemba,Transferências,2285271.0,1740038197.79
+2025,Março,Cabo Delgado,Cidade de Pemba,Transferências,2487827.0,1837883331.43
+2025,Abril,Cabo Delgado,Cidade de Pemba,Transferências,2586965.0,1826853864.74
+2025,Maio,Cabo Delgado,Cidade de Pemba,Transferências,2948860.0,2123688334.07
+2025,Junho,Cabo Delgado,Cidade de Pemba,Transferências,2903390.0,2077638581.45
+2025,Julho,Cabo Delgado,Cidade de Pemba,Transferências,3190351.0,2279245027.37
+2025,Agosto,Cabo Delgado,Cidade de Pemba,Transferências,3348667.0,2190875791.73
+2025,Setembro,Cabo Delgado,Cidade de Pemba,Transferências,3185680.0,2095765184.41
+2025,Outubro,Cabo Delgado,Cidade de Pemba,Transferências,3080076.0,2053072414.98
+2025,Novembro,Cabo Delgado,Cidade de Pemba,Transferências,3861715.0,2475840055.95
+2025,Dezembro,Cabo Delgado,Cidade de Pemba,Transferências,4216539.0,3047582174.9900002
+2025,Janeiro,Cabo Delgado,Ancuabe,Transferências,358188.0,146089477.72
+2025,Fevereiro,Cabo Delgado,Ancuabe,Transferências,408745.0,190446280.63
+2025,Março,Cabo Delgado,Ancuabe,Transferências,449145.0,191828371.44
+2025,Abril,Cabo Delgado,Ancuabe,Transferências,435238.0,176886585.77
+2025,Maio,Cabo Delgado,Ancuabe,Transferências,494641.0,222371520.1
+2025,Junho,Cabo Delgado,Ancuabe,Transferências,549184.0,235022124.44
+2025,Julho,Cabo Delgado,Ancuabe,Transferências,620479.0,253961137.1
+2025,Agosto,Cabo Delgado,Ancuabe,Transferências,639823.0,228820752.65
+2025,Setembro,Cabo Delgado,Ancuabe,Transferências,636132.0,234358613.53
+2025,Outubro,Cabo Delgado,Ancuabe,Transferências,572434.0,212069050.95
+2025,Novembro,Cabo Delgado,Ancuabe,Transferências,697750.0,260283720.4
+2025,Dezembro,Cabo Delgado,Ancuabe,Transferências,740189.0,310785664.0
+2025,Janeiro,Cabo Delgado,Balama,Transferências,156314.0,77627472.64
+2025,Fevereiro,Cabo Delgado,Balama,Transferências,165397.0,86934888.85
+2025,Março,Cabo Delgado,Balama,Transferências,184577.0,84526212.35
+2025,Abril,Cabo Delgado,Balama,Transferências,199108.0,88483561.15
+2025,Maio,Cabo Delgado,Balama,Transferências,231278.0,126095735.85
+2025,Junho,Cabo Delgado,Balama,Transferências,286513.0,193947639.42000002
+2025,Julho,Cabo Delgado,Balama,Transferências,344750.0,196724885.76
+2025,Agosto,Cabo Delgado,Balama,Transferências,371942.0,211076392.29
+2025,Setembro,Cabo Delgado,Balama,Transferências,365369.0,184937301.4
+2025,Outubro,Cabo Delgado,Balama,Transferências,346793.0,176158314.01
+2025,Novembro,Cabo Delgado,Balama,Transferências,387912.0,183762947.13
+2025,Dezembro,Cabo Delgado,Balama,Transferências,405351.0,210559215.0
+2025,Janeiro,Cabo Delgado,Chiúre,Transferências,422322.0,211938226.83
+2025,Fevereiro,Cabo Delgado,Chiúre,Transferências,473573.0,230958677.13
+2025,Março,Cabo Delgado,Chiúre,Transferências,545961.0,246162687.41
+2025,Abril,Cabo Delgado,Chiúre,Transferências,653376.0,324227773.78
+2025,Maio,Cabo Delgado,Chiúre,Transferências,731302.0,340253413.65
+2025,Junho,Cabo Delgado,Chiúre,Transferências,808578.0,355953149.85
+2025,Julho,Cabo Delgado,Chiúre,Transferências,933039.0,363036741.1
+2025,Agosto,Cabo Delgado,Chiúre,Transferências,974213.0,339929237.76
+2025,Setembro,Cabo Delgado,Chiúre,Transferências,955495.0,300664424.56
+2025,Outubro,Cabo Delgado,Chiúre,Transferências,906707.0,301564250.8
+2025,Novembro,Cabo Delgado,Chiúre,Transferências,1078096.0,401220314.34000003
+2025,Dezembro,Cabo Delgado,Chiúre,Transferências,1074748.0,437992351.53
+2025,Janeiro,Cabo Delgado,Ibo,Transferências,105787.0,60136729.0
+2025,Fevereiro,Cabo Delgado,Ibo,Transferências,112078.0,61982833.0
+2025,Março,Cabo Delgado,Ibo,Transferências,129387.0,74320511.0
+2025,Abril,Cabo Delgado,Ibo,Transferências,126058.0,68918457.0
+2025,Maio,Cabo Delgado,Ibo,Transferências,98658.0,54634713.0
+2025,Junho,Cabo Delgado,Ibo,Transferências,123953.0,60827951.0
+2025,Julho,Cabo Delgado,Ibo,Transferências,118814.0,56495059.0
+2025,Agosto,Cabo Delgado,Ibo,Transferências,124025.0,57656894.0
+2025,Setembro,Cabo Delgado,Ibo,Transferências,131278.0,59150101.0
+2025,Outubro,Cabo Delgado,Ibo,Transferências,132812.0,62766678.0
+2025,Novembro,Cabo Delgado,Ibo,Transferências,177166.0,92723234.0
+2025,Dezembro,Cabo Delgado,Ibo,Transferências,185161.0,94741026.0
+2025,Janeiro,Cabo Delgado,Macomia,Transferências,124324.0,75599252.0
+2025,Fevereiro,Cabo Delgado,Macomia,Transferências,160664.0,104766334.42
+2025,Março,Cabo Delgado,Macomia,Transferências,176365.0,109040132.78999999
+2025,Abril,Cabo Delgado,Macomia,Transferências,176642.0,95230114.4
+2025,Maio,Cabo Delgado,Macomia,Transferências,190938.0,102276514.86
+2025,Junho,Cabo Delgado,Macomia,Transferências,185600.0,106347840.51
+2025,Julho,Cabo Delgado,Macomia,Transferências,199518.0,110549178.83
+2025,Agosto,Cabo Delgado,Macomia,Transferências,195761.0,95802628.67
+2025,Setembro,Cabo Delgado,Macomia,Transferências,220287.0,100955516.05
+2025,Outubro,Cabo Delgado,Macomia,Transferências,189032.0,85825091.42
+2025,Novembro,Cabo Delgado,Macomia,Transferências,246605.0,131750711.02
+2025,Dezembro,Cabo Delgado,Macomia,Transferências,276212.0,165202277.19
+2025,Janeiro,Cabo Delgado,Mecufi,Transferências,48847.0,17115042.0
+2025,Fevereiro,Cabo Delgado,Mecufi,Transferências,64522.0,25443880.38
+2025,Março,Cabo Delgado,Mecufi,Transferências,75400.0,24133610.0
+2025,Abril,Cabo Delgado,Mecufi,Transferências,90780.0,29217084.0
+2025,Maio,Cabo Delgado,Mecufi,Transferências,94963.0,29790410.0
+2025,Junho,Cabo Delgado,Mecufi,Transferências,103133.0,35901811.0
+2025,Julho,Cabo Delgado,Mecufi,Transferências,117585.0,36675556.0
+2025,Agosto,Cabo Delgado,Mecufi,Transferências,125800.0,35362215.44
+2025,Setembro,Cabo Delgado,Mecufi,Transferências,132043.0,35874342.9
+2025,Outubro,Cabo Delgado,Mecufi,Transferências,134526.0,36436351.0
+2025,Novembro,Cabo Delgado,Mecufi,Transferências,175676.0,46570712.25
+2025,Dezembro,Cabo Delgado,Mecufi,Transferências,194001.0,59547925.0
+2025,Janeiro,Cabo Delgado,Meluco,Transferências,36974.0,17404090.0
+2025,Fevereiro,Cabo Delgado,Meluco,Transferências,47206.0,30229400.4
+2025,Março,Cabo Delgado,Meluco,Transferências,55347.0,27446317.4
+2025,Abril,Cabo Delgado,Meluco,Transferências,58189.0,26591764.0
+2025,Maio,Cabo Delgado,Meluco,Transferências,61118.0,30433935.0
+2025,Junho,Cabo Delgado,Meluco,Transferências,69731.0,29628186.0
+2025,Julho,Cabo Delgado,Meluco,Transferências,83577.0,42133766.99
+2025,Agosto,Cabo Delgado,Meluco,Transferências,91426.0,45168225.07
+2025,Setembro,Cabo Delgado,Meluco,Transferências,92787.0,46373005.0
+2025,Outubro,Cabo Delgado,Meluco,Transferências,96237.0,49700937.69
+2025,Novembro,Cabo Delgado,Meluco,Transferências,118077.0,61209770.0
+2025,Dezembro,Cabo Delgado,Meluco,Transferências,116626.0,58051469.5
+2025,Janeiro,Cabo Delgado,Mocimboa da Praia,Transferências,206272.0,164279412.57
+2025,Fevereiro,Cabo Delgado,Mocimboa da Praia,Transferências,243803.0,209655658.79000002
+2025,Março,Cabo Delgado,Mocimboa da Praia,Transferências,367022.0,224267909.79
+2025,Abril,Cabo Delgado,Mocimboa da Praia,Transferências,256501.0,214726470.25
+2025,Maio,Cabo Delgado,Mocimboa da Praia,Transferências,297442.0,274687403.59000003
+2025,Junho,Cabo Delgado,Mocimboa da Praia,Transferências,300230.0,262332855.24
+2025,Julho,Cabo Delgado,Mocimboa da Praia,Transferências,302046.0,242392589.05
+2025,Agosto,Cabo Delgado,Mocimboa da Praia,Transferências,316447.0,245820219.02
+2025,Setembro,Cabo Delgado,Mocimboa da Praia,Transferências,299479.0,228152554.1
+2025,Outubro,Cabo Delgado,Mocimboa da Praia,Transferências,236220.0,187437165.06
+2025,Novembro,Cabo Delgado,Mocimboa da Praia,Transferências,272171.0,215589075.11
+2025,Dezembro,Cabo Delgado,Mocimboa da Praia,Transferências,308307.0,253563446.28
+2025,Janeiro,Cabo Delgado,Montepuez,Transferências,911507.0,597075523.97
+2025,Fevereiro,Cabo Delgado,Montepuez,Transferências,995488.0,698397054.55
+2025,Março,Cabo Delgado,Montepuez,Transferências,217148.0,168822859.84
+2025,Abril,Cabo Delgado,Montepuez,Transferências,1158500.0,752775005.34
+2025,Maio,Cabo Delgado,Montepuez,Transferências,1277462.0,837042501.71
+2025,Junho,Cabo Delgado,Montepuez,Transferências,1323777.0,831579864.36
+2025,Julho,Cabo Delgado,Montepuez,Transferências,1419209.0,844639845.4
+2025,Agosto,Cabo Delgado,Montepuez,Transferências,1487948.0,829023732.38
+2025,Setembro,Cabo Delgado,Montepuez,Transferências,1449583.0,791238910.15
+2025,Outubro,Cabo Delgado,Montepuez,Transferências,1421214.0,825497387.1
+2025,Novembro,Cabo Delgado,Montepuez,Transferências,1758287.0,1010666612.05
+2025,Dezembro,Cabo Delgado,Montepuez,Transferências,1980546.0,1328365934.87
+2025,Janeiro,Cabo Delgado,Mueda,Transferências,423587.0,286480790.26
+2025,Fevereiro,Cabo Delgado,Mueda,Transferências,486121.0,358401990.04
+2025,Março,Cabo Delgado,Mueda,Transferências,1013425.0,753794892.52
+2025,Abril,Cabo Delgado,Mueda,Transferências,534476.0,304306931.39
+2025,Maio,Cabo Delgado,Mueda,Transferências,635985.0,403575931.9
+2025,Junho,Cabo Delgado,Mueda,Transferências,648690.0,407421233.21
+2025,Julho,Cabo Delgado,Mueda,Transferências,699865.0,402266294.29
+2025,Agosto,Cabo Delgado,Mueda,Transferências,717849.0,350499519.2
+2025,Setembro,Cabo Delgado,Mueda,Transferências,702617.0,370948429.34000003
+2025,Outubro,Cabo Delgado,Mueda,Transferências,674796.0,364642227.82
+2025,Novembro,Cabo Delgado,Mueda,Transferências,815601.0,547301917.1800001
+2025,Dezembro,Cabo Delgado,Mueda,Transferências,898683.0,676929916.16
+2025,Janeiro,Cabo Delgado,Muidumbe,Transferências,116664.0,37114296.0
+2025,Fevereiro,Cabo Delgado,Muidumbe,Transferências,149151.0,62203589.0
+2025,Março,Cabo Delgado,Muidumbe,Transferências,486829.0,285798789.0
+2025,Abril,Cabo Delgado,Muidumbe,Transferências,126256.0,43061925.9
+2025,Maio,Cabo Delgado,Muidumbe,Transferências,156261.0,62831859.75
+2025,Junho,Cabo Delgado,Muidumbe,Transferências,160935.0,55025622.2
+2025,Julho,Cabo Delgado,Muidumbe,Transferências,172828.0,59216378.0
+2025,Agosto,Cabo Delgado,Muidumbe,Transferências,183239.0,50642936.0
+2025,Setembro,Cabo Delgado,Muidumbe,Transferências,197744.0,57299205.0
+2025,Outubro,Cabo Delgado,Muidumbe,Transferências,172074.0,54735313.0
+2025,Novembro,Cabo Delgado,Muidumbe,Transferências,224036.0,67073847.8
+2025,Dezembro,Cabo Delgado,Muidumbe,Transferências,252062.0,87104346.0
+2025,Janeiro,Cabo Delgado,Namuno,Transferências,251536.0,103640837.0
+2025,Fevereiro,Cabo Delgado,Namuno,Transferências,268638.0,118780599.14
+2025,Março,Cabo Delgado,Namuno,Transferências,142498.0,52687263.49
+2025,Abril,Cabo Delgado,Namuno,Transferências,366133.0,162250512.87
+2025,Maio,Cabo Delgado,Namuno,Transferências,398151.0,169986719.8
+2025,Junho,Cabo Delgado,Namuno,Transferências,472332.0,210199203.98
+2025,Julho,Cabo Delgado,Namuno,Transferências,548069.0,197775121.68
+2025,Agosto,Cabo Delgado,Namuno,Transferências,560041.0,171548848.43
+2025,Setembro,Cabo Delgado,Namuno,Transferências,533044.0,161543748.5
+2025,Outubro,Cabo Delgado,Namuno,Transferências,501092.0,163002556.05
+2025,Novembro,Cabo Delgado,Namuno,Transferências,600620.0,198462505.3
+2025,Dezembro,Cabo Delgado,Namuno,Transferências,610843.0,225173277.66
+2025,Janeiro,Cabo Delgado,Nangade,Transferências,142118.0,77372899.05
+2025,Fevereiro,Cabo Delgado,Nangade,Transferências,168962.0,88059252.56
+2025,Março,Cabo Delgado,Nangade,Transferências,317983.0,150579258.8
+2025,Abril,Cabo Delgado,Nangade,Transferências,161102.0,65129711.0
+2025,Maio,Cabo Delgado,Nangade,Transferências,175218.0,75633381.94
+2025,Junho,Cabo Delgado,Nangade,Transferências,185139.0,82414235.16
+2025,Julho,Cabo Delgado,Nangade,Transferências,199998.0,75628303.05
+2025,Agosto,Cabo Delgado,Nangade,Transferências,193912.0,60996145.519999996
+2025,Setembro,Cabo Delgado,Nangade,Transferências,212515.0,66744849.99
+2025,Outubro,Cabo Delgado,Nangade,Transferências,197188.0,74304503.53999999
+2025,Novembro,Cabo Delgado,Nangade,Transferências,268309.0,213473767.1
+2025,Dezembro,Cabo Delgado,Nangade,Transferências,303026.0,197565082.1
+2025,Janeiro,Cabo Delgado,Palma,Transferências,219884.0,195150187.44
+2025,Fevereiro,Cabo Delgado,Palma,Transferências,223768.0,201792375.16
+2025,Março,Cabo Delgado,Palma,Transferências,383695.0,290737888.71000004
+2025,Abril,Cabo Delgado,Palma,Transferências,243685.0,230191847.13
+2025,Maio,Cabo Delgado,Palma,Transferências,256550.0,227720988.77
+2025,Junho,Cabo Delgado,Palma,Transferências,249203.0,220439344.64
+2025,Julho,Cabo Delgado,Palma,Transferências,262325.0,240151088.09
+2025,Agosto,Cabo Delgado,Palma,Transferências,282989.0,248020170.11
+2025,Setembro,Cabo Delgado,Palma,Transferências,307680.0,272185210.52
+2025,Outubro,Cabo Delgado,Palma,Transferências,327795.0,306132608.19
+2025,Novembro,Cabo Delgado,Palma,Transferências,375342.0,360833398.77
+2025,Dezembro,Cabo Delgado,Palma,Transferências,411691.0,443164462.44
+2025,Janeiro,Cabo Delgado,Pemba-Metuge,Transferências,153259.0,68486773.0
+2025,Fevereiro,Cabo Delgado,Pemba-Metuge,Transferências,174835.0,80080182.0
+2025,Março,Cabo Delgado,Pemba-Metuge,Transferências,25466.0,18087069.0
+2025,Abril,Cabo Delgado,Pemba-Metuge,Transferências,211795.0,79021915.0
+2025,Maio,Cabo Delgado,Pemba-Metuge,Transferências,247081.0,103648968.58
+2025,Junho,Cabo Delgado,Pemba-Metuge,Transferências,262786.0,104588401.0
+2025,Julho,Cabo Delgado,Pemba-Metuge,Transferências,2794608.0,1907728756.0
+2025,Agosto,Cabo Delgado,Pemba-Metuge,Transferências,2940687.0,1830128218.0
+2025,Setembro,Cabo Delgado,Pemba-Metuge,Transferências,315116.0,103637069.0
+2025,Outubro,Cabo Delgado,Pemba-Metuge,Transferências,2679859.0,1720669151.66
+2025,Novembro,Cabo Delgado,Pemba-Metuge,Transferências,388217.0,138074108.62
+2025,Dezembro,Cabo Delgado,Pemba-Metuge,Transferências,417207.0,159105453.61
+2025,Janeiro,Cabo Delgado,Quissanga,Transferências,57292.0,21959738.0
+2025,Fevereiro,Cabo Delgado,Quissanga,Transferências,63836.0,25534505.0
+2025,Março,Cabo Delgado,Quissanga,Transferências,71778.0,27784564.0
+2025,Abril,Cabo Delgado,Quissanga,Transferências,75551.0,28390039.0
+2025,Maio,Cabo Delgado,Quissanga,Transferências,132613.0,52616302.0
+2025,Junho,Cabo Delgado,Quissanga,Transferências,136415.0,51599446.0
+2025,Julho,Cabo Delgado,Quissanga,Transferências,148588.0,55149354.0
+2025,Agosto,Cabo Delgado,Quissanga,Transferências,159141.0,52814404.0
+2025,Setembro,Cabo Delgado,Quissanga,Transferências,159382.0,46500177.0
+2025,Outubro,Cabo Delgado,Quissanga,Transferências,154442.0,45823451.0
+2025,Novembro,Cabo Delgado,Quissanga,Transferências,188377.0,56982895.78
+2025,Dezembro,Cabo Delgado,Quissanga,Transferências,204535.0,64137154.0
 2025,Janeiro,Niassa,Cidade de Lichinga,Transferências,1819354.0,990093267.17
 2025,Fevereiro,Niassa,Cidade de Lichinga,Transferências,1945726.0,1091439970.09
 2025,Março,Niassa,Cidade de Lichinga,Transferências,2152351.0,1130299469.57
@@ -7079,222 +7043,210 @@ Year,Month,Province,District,Transaction_Type,Volume,Value
 2025,Outubro,Nampula,Larde,Pagamentos,10252.0,2126042.44
 2025,Novembro,Nampula,Larde,Pagamentos,10101.0,2678493.31
 2025,Dezembro,Nampula,Larde,Pagamentos,10716.0,2862131.18
-2025,Janeiro,Nampula,Cabo-Delgado,Pagamentos,929607.0,114507919.29
-2025,Fevereiro,Nampula,Cabo-Delgado,Pagamentos,936343.0,120700085.85999998
-2025,Março,Nampula,Cabo-Delgado,Pagamentos,1109839.0,138495617.07999998
-2025,Abril,Nampula,Cabo-Delgado,Pagamentos,1015866.0,127467008.07000001
-2025,Maio,Nampula,Cabo-Delgado,Pagamentos,1072086.0,129898224.38999999
-2025,Junho,Nampula,Cabo-Delgado,Pagamentos,1115530.0,116457664.24
-2025,Julho,Nampula,Cabo-Delgado,Pagamentos,1652656.0,158836387.60999998
-2025,Agosto,Nampula,Cabo-Delgado,Pagamentos,1812664.0,163993234.96999997
-2025,Setembro,Nampula,Cabo-Delgado,Pagamentos,1118445.0,127163414.10999997
-2025,Outubro,Nampula,Cabo-Delgado,Pagamentos,1260418.0,145142717.08999997
-2025,Novembro,Nampula,Cabo-Delgado,Pagamentos,1276756.0,138883447.35
-2025,Dezembro,Nampula,Cabo-Delgado,Pagamentos,1328838.0,149117098.59000003
-2025,Janeiro,Nampula,Cidade de Pemba,Pagamentos,439077.0,70792778.49
-2025,Fevereiro,Nampula,Cidade de Pemba,Pagamentos,419105.0,70768124.2
-2025,Março,Nampula,Cidade de Pemba,Pagamentos,491802.0,74328379.28
-2025,Abril,Nampula,Cidade de Pemba,Pagamentos,440907.0,67181265.17
-2025,Maio,Nampula,Cidade de Pemba,Pagamentos,459396.0,70545017.56
-2025,Junho,Nampula,Cidade de Pemba,Pagamentos,455283.0,61576232.97
-2025,Julho,Nampula,Cidade de Pemba,Pagamentos,532964.0,65263777.31999999
-2025,Agosto,Nampula,Cidade de Pemba,Pagamentos,577009.0,67363579.64
-2025,Setembro,Nampula,Cidade de Pemba,Pagamentos,496546.0,67619982.19
-2025,Outubro,Nampula,Cidade de Pemba,Pagamentos,565268.0,78872994.28999999
-2025,Novembro,Nampula,Cidade de Pemba,Pagamentos,582003.0,74365561.82
-2025,Dezembro,Nampula,Cidade de Pemba,Pagamentos,598743.0,78279875.21000001
-2025,Janeiro,Nampula,Ancuabe,Pagamentos,35485.0,3365460.54
-2025,Fevereiro,Nampula,Ancuabe,Pagamentos,36659.0,3948914.12
-2025,Março,Nampula,Ancuabe,Pagamentos,40331.0,3988004.31
-2025,Abril,Nampula,Ancuabe,Pagamentos,37423.0,3940322.63
-2025,Maio,Nampula,Ancuabe,Pagamentos,43425.0,4636428.96
-2025,Junho,Nampula,Ancuabe,Pagamentos,50133.0,5287656.37
-2025,Julho,Nampula,Ancuabe,Pagamentos,62113.0,5300276.640000001
-2025,Agosto,Nampula,Ancuabe,Pagamentos,68540.0,4860170.78
-2025,Setembro,Nampula,Ancuabe,Pagamentos,52551.0,4904190.32
-2025,Outubro,Nampula,Ancuabe,Pagamentos,58590.0,5463163.1899999995
-2025,Novembro,Nampula,Ancuabe,Pagamentos,57424.0,4678692.61
-2025,Dezembro,Nampula,Ancuabe,Pagamentos,58375.0,4479411.97
-2025,Janeiro,Nampula,Balama,Pagamentos,27642.0,2770052.19
-2025,Fevereiro,Nampula,Balama,Pagamentos,26760.0,2935147.13
-2025,Março,Nampula,Balama,Pagamentos,29434.0,4072496.83
-2025,Abril,Nampula,Balama,Pagamentos,28665.0,2904847.54
-2025,Maio,Nampula,Balama,Pagamentos,33685.0,3398605.4
-2025,Junho,Nampula,Balama,Pagamentos,42832.0,3506113.1799999997
-2025,Julho,Nampula,Balama,Pagamentos,50498.0,3893167.59
-2025,Agosto,Nampula,Balama,Pagamentos,56771.0,4165537.19
-2025,Setembro,Nampula,Balama,Pagamentos,40302.0,4049633.31
-2025,Outubro,Nampula,Balama,Pagamentos,44829.0,4690008.75
-2025,Novembro,Nampula,Balama,Pagamentos,42233.0,4317981.53
-2025,Dezembro,Nampula,Balama,Pagamentos,43587.0,4356278.08
-2025,Janeiro,Nampula,Chiúre,Pagamentos,35263.0,3542510.0700000003
-2025,Fevereiro,Nampula,Chiúre,Pagamentos,40811.0,4552348.21
-2025,Março,Nampula,Chiúre,Pagamentos,48594.0,4802091.63
-2025,Abril,Nampula,Chiúre,Pagamentos,50776.0,5759085.84
-2025,Maio,Nampula,Chiúre,Pagamentos,58423.0,5829917.98
-2025,Junho,Nampula,Chiúre,Pagamentos,69610.0,6120487.35
-2025,Julho,Nampula,Chiúre,Pagamentos,87743.0,6515881.99
-2025,Agosto,Nampula,Chiúre,Pagamentos,92870.0,6968143.96
-2025,Setembro,Nampula,Chiúre,Pagamentos,71475.0,6373990.21
-2025,Outubro,Nampula,Chiúre,Pagamentos,81730.0,7189768.65
-2025,Novembro,Nampula,Chiúre,Pagamentos,80392.0,6568580.529999999
-2025,Dezembro,Nampula,Chiúre,Pagamentos,81064.0,6608385.05
-2025,Janeiro,Nampula,Ibo,Pagamentos,4264.0,375938.0
-2025,Fevereiro,Nampula,Ibo,Pagamentos,5970.0,516866.0
-2025,Março,Nampula,Ibo,Pagamentos,7359.0,613153.0
-2025,Abril,Nampula,Ibo,Pagamentos,6257.0,591062.0
-2025,Maio,Nampula,Ibo,Pagamentos,4869.0,388475.0
-2025,Junho,Nampula,Ibo,Pagamentos,6027.0,421025.5
-2025,Julho,Nampula,Ibo,Pagamentos,7479.0,441682.0
-2025,Agosto,Nampula,Ibo,Pagamentos,8372.0,493673.8
-2025,Setembro,Nampula,Ibo,Pagamentos,8032.0,529458.23
-2025,Outubro,Nampula,Ibo,Pagamentos,9281.0,666786.0
-2025,Novembro,Nampula,Ibo,Pagamentos,9187.0,636432.45
-2025,Dezembro,Nampula,Ibo,Pagamentos,9079.0,591475.39
-2025,Janeiro,Nampula,Macomia,Pagamentos,12488.0,914953.79
-2025,Fevereiro,Nampula,Macomia,Pagamentos,15853.0,1235549.5899999999
-2025,Março,Nampula,Macomia,Pagamentos,19563.0,1694115.77
-2025,Abril,Nampula,Macomia,Pagamentos,16670.0,1602267.9
-2025,Maio,Nampula,Macomia,Pagamentos,18804.0,1334849.6600000001
-2025,Junho,Nampula,Macomia,Pagamentos,19650.0,1267809.58
-2025,Julho,Nampula,Macomia,Pagamentos,23568.0,1535925.08
-2025,Agosto,Nampula,Macomia,Pagamentos,26040.0,1699737.33
-2025,Setembro,Nampula,Macomia,Pagamentos,17594.0,1596701.0899999999
-2025,Outubro,Nampula,Macomia,Pagamentos,18975.0,1794903.4300000002
-2025,Novembro,Nampula,Macomia,Pagamentos,18856.0,1610653.12
-2025,Dezembro,Nampula,Macomia,Pagamentos,19860.0,1496337.37
-2025,Janeiro,Nampula,Mecufi,Pagamentos,3363.0,190154.0
-2025,Fevereiro,Nampula,Mecufi,Pagamentos,4150.0,267079.0
-2025,Março,Nampula,Mecufi,Pagamentos,5595.0,374313.0
-2025,Abril,Nampula,Mecufi,Pagamentos,6959.0,572803.0
-2025,Maio,Nampula,Mecufi,Pagamentos,7204.0,505283.0
-2025,Junho,Nampula,Mecufi,Pagamentos,9084.0,531672.5
-2025,Julho,Nampula,Mecufi,Pagamentos,12074.0,588081.5
-2025,Agosto,Nampula,Mecufi,Pagamentos,11155.0,570998.5
-2025,Setembro,Nampula,Mecufi,Pagamentos,13128.0,721901.96
-2025,Outubro,Nampula,Mecufi,Pagamentos,16071.0,909809.14
-2025,Novembro,Nampula,Mecufi,Pagamentos,17367.0,965426.99
-2025,Dezembro,Nampula,Mecufi,Pagamentos,19299.0,1612329.04
-2025,Janeiro,Nampula,Meluco,Pagamentos,4011.0,418606.0
-2025,Fevereiro,Nampula,Meluco,Pagamentos,6609.0,595903.46
-2025,Março,Nampula,Meluco,Pagamentos,6413.0,640186.77
-2025,Abril,Nampula,Meluco,Pagamentos,6021.0,691502.0
-2025,Maio,Nampula,Meluco,Pagamentos,6478.0,710206.0
-2025,Junho,Nampula,Meluco,Pagamentos,7808.0,725519.31
-2025,Julho,Nampula,Meluco,Pagamentos,9988.0,781680.0
-2025,Agosto,Nampula,Meluco,Pagamentos,10425.0,790598.29
-2025,Setembro,Nampula,Meluco,Pagamentos,9294.0,756885.86
-2025,Outubro,Nampula,Meluco,Pagamentos,10720.0,978680.79
-2025,Novembro,Nampula,Meluco,Pagamentos,10851.0,939306.13
-2025,Dezembro,Nampula,Meluco,Pagamentos,10971.0,1264177.15
-2025,Janeiro,Nampula,Mocimboa da Praia,Pagamentos,75130.0,3980652.6
-2025,Fevereiro,Nampula,Mocimboa da Praia,Pagamentos,82881.0,4688937.62
-2025,Março,Nampula,Mocimboa da Praia,Pagamentos,112048.0,7816253.02
-2025,Abril,Nampula,Mocimboa da Praia,Pagamentos,84072.0,4931336.48
-2025,Maio,Nampula,Mocimboa da Praia,Pagamentos,88758.0,4692537.41
-2025,Junho,Nampula,Mocimboa da Praia,Pagamentos,82593.0,4257287.970000001
-2025,Julho,Nampula,Mocimboa da Praia,Pagamentos,83775.0,4216128.859999999
-2025,Agosto,Nampula,Mocimboa da Praia,Pagamentos,90686.0,5321036.42
-2025,Setembro,Nampula,Mocimboa da Praia,Pagamentos,41776.0,4148099.33
-2025,Outubro,Nampula,Mocimboa da Praia,Pagamentos,37384.0,3315910.5
-2025,Novembro,Nampula,Mocimboa da Praia,Pagamentos,34901.0,3324432.17
-2025,Dezembro,Nampula,Mocimboa da Praia,Pagamentos,38795.0,3935139.44
-2025,Janeiro,Nampula,Montepuez,Pagamentos,121477.0,14182440.79
-2025,Fevereiro,Nampula,Montepuez,Pagamentos,119840.0,14972477.16
-2025,Março,Nampula,Montepuez,Pagamentos,130765.0,16849825.06
-2025,Abril,Nampula,Montepuez,Pagamentos,136430.0,20600547.08
-2025,Maio,Nampula,Montepuez,Pagamentos,138192.0,18411673.79
-2025,Junho,Nampula,Montepuez,Pagamentos,151567.0,16356865.530000001
-2025,Julho,Nampula,Montepuez,Pagamentos,152245.0,16545041.92
-2025,Agosto,Nampula,Montepuez,Pagamentos,190240.0,16788614.79
-2025,Setembro,Nampula,Montepuez,Pagamentos,163560.0,16884532.71
-2025,Outubro,Nampula,Montepuez,Pagamentos,186671.0,19365853.009999998
-2025,Novembro,Nampula,Montepuez,Pagamentos,184683.0,19302449.05
-2025,Dezembro,Nampula,Montepuez,Pagamentos,192468.0,20980833.21
-2025,Janeiro,Nampula,Mueda,Pagamentos,53405.0,4564170.71
-2025,Fevereiro,Nampula,Mueda,Pagamentos,55191.0,5289892.050000001
-2025,Março,Nampula,Mueda,Pagamentos,68468.0,6917263.83
-2025,Abril,Nampula,Mueda,Pagamentos,58635.0,5613165.42
-2025,Maio,Nampula,Mueda,Pagamentos,60801.0,6174777.4399999995
-2025,Junho,Nampula,Mueda,Pagamentos,66344.0,4951614.73
-2025,Julho,Nampula,Mueda,Pagamentos,65943.0,5188280.88
-2025,Agosto,Nampula,Mueda,Pagamentos,86354.0,5822321.4399999995
-2025,Setembro,Nampula,Mueda,Pagamentos,64540.0,5445668.97
-2025,Outubro,Nampula,Mueda,Pagamentos,75545.0,6681493.9399999995
-2025,Novembro,Nampula,Mueda,Pagamentos,75206.0,6356681.890000001
-2025,Dezembro,Nampula,Mueda,Pagamentos,80602.0,6928949.15
-2025,Janeiro,Nampula,Muidumbe,Pagamentos,5313.0,344169.0
-2025,Fevereiro,Nampula,Muidumbe,Pagamentos,5483.0,396480.0
-2025,Março,Nampula,Muidumbe,Pagamentos,5837.0,460043.0
-2025,Abril,Nampula,Muidumbe,Pagamentos,5800.0,560695.6
-2025,Maio,Nampula,Muidumbe,Pagamentos,6265.0,616616.0
-2025,Junho,Nampula,Muidumbe,Pagamentos,7804.0,562661.4
-2025,Julho,Nampula,Muidumbe,Pagamentos,7469.0,581643.7
-2025,Agosto,Nampula,Muidumbe,Pagamentos,11336.0,677109.5
-2025,Setembro,Nampula,Muidumbe,Pagamentos,10637.0,719555.1
-2025,Outubro,Nampula,Muidumbe,Pagamentos,11568.0,870478.46
-2025,Novembro,Nampula,Muidumbe,Pagamentos,12393.0,800055.05
-2025,Dezembro,Nampula,Muidumbe,Pagamentos,13378.0,741698.49
-2025,Janeiro,Nampula,Namuno,Pagamentos,20642.0,1921021.3900000001
-2025,Fevereiro,Nampula,Namuno,Pagamentos,21358.0,2104219.06
-2025,Março,Nampula,Namuno,Pagamentos,25517.0,2392471.34
-2025,Abril,Nampula,Namuno,Pagamentos,28362.0,2759480.15
-2025,Maio,Nampula,Namuno,Pagamentos,28137.0,2632467.4
-2025,Junho,Nampula,Namuno,Pagamentos,35182.0,2404506.7
-2025,Julho,Nampula,Namuno,Pagamentos,42661.0,2744189.15
-2025,Agosto,Nampula,Namuno,Pagamentos,44544.0,2803246.01
-2025,Setembro,Nampula,Namuno,Pagamentos,36700.0,2753414.77
-2025,Outubro,Nampula,Namuno,Pagamentos,41519.0,3129451.45
-2025,Novembro,Nampula,Namuno,Pagamentos,40326.0,3130365.96
-2025,Dezembro,Nampula,Namuno,Pagamentos,40637.0,2979960.92
-2025,Janeiro,Nampula,Nangade,Pagamentos,9695.0,865854.6799999999
-2025,Fevereiro,Nampula,Nangade,Pagamentos,9628.0,1848707.74
-2025,Março,Nampula,Nangade,Pagamentos,9979.0,3770562.31
-2025,Abril,Nampula,Nangade,Pagamentos,10006.0,1512456.49
-2025,Maio,Nampula,Nangade,Pagamentos,10314.0,1229350.0
-2025,Junho,Nampula,Nangade,Pagamentos,11912.0,1079088.35
-2025,Julho,Nampula,Nangade,Pagamentos,15857.0,1209023.1
-2025,Agosto,Nampula,Nangade,Pagamentos,16901.0,1145963.1
-2025,Setembro,Nampula,Nangade,Pagamentos,13501.0,1008972.2
-2025,Outubro,Nampula,Nangade,Pagamentos,15110.0,1288824.1400000001
-2025,Novembro,Nampula,Nangade,Pagamentos,17587.0,1397311.94
-2025,Dezembro,Nampula,Nangade,Pagamentos,19518.0,1507017.1
-2025,Janeiro,Nampula,Palma,Pagamentos,63893.0,4742833.04
-2025,Fevereiro,Nampula,Palma,Pagamentos,69335.0,5387826.39
-2025,Março,Nampula,Palma,Pagamentos,88508.0,8353395.81
-2025,Abril,Nampula,Palma,Pagamentos,77277.0,6464708.99
-2025,Maio,Nampula,Palma,Pagamentos,81940.0,6819453.8
-2025,Junho,Nampula,Palma,Pagamentos,69245.0,5425805.8
-2025,Julho,Nampula,Palma,Pagamentos,71207.0,6081794.15
-2025,Agosto,Nampula,Palma,Pagamentos,82215.0,6832204.74
-2025,Setembro,Nampula,Palma,Pagamentos,40578.0,7757767.14
-2025,Outubro,Nampula,Palma,Pagamentos,43471.0,7601297.32
-2025,Novembro,Nampula,Palma,Pagamentos,46089.0,7894769.21
-2025,Dezembro,Nampula,Palma,Pagamentos,54256.0,10799746.4
-2025,Janeiro,Nampula,Pemba-Metuge,Pagamentos,16301.0,1388363.0
-2025,Fevereiro,Nampula,Pemba-Metuge,Pagamentos,14541.0,1041208.13
-2025,Março,Nampula,Pemba-Metuge,Pagamentos,17433.0,1268627.12
-2025,Abril,Nampula,Pemba-Metuge,Pagamentos,18854.0,1564006.01
-2025,Maio,Nampula,Pemba-Metuge,Pagamentos,21308.0,1684114.99
-2025,Junho,Nampula,Pemba-Metuge,Pagamentos,25845.0,1758634.0
-2025,Julho,Nampula,Pemba-Metuge,Pagamentos,420162.0,37693256.23
-2025,Agosto,Nampula,Pemba-Metuge,Pagamentos,431063.0,37309934.88
-2025,Setembro,Nampula,Pemba-Metuge,Pagamentos,32515.0,1623303.52
-2025,Outubro,Nampula,Pemba-Metuge,Pagamentos,36836.0,1872429.28
-2025,Novembro,Nampula,Pemba-Metuge,Pagamentos,40340.0,2177978.5300000003
-2025,Dezembro,Nampula,Pemba-Metuge,Pagamentos,41063.0,2190101.3
-2025,Janeiro,Nampula,Quissanga,Pagamentos,2158.0,147961.0
-2025,Fevereiro,Nampula,Quissanga,Pagamentos,2169.0,150406.0
-2025,Março,Nampula,Quissanga,Pagamentos,2193.0,154435.0
-2025,Abril,Nampula,Quissanga,Pagamentos,2752.0,217455.77
-2025,Maio,Nampula,Quissanga,Pagamentos,4087.0,288450.0
-2025,Junho,Nampula,Quissanga,Pagamentos,4611.0,224683.0
-2025,Julho,Nampula,Quissanga,Pagamentos,6910.0,256557.5
-2025,Agosto,Nampula,Quissanga,Pagamentos,8143.0,380364.6
-2025,Setembro,Nampula,Quissanga,Pagamentos,5716.0,269357.2
-2025,Outubro,Nampula,Quissanga,Pagamentos,6850.0,450864.75
-2025,Novembro,Nampula,Quissanga,Pagamentos,6918.0,416768.37
-2025,Dezembro,Nampula,Quissanga,Pagamentos,7143.0,365383.32
+2025,Janeiro,Cabo Delgado,Cidade de Pemba,Pagamentos,439077.0,70792778.49
+2025,Fevereiro,Cabo Delgado,Cidade de Pemba,Pagamentos,419105.0,70768124.2
+2025,Março,Cabo Delgado,Cidade de Pemba,Pagamentos,491802.0,74328379.28
+2025,Abril,Cabo Delgado,Cidade de Pemba,Pagamentos,440907.0,67181265.17
+2025,Maio,Cabo Delgado,Cidade de Pemba,Pagamentos,459396.0,70545017.56
+2025,Junho,Cabo Delgado,Cidade de Pemba,Pagamentos,455283.0,61576232.97
+2025,Julho,Cabo Delgado,Cidade de Pemba,Pagamentos,532964.0,65263777.31999999
+2025,Agosto,Cabo Delgado,Cidade de Pemba,Pagamentos,577009.0,67363579.64
+2025,Setembro,Cabo Delgado,Cidade de Pemba,Pagamentos,496546.0,67619982.19
+2025,Outubro,Cabo Delgado,Cidade de Pemba,Pagamentos,565268.0,78872994.28999999
+2025,Novembro,Cabo Delgado,Cidade de Pemba,Pagamentos,582003.0,74365561.82
+2025,Dezembro,Cabo Delgado,Cidade de Pemba,Pagamentos,598743.0,78279875.21000001
+2025,Janeiro,Cabo Delgado,Ancuabe,Pagamentos,35485.0,3365460.54
+2025,Fevereiro,Cabo Delgado,Ancuabe,Pagamentos,36659.0,3948914.12
+2025,Março,Cabo Delgado,Ancuabe,Pagamentos,40331.0,3988004.31
+2025,Abril,Cabo Delgado,Ancuabe,Pagamentos,37423.0,3940322.63
+2025,Maio,Cabo Delgado,Ancuabe,Pagamentos,43425.0,4636428.96
+2025,Junho,Cabo Delgado,Ancuabe,Pagamentos,50133.0,5287656.37
+2025,Julho,Cabo Delgado,Ancuabe,Pagamentos,62113.0,5300276.640000001
+2025,Agosto,Cabo Delgado,Ancuabe,Pagamentos,68540.0,4860170.78
+2025,Setembro,Cabo Delgado,Ancuabe,Pagamentos,52551.0,4904190.32
+2025,Outubro,Cabo Delgado,Ancuabe,Pagamentos,58590.0,5463163.1899999995
+2025,Novembro,Cabo Delgado,Ancuabe,Pagamentos,57424.0,4678692.61
+2025,Dezembro,Cabo Delgado,Ancuabe,Pagamentos,58375.0,4479411.97
+2025,Janeiro,Cabo Delgado,Balama,Pagamentos,27642.0,2770052.19
+2025,Fevereiro,Cabo Delgado,Balama,Pagamentos,26760.0,2935147.13
+2025,Março,Cabo Delgado,Balama,Pagamentos,29434.0,4072496.83
+2025,Abril,Cabo Delgado,Balama,Pagamentos,28665.0,2904847.54
+2025,Maio,Cabo Delgado,Balama,Pagamentos,33685.0,3398605.4
+2025,Junho,Cabo Delgado,Balama,Pagamentos,42832.0,3506113.1799999997
+2025,Julho,Cabo Delgado,Balama,Pagamentos,50498.0,3893167.59
+2025,Agosto,Cabo Delgado,Balama,Pagamentos,56771.0,4165537.19
+2025,Setembro,Cabo Delgado,Balama,Pagamentos,40302.0,4049633.31
+2025,Outubro,Cabo Delgado,Balama,Pagamentos,44829.0,4690008.75
+2025,Novembro,Cabo Delgado,Balama,Pagamentos,42233.0,4317981.53
+2025,Dezembro,Cabo Delgado,Balama,Pagamentos,43587.0,4356278.08
+2025,Janeiro,Cabo Delgado,Chiúre,Pagamentos,35263.0,3542510.0700000003
+2025,Fevereiro,Cabo Delgado,Chiúre,Pagamentos,40811.0,4552348.21
+2025,Março,Cabo Delgado,Chiúre,Pagamentos,48594.0,4802091.63
+2025,Abril,Cabo Delgado,Chiúre,Pagamentos,50776.0,5759085.84
+2025,Maio,Cabo Delgado,Chiúre,Pagamentos,58423.0,5829917.98
+2025,Junho,Cabo Delgado,Chiúre,Pagamentos,69610.0,6120487.35
+2025,Julho,Cabo Delgado,Chiúre,Pagamentos,87743.0,6515881.99
+2025,Agosto,Cabo Delgado,Chiúre,Pagamentos,92870.0,6968143.96
+2025,Setembro,Cabo Delgado,Chiúre,Pagamentos,71475.0,6373990.21
+2025,Outubro,Cabo Delgado,Chiúre,Pagamentos,81730.0,7189768.65
+2025,Novembro,Cabo Delgado,Chiúre,Pagamentos,80392.0,6568580.529999999
+2025,Dezembro,Cabo Delgado,Chiúre,Pagamentos,81064.0,6608385.05
+2025,Janeiro,Cabo Delgado,Ibo,Pagamentos,4264.0,375938.0
+2025,Fevereiro,Cabo Delgado,Ibo,Pagamentos,5970.0,516866.0
+2025,Março,Cabo Delgado,Ibo,Pagamentos,7359.0,613153.0
+2025,Abril,Cabo Delgado,Ibo,Pagamentos,6257.0,591062.0
+2025,Maio,Cabo Delgado,Ibo,Pagamentos,4869.0,388475.0
+2025,Junho,Cabo Delgado,Ibo,Pagamentos,6027.0,421025.5
+2025,Julho,Cabo Delgado,Ibo,Pagamentos,7479.0,441682.0
+2025,Agosto,Cabo Delgado,Ibo,Pagamentos,8372.0,493673.8
+2025,Setembro,Cabo Delgado,Ibo,Pagamentos,8032.0,529458.23
+2025,Outubro,Cabo Delgado,Ibo,Pagamentos,9281.0,666786.0
+2025,Novembro,Cabo Delgado,Ibo,Pagamentos,9187.0,636432.45
+2025,Dezembro,Cabo Delgado,Ibo,Pagamentos,9079.0,591475.39
+2025,Janeiro,Cabo Delgado,Macomia,Pagamentos,12488.0,914953.79
+2025,Fevereiro,Cabo Delgado,Macomia,Pagamentos,15853.0,1235549.5899999999
+2025,Março,Cabo Delgado,Macomia,Pagamentos,19563.0,1694115.77
+2025,Abril,Cabo Delgado,Macomia,Pagamentos,16670.0,1602267.9
+2025,Maio,Cabo Delgado,Macomia,Pagamentos,18804.0,1334849.6600000001
+2025,Junho,Cabo Delgado,Macomia,Pagamentos,19650.0,1267809.58
+2025,Julho,Cabo Delgado,Macomia,Pagamentos,23568.0,1535925.08
+2025,Agosto,Cabo Delgado,Macomia,Pagamentos,26040.0,1699737.33
+2025,Setembro,Cabo Delgado,Macomia,Pagamentos,17594.0,1596701.0899999999
+2025,Outubro,Cabo Delgado,Macomia,Pagamentos,18975.0,1794903.4300000002
+2025,Novembro,Cabo Delgado,Macomia,Pagamentos,18856.0,1610653.12
+2025,Dezembro,Cabo Delgado,Macomia,Pagamentos,19860.0,1496337.37
+2025,Janeiro,Cabo Delgado,Mecufi,Pagamentos,3363.0,190154.0
+2025,Fevereiro,Cabo Delgado,Mecufi,Pagamentos,4150.0,267079.0
+2025,Março,Cabo Delgado,Mecufi,Pagamentos,5595.0,374313.0
+2025,Abril,Cabo Delgado,Mecufi,Pagamentos,6959.0,572803.0
+2025,Maio,Cabo Delgado,Mecufi,Pagamentos,7204.0,505283.0
+2025,Junho,Cabo Delgado,Mecufi,Pagamentos,9084.0,531672.5
+2025,Julho,Cabo Delgado,Mecufi,Pagamentos,12074.0,588081.5
+2025,Agosto,Cabo Delgado,Mecufi,Pagamentos,11155.0,570998.5
+2025,Setembro,Cabo Delgado,Mecufi,Pagamentos,13128.0,721901.96
+2025,Outubro,Cabo Delgado,Mecufi,Pagamentos,16071.0,909809.14
+2025,Novembro,Cabo Delgado,Mecufi,Pagamentos,17367.0,965426.99
+2025,Dezembro,Cabo Delgado,Mecufi,Pagamentos,19299.0,1612329.04
+2025,Janeiro,Cabo Delgado,Meluco,Pagamentos,4011.0,418606.0
+2025,Fevereiro,Cabo Delgado,Meluco,Pagamentos,6609.0,595903.46
+2025,Março,Cabo Delgado,Meluco,Pagamentos,6413.0,640186.77
+2025,Abril,Cabo Delgado,Meluco,Pagamentos,6021.0,691502.0
+2025,Maio,Cabo Delgado,Meluco,Pagamentos,6478.0,710206.0
+2025,Junho,Cabo Delgado,Meluco,Pagamentos,7808.0,725519.31
+2025,Julho,Cabo Delgado,Meluco,Pagamentos,9988.0,781680.0
+2025,Agosto,Cabo Delgado,Meluco,Pagamentos,10425.0,790598.29
+2025,Setembro,Cabo Delgado,Meluco,Pagamentos,9294.0,756885.86
+2025,Outubro,Cabo Delgado,Meluco,Pagamentos,10720.0,978680.79
+2025,Novembro,Cabo Delgado,Meluco,Pagamentos,10851.0,939306.13
+2025,Dezembro,Cabo Delgado,Meluco,Pagamentos,10971.0,1264177.15
+2025,Janeiro,Cabo Delgado,Mocimboa da Praia,Pagamentos,75130.0,3980652.6
+2025,Fevereiro,Cabo Delgado,Mocimboa da Praia,Pagamentos,82881.0,4688937.62
+2025,Março,Cabo Delgado,Mocimboa da Praia,Pagamentos,112048.0,7816253.02
+2025,Abril,Cabo Delgado,Mocimboa da Praia,Pagamentos,84072.0,4931336.48
+2025,Maio,Cabo Delgado,Mocimboa da Praia,Pagamentos,88758.0,4692537.41
+2025,Junho,Cabo Delgado,Mocimboa da Praia,Pagamentos,82593.0,4257287.970000001
+2025,Julho,Cabo Delgado,Mocimboa da Praia,Pagamentos,83775.0,4216128.859999999
+2025,Agosto,Cabo Delgado,Mocimboa da Praia,Pagamentos,90686.0,5321036.42
+2025,Setembro,Cabo Delgado,Mocimboa da Praia,Pagamentos,41776.0,4148099.33
+2025,Outubro,Cabo Delgado,Mocimboa da Praia,Pagamentos,37384.0,3315910.5
+2025,Novembro,Cabo Delgado,Mocimboa da Praia,Pagamentos,34901.0,3324432.17
+2025,Dezembro,Cabo Delgado,Mocimboa da Praia,Pagamentos,38795.0,3935139.44
+2025,Janeiro,Cabo Delgado,Montepuez,Pagamentos,121477.0,14182440.79
+2025,Fevereiro,Cabo Delgado,Montepuez,Pagamentos,119840.0,14972477.16
+2025,Março,Cabo Delgado,Montepuez,Pagamentos,130765.0,16849825.06
+2025,Abril,Cabo Delgado,Montepuez,Pagamentos,136430.0,20600547.08
+2025,Maio,Cabo Delgado,Montepuez,Pagamentos,138192.0,18411673.79
+2025,Junho,Cabo Delgado,Montepuez,Pagamentos,151567.0,16356865.530000001
+2025,Julho,Cabo Delgado,Montepuez,Pagamentos,152245.0,16545041.92
+2025,Agosto,Cabo Delgado,Montepuez,Pagamentos,190240.0,16788614.79
+2025,Setembro,Cabo Delgado,Montepuez,Pagamentos,163560.0,16884532.71
+2025,Outubro,Cabo Delgado,Montepuez,Pagamentos,186671.0,19365853.009999998
+2025,Novembro,Cabo Delgado,Montepuez,Pagamentos,184683.0,19302449.05
+2025,Dezembro,Cabo Delgado,Montepuez,Pagamentos,192468.0,20980833.21
+2025,Janeiro,Cabo Delgado,Mueda,Pagamentos,53405.0,4564170.71
+2025,Fevereiro,Cabo Delgado,Mueda,Pagamentos,55191.0,5289892.050000001
+2025,Março,Cabo Delgado,Mueda,Pagamentos,68468.0,6917263.83
+2025,Abril,Cabo Delgado,Mueda,Pagamentos,58635.0,5613165.42
+2025,Maio,Cabo Delgado,Mueda,Pagamentos,60801.0,6174777.4399999995
+2025,Junho,Cabo Delgado,Mueda,Pagamentos,66344.0,4951614.73
+2025,Julho,Cabo Delgado,Mueda,Pagamentos,65943.0,5188280.88
+2025,Agosto,Cabo Delgado,Mueda,Pagamentos,86354.0,5822321.4399999995
+2025,Setembro,Cabo Delgado,Mueda,Pagamentos,64540.0,5445668.97
+2025,Outubro,Cabo Delgado,Mueda,Pagamentos,75545.0,6681493.9399999995
+2025,Novembro,Cabo Delgado,Mueda,Pagamentos,75206.0,6356681.890000001
+2025,Dezembro,Cabo Delgado,Mueda,Pagamentos,80602.0,6928949.15
+2025,Janeiro,Cabo Delgado,Muidumbe,Pagamentos,5313.0,344169.0
+2025,Fevereiro,Cabo Delgado,Muidumbe,Pagamentos,5483.0,396480.0
+2025,Março,Cabo Delgado,Muidumbe,Pagamentos,5837.0,460043.0
+2025,Abril,Cabo Delgado,Muidumbe,Pagamentos,5800.0,560695.6
+2025,Maio,Cabo Delgado,Muidumbe,Pagamentos,6265.0,616616.0
+2025,Junho,Cabo Delgado,Muidumbe,Pagamentos,7804.0,562661.4
+2025,Julho,Cabo Delgado,Muidumbe,Pagamentos,7469.0,581643.7
+2025,Agosto,Cabo Delgado,Muidumbe,Pagamentos,11336.0,677109.5
+2025,Setembro,Cabo Delgado,Muidumbe,Pagamentos,10637.0,719555.1
+2025,Outubro,Cabo Delgado,Muidumbe,Pagamentos,11568.0,870478.46
+2025,Novembro,Cabo Delgado,Muidumbe,Pagamentos,12393.0,800055.05
+2025,Dezembro,Cabo Delgado,Muidumbe,Pagamentos,13378.0,741698.49
+2025,Janeiro,Cabo Delgado,Namuno,Pagamentos,20642.0,1921021.3900000001
+2025,Fevereiro,Cabo Delgado,Namuno,Pagamentos,21358.0,2104219.06
+2025,Março,Cabo Delgado,Namuno,Pagamentos,25517.0,2392471.34
+2025,Abril,Cabo Delgado,Namuno,Pagamentos,28362.0,2759480.15
+2025,Maio,Cabo Delgado,Namuno,Pagamentos,28137.0,2632467.4
+2025,Junho,Cabo Delgado,Namuno,Pagamentos,35182.0,2404506.7
+2025,Julho,Cabo Delgado,Namuno,Pagamentos,42661.0,2744189.15
+2025,Agosto,Cabo Delgado,Namuno,Pagamentos,44544.0,2803246.01
+2025,Setembro,Cabo Delgado,Namuno,Pagamentos,36700.0,2753414.77
+2025,Outubro,Cabo Delgado,Namuno,Pagamentos,41519.0,3129451.45
+2025,Novembro,Cabo Delgado,Namuno,Pagamentos,40326.0,3130365.96
+2025,Dezembro,Cabo Delgado,Namuno,Pagamentos,40637.0,2979960.92
+2025,Janeiro,Cabo Delgado,Nangade,Pagamentos,9695.0,865854.6799999999
+2025,Fevereiro,Cabo Delgado,Nangade,Pagamentos,9628.0,1848707.74
+2025,Março,Cabo Delgado,Nangade,Pagamentos,9979.0,3770562.31
+2025,Abril,Cabo Delgado,Nangade,Pagamentos,10006.0,1512456.49
+2025,Maio,Cabo Delgado,Nangade,Pagamentos,10314.0,1229350.0
+2025,Junho,Cabo Delgado,Nangade,Pagamentos,11912.0,1079088.35
+2025,Julho,Cabo Delgado,Nangade,Pagamentos,15857.0,1209023.1
+2025,Agosto,Cabo Delgado,Nangade,Pagamentos,16901.0,1145963.1
+2025,Setembro,Cabo Delgado,Nangade,Pagamentos,13501.0,1008972.2
+2025,Outubro,Cabo Delgado,Nangade,Pagamentos,15110.0,1288824.1400000001
+2025,Novembro,Cabo Delgado,Nangade,Pagamentos,17587.0,1397311.94
+2025,Dezembro,Cabo Delgado,Nangade,Pagamentos,19518.0,1507017.1
+2025,Janeiro,Cabo Delgado,Palma,Pagamentos,63893.0,4742833.04
+2025,Fevereiro,Cabo Delgado,Palma,Pagamentos,69335.0,5387826.39
+2025,Março,Cabo Delgado,Palma,Pagamentos,88508.0,8353395.81
+2025,Abril,Cabo Delgado,Palma,Pagamentos,77277.0,6464708.99
+2025,Maio,Cabo Delgado,Palma,Pagamentos,81940.0,6819453.8
+2025,Junho,Cabo Delgado,Palma,Pagamentos,69245.0,5425805.8
+2025,Julho,Cabo Delgado,Palma,Pagamentos,71207.0,6081794.15
+2025,Agosto,Cabo Delgado,Palma,Pagamentos,82215.0,6832204.74
+2025,Setembro,Cabo Delgado,Palma,Pagamentos,40578.0,7757767.14
+2025,Outubro,Cabo Delgado,Palma,Pagamentos,43471.0,7601297.32
+2025,Novembro,Cabo Delgado,Palma,Pagamentos,46089.0,7894769.21
+2025,Dezembro,Cabo Delgado,Palma,Pagamentos,54256.0,10799746.4
+2025,Janeiro,Cabo Delgado,Pemba-Metuge,Pagamentos,16301.0,1388363.0
+2025,Fevereiro,Cabo Delgado,Pemba-Metuge,Pagamentos,14541.0,1041208.13
+2025,Março,Cabo Delgado,Pemba-Metuge,Pagamentos,17433.0,1268627.12
+2025,Abril,Cabo Delgado,Pemba-Metuge,Pagamentos,18854.0,1564006.01
+2025,Maio,Cabo Delgado,Pemba-Metuge,Pagamentos,21308.0,1684114.99
+2025,Junho,Cabo Delgado,Pemba-Metuge,Pagamentos,25845.0,1758634.0
+2025,Julho,Cabo Delgado,Pemba-Metuge,Pagamentos,420162.0,37693256.23
+2025,Agosto,Cabo Delgado,Pemba-Metuge,Pagamentos,431063.0,37309934.88
+2025,Setembro,Cabo Delgado,Pemba-Metuge,Pagamentos,32515.0,1623303.52
+2025,Outubro,Cabo Delgado,Pemba-Metuge,Pagamentos,36836.0,1872429.28
+2025,Novembro,Cabo Delgado,Pemba-Metuge,Pagamentos,40340.0,2177978.5300000003
+2025,Dezembro,Cabo Delgado,Pemba-Metuge,Pagamentos,41063.0,2190101.3
+2025,Janeiro,Cabo Delgado,Quissanga,Pagamentos,2158.0,147961.0
+2025,Fevereiro,Cabo Delgado,Quissanga,Pagamentos,2169.0,150406.0
+2025,Março,Cabo Delgado,Quissanga,Pagamentos,2193.0,154435.0
+2025,Abril,Cabo Delgado,Quissanga,Pagamentos,2752.0,217455.77
+2025,Maio,Cabo Delgado,Quissanga,Pagamentos,4087.0,288450.0
+2025,Junho,Cabo Delgado,Quissanga,Pagamentos,4611.0,224683.0
+2025,Julho,Cabo Delgado,Quissanga,Pagamentos,6910.0,256557.5
+2025,Agosto,Cabo Delgado,Quissanga,Pagamentos,8143.0,380364.6
+2025,Setembro,Cabo Delgado,Quissanga,Pagamentos,5716.0,269357.2
+2025,Outubro,Cabo Delgado,Quissanga,Pagamentos,6850.0,450864.75
+2025,Novembro,Cabo Delgado,Quissanga,Pagamentos,6918.0,416768.37
+2025,Dezembro,Cabo Delgado,Quissanga,Pagamentos,7143.0,365383.32
 2025,Janeiro,Niassa,Cidade de Lichinga,Pagamentos,297879.0,33284640.58
 2025,Fevereiro,Niassa,Cidade de Lichinga,Pagamentos,283351.0,33306613.76
 2025,Março,Niassa,Cidade de Lichinga,Pagamentos,323690.0,33231283.740000002

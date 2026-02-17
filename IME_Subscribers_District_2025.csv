@@ -1,4 +1,21 @@
 Year,Month,Province,District,Subscribers
+2025,Abril,Cabo Delgado,Ancuabe,93442.0
+2025,Abril,Cabo Delgado,Balama,68994.0
+2025,Abril,Cabo Delgado,Chiúre,119896.0
+2025,Abril,Cabo Delgado,Cidade de Pemba,336202.0
+2025,Abril,Cabo Delgado,Ibo,9645.0
+2025,Abril,Cabo Delgado,Macomia,44507.0
+2025,Abril,Cabo Delgado,Mecufi,20142.0
+2025,Abril,Cabo Delgado,Meluco,14246.0
+2025,Abril,Cabo Delgado,Mocimboa da Praia,88862.0
+2025,Abril,Cabo Delgado,Montepuez,214904.0
+2025,Abril,Cabo Delgado,Mueda,131910.0
+2025,Abril,Cabo Delgado,Muidumbe,24055.0
+2025,Abril,Cabo Delgado,Namuno,68433.0
+2025,Abril,Cabo Delgado,Nangade,41619.0
+2025,Abril,Cabo Delgado,Palma,71115.0
+2025,Abril,Cabo Delgado,Pemba-Metuge,78174.0
+2025,Abril,Cabo Delgado,Quissanga,13057.0
 2025,Abril,Gaza,Bilene-Macia,185242.0
 2025,Abril,Gaza,Chibuto,158587.0
 2025,Abril,Gaza,Chicualacuala,16827.0
@@ -39,45 +56,27 @@ Year,Month,Province,District,Subscribers
 2025,Abril,Manica,Sussundenga,107187.0
 2025,Abril,Manica,Tambara,25192.0
 2025,Abril,Manica,Vanduzi,111960.0
-2025,Abril,Nampula,Ancuabe,93442.0
 2025,Abril,Nampula,Angoche,380254.0
-2025,Abril,Nampula,Balama,68994.0
-2025,Abril,Nampula,Cabo-Delgado,1439203.0
-2025,Abril,Nampula,Chiúre,119896.0
 2025,Abril,Nampula,Cidade de Nacala-Porto,496145.0
 2025,Abril,Nampula,Cidade de Nampula,1512684.0
-2025,Abril,Nampula,Cidade de Pemba,336202.0
-2025,Abril,Nampula,Ibo,9645.0
 2025,Abril,Nampula,Ilha de Moçambique,71355.0
 2025,Abril,Nampula,Lalaua,26756.0
 2025,Abril,Nampula,Larde,8256.0
 2025,Abril,Nampula,Liupo,9601.0
-2025,Abril,Nampula,Macomia,44507.0
 2025,Abril,Nampula,Malema,94227.0
 2025,Abril,Nampula,Meconta (Namialo),553762.0
 2025,Abril,Nampula,Mecuburi,68157.0
-2025,Abril,Nampula,Mecufi,20142.0
-2025,Abril,Nampula,Meluco,14246.0
 2025,Abril,Nampula,Memba,116915.0
-2025,Abril,Nampula,Mocimboa da Praia,88862.0
 2025,Abril,Nampula,Mogincual,96556.0
 2025,Abril,Nampula,Mogovolas,144246.0
 2025,Abril,Nampula,Moma,201223.0
 2025,Abril,Nampula,Monapo,190846.0
-2025,Abril,Nampula,Montepuez,214904.0
 2025,Abril,Nampula,Mossuril,81715.0
 2025,Abril,Nampula,Muecate,63543.0
-2025,Abril,Nampula,Mueda,131910.0
-2025,Abril,Nampula,Muidumbe,24055.0
 2025,Abril,Nampula,Murrupula,101449.0
 2025,Abril,Nampula,Nacala-Velha,53119.0
 2025,Abril,Nampula,Nacaroa,60930.0
 2025,Abril,Nampula,Namapa-Erati,109511.0
-2025,Abril,Nampula,Namuno,68433.0
-2025,Abril,Nampula,Nangade,41619.0
-2025,Abril,Nampula,Palma,71115.0
-2025,Abril,Nampula,Pemba-Metuge,78174.0
-2025,Abril,Nampula,Quissanga,13057.0
 2025,Abril,Nampula,Rapale-Nampula,132060.0
 2025,Abril,Nampula,Ribaué,133983.0
 2025,Abril,Niassa,Chimbunhila,38901.0
@@ -155,6 +154,23 @@ Year,Month,Province,District,Subscribers
 2025,Abril,Zambézia,Namarroi,63585.0
 2025,Abril,Zambézia,Nicoadala,158893.0
 2025,Abril,Zambézia,Pebane,108904.0
+2025,Agosto,Cabo Delgado,Ancuabe,122046.0
+2025,Agosto,Cabo Delgado,Balama,94994.0
+2025,Agosto,Cabo Delgado,Chiúre,161548.0
+2025,Agosto,Cabo Delgado,Cidade de Pemba,339738.0
+2025,Agosto,Cabo Delgado,Ibo,11015.0
+2025,Agosto,Cabo Delgado,Macomia,47984.0
+2025,Agosto,Cabo Delgado,Mecufi,20146.0
+2025,Agosto,Cabo Delgado,Meluco,14773.0
+2025,Agosto,Cabo Delgado,Mocimboa da Praia,89526.0
+2025,Agosto,Cabo Delgado,Montepuez,213173.0
+2025,Agosto,Cabo Delgado,Mueda,139153.0
+2025,Agosto,Cabo Delgado,Muidumbe,27098.0
+2025,Agosto,Cabo Delgado,Namuno,84949.0
+2025,Agosto,Cabo Delgado,Nangade,41813.0
+2025,Agosto,Cabo Delgado,Palma,62980.0
+2025,Agosto,Cabo Delgado,Pemba-Metuge,89855.0
+2025,Agosto,Cabo Delgado,Quissanga,15578.0
 2025,Agosto,Gaza,Bilene-Macia,236810.0
 2025,Agosto,Gaza,Chibuto,194750.0
 2025,Agosto,Gaza,Chicualacuala,19607.0
@@ -195,45 +211,27 @@ Year,Month,Province,District,Subscribers
 2025,Agosto,Manica,Sussundenga,99926.0
 2025,Agosto,Manica,Tambara,26770.0
 2025,Agosto,Manica,Vanduzi,104051.0
-2025,Agosto,Nampula,Ancuabe,122046.0
 2025,Agosto,Nampula,Angoche,387028.0
-2025,Agosto,Nampula,Balama,94994.0
-2025,Agosto,Nampula,Cabo-Delgado,1576369.0
-2025,Agosto,Nampula,Chiúre,161548.0
 2025,Agosto,Nampula,Cidade de Nacala-Porto,515837.0
 2025,Agosto,Nampula,Cidade de Nampula,1542107.0
-2025,Agosto,Nampula,Cidade de Pemba,339738.0
-2025,Agosto,Nampula,Ibo,11015.0
 2025,Agosto,Nampula,Ilha de Moçambique,74578.0
 2025,Agosto,Nampula,Lalaua,34980.0
 2025,Agosto,Nampula,Larde,10930.0
 2025,Agosto,Nampula,Liupo,11554.0
-2025,Agosto,Nampula,Macomia,47984.0
 2025,Agosto,Nampula,Malema,107932.0
 2025,Agosto,Nampula,Meconta (Namialo),479906.0
 2025,Agosto,Nampula,Mecuburi,78272.0
-2025,Agosto,Nampula,Mecufi,20146.0
-2025,Agosto,Nampula,Meluco,14773.0
 2025,Agosto,Nampula,Memba,136351.0
-2025,Agosto,Nampula,Mocimboa da Praia,89526.0
 2025,Agosto,Nampula,Mogincual,93229.0
 2025,Agosto,Nampula,Mogovolas,148794.0
 2025,Agosto,Nampula,Moma,212343.0
 2025,Agosto,Nampula,Monapo,170634.0
-2025,Agosto,Nampula,Montepuez,213173.0
 2025,Agosto,Nampula,Mossuril,66356.0
 2025,Agosto,Nampula,Muecate,63843.0
-2025,Agosto,Nampula,Mueda,139153.0
-2025,Agosto,Nampula,Muidumbe,27098.0
 2025,Agosto,Nampula,Murrupula,92035.0
 2025,Agosto,Nampula,Nacala-Velha,51876.0
 2025,Agosto,Nampula,Nacaroa,65957.0
 2025,Agosto,Nampula,Namapa-Erati,120129.0
-2025,Agosto,Nampula,Namuno,84949.0
-2025,Agosto,Nampula,Nangade,41813.0
-2025,Agosto,Nampula,Palma,62980.0
-2025,Agosto,Nampula,Pemba-Metuge,89855.0
-2025,Agosto,Nampula,Quissanga,15578.0
 2025,Agosto,Nampula,Rapale-Nampula,138306.0
 2025,Agosto,Nampula,Ribaué,125258.0
 2025,Agosto,Niassa,Chimbunhila,48738.0
@@ -311,6 +309,23 @@ Year,Month,Province,District,Subscribers
 2025,Agosto,Zambézia,Namarroi,71062.0
 2025,Agosto,Zambézia,Nicoadala,140233.0
 2025,Agosto,Zambézia,Pebane,111770.0
+2025,Dezembro,Cabo Delgado,Ancuabe,128307.0
+2025,Dezembro,Cabo Delgado,Balama,109470.0
+2025,Dezembro,Cabo Delgado,Chiúre,175309.0
+2025,Dezembro,Cabo Delgado,Cidade de Pemba,317585.0
+2025,Dezembro,Cabo Delgado,Ibo,12030.0
+2025,Dezembro,Cabo Delgado,Macomia,53555.0
+2025,Dezembro,Cabo Delgado,Mecufi,30892.0
+2025,Dezembro,Cabo Delgado,Meluco,17246.0
+2025,Dezembro,Cabo Delgado,Mocimboa da Praia,79220.0
+2025,Dezembro,Cabo Delgado,Montepuez,241556.0
+2025,Dezembro,Cabo Delgado,Mueda,162371.0
+2025,Dezembro,Cabo Delgado,Muidumbe,31184.0
+2025,Dezembro,Cabo Delgado,Namuno,91083.0
+2025,Dezembro,Cabo Delgado,Nangade,51613.0
+2025,Dezembro,Cabo Delgado,Palma,72917.0
+2025,Dezembro,Cabo Delgado,Pemba-Metuge,107025.0
+2025,Dezembro,Cabo Delgado,Quissanga,20530.0
 2025,Dezembro,Gaza,Bilene-Macia,266412.0
 2025,Dezembro,Gaza,Chibuto,231425.0
 2025,Dezembro,Gaza,Chicualacuala,21297.0
@@ -351,45 +366,27 @@ Year,Month,Province,District,Subscribers
 2025,Dezembro,Manica,Sussundenga,109050.0
 2025,Dezembro,Manica,Tambara,28219.0
 2025,Dezembro,Manica,Vanduzi,118633.0
-2025,Dezembro,Nampula,Ancuabe,128307.0
 2025,Dezembro,Nampula,Angoche,431004.0
-2025,Dezembro,Nampula,Balama,109470.0
-2025,Dezembro,Nampula,Cabo-Delgado,1701893.0
-2025,Dezembro,Nampula,Chiúre,175309.0
 2025,Dezembro,Nampula,Cidade de Nacala-Porto,597444.0
 2025,Dezembro,Nampula,Cidade de Nampula,1730592.0
-2025,Dezembro,Nampula,Cidade de Pemba,317585.0
-2025,Dezembro,Nampula,Ibo,12030.0
 2025,Dezembro,Nampula,Ilha de Moçambique,72604.0
 2025,Dezembro,Nampula,Lalaua,36681.0
 2025,Dezembro,Nampula,Larde,32603.0
 2025,Dezembro,Nampula,Liupo,36174.0
-2025,Dezembro,Nampula,Macomia,53555.0
 2025,Dezembro,Nampula,Malema,118741.0
 2025,Dezembro,Nampula,Meconta (Namialo),497575.0
 2025,Dezembro,Nampula,Mecuburi,85790.0
-2025,Dezembro,Nampula,Mecufi,30892.0
-2025,Dezembro,Nampula,Meluco,17246.0
 2025,Dezembro,Nampula,Memba,147954.0
-2025,Dezembro,Nampula,Mocimboa da Praia,79220.0
 2025,Dezembro,Nampula,Mogincual,77567.0
 2025,Dezembro,Nampula,Mogovolas,166502.0
 2025,Dezembro,Nampula,Moma,217609.0
 2025,Dezembro,Nampula,Monapo,189256.0
-2025,Dezembro,Nampula,Montepuez,241556.0
 2025,Dezembro,Nampula,Mossuril,80986.0
 2025,Dezembro,Nampula,Muecate,73609.0
-2025,Dezembro,Nampula,Mueda,162371.0
-2025,Dezembro,Nampula,Muidumbe,31184.0
 2025,Dezembro,Nampula,Murrupula,104782.0
 2025,Dezembro,Nampula,Nacala-Velha,59433.0
 2025,Dezembro,Nampula,Nacaroa,73703.0
 2025,Dezembro,Nampula,Namapa-Erati,138849.0
-2025,Dezembro,Nampula,Namuno,91083.0
-2025,Dezembro,Nampula,Nangade,51613.0
-2025,Dezembro,Nampula,Palma,72917.0
-2025,Dezembro,Nampula,Pemba-Metuge,107025.0
-2025,Dezembro,Nampula,Quissanga,20530.0
 2025,Dezembro,Nampula,Rapale-Nampula,169788.0
 2025,Dezembro,Nampula,Ribaué,140957.0
 2025,Dezembro,Niassa,Chimbunhila,52174.0
@@ -467,6 +464,23 @@ Year,Month,Province,District,Subscribers
 2025,Dezembro,Zambézia,Namarroi,71309.0
 2025,Dezembro,Zambézia,Nicoadala,164063.0
 2025,Dezembro,Zambézia,Pebane,126103.0
+2025,Fevereiro,Cabo Delgado,Ancuabe,92598.0
+2025,Fevereiro,Cabo Delgado,Balama,67275.0
+2025,Fevereiro,Cabo Delgado,Chiúre,112295.0
+2025,Fevereiro,Cabo Delgado,Cidade de Pemba,320831.0
+2025,Fevereiro,Cabo Delgado,Ibo,9363.0
+2025,Fevereiro,Cabo Delgado,Macomia,41246.0
+2025,Fevereiro,Cabo Delgado,Mecufi,18531.0
+2025,Fevereiro,Cabo Delgado,Meluco,13625.0
+2025,Fevereiro,Cabo Delgado,Mocimboa da Praia,84462.0
+2025,Fevereiro,Cabo Delgado,Montepuez,196466.0
+2025,Fevereiro,Cabo Delgado,Mueda,124141.0
+2025,Fevereiro,Cabo Delgado,Muidumbe,21657.0
+2025,Fevereiro,Cabo Delgado,Namuno,58574.0
+2025,Fevereiro,Cabo Delgado,Nangade,40542.0
+2025,Fevereiro,Cabo Delgado,Palma,62885.0
+2025,Fevereiro,Cabo Delgado,Pemba-Metuge,75071.0
+2025,Fevereiro,Cabo Delgado,Quissanga,11704.0
 2025,Fevereiro,Gaza,Bilene-Macia,187842.0
 2025,Fevereiro,Gaza,Chibuto,153186.0
 2025,Fevereiro,Gaza,Chicualacuala,16373.0
@@ -507,45 +521,27 @@ Year,Month,Province,District,Subscribers
 2025,Fevereiro,Manica,Sussundenga,96813.0
 2025,Fevereiro,Manica,Tambara,23075.0
 2025,Fevereiro,Manica,Vanduzi,104322.0
-2025,Fevereiro,Nampula,Ancuabe,92598.0
 2025,Fevereiro,Nampula,Angoche,386620.0
-2025,Fevereiro,Nampula,Balama,67275.0
-2025,Fevereiro,Nampula,Cabo-Delgado,1351266.0
-2025,Fevereiro,Nampula,Chiúre,112295.0
 2025,Fevereiro,Nampula,Cidade de Nacala-Porto,466986.0
 2025,Fevereiro,Nampula,Cidade de Nampula,1376068.0
-2025,Fevereiro,Nampula,Cidade de Pemba,320831.0
-2025,Fevereiro,Nampula,Ibo,9363.0
 2025,Fevereiro,Nampula,Ilha de Moçambique,71916.0
 2025,Fevereiro,Nampula,Lalaua,25428.27
 2025,Fevereiro,Nampula,Larde,6718.0
 2025,Fevereiro,Nampula,Liupo,9558.0
-2025,Fevereiro,Nampula,Macomia,41246.0
 2025,Fevereiro,Nampula,Malema,86807.0
 2025,Fevereiro,Nampula,Meconta (Namialo),438147.0
 2025,Fevereiro,Nampula,Mecuburi,62325.0
-2025,Fevereiro,Nampula,Mecufi,18531.0
-2025,Fevereiro,Nampula,Meluco,13625.0
 2025,Fevereiro,Nampula,Memba,108054.0
-2025,Fevereiro,Nampula,Mocimboa da Praia,84462.0
 2025,Fevereiro,Nampula,Mogincual,88259.0
 2025,Fevereiro,Nampula,Mogovolas,133792.0
 2025,Fevereiro,Nampula,Moma,194537.0
 2025,Fevereiro,Nampula,Monapo,176890.0
-2025,Fevereiro,Nampula,Montepuez,196466.0
 2025,Fevereiro,Nampula,Mossuril,76755.0
 2025,Fevereiro,Nampula,Muecate,61016.0
-2025,Fevereiro,Nampula,Mueda,124141.0
-2025,Fevereiro,Nampula,Muidumbe,21657.0
 2025,Fevereiro,Nampula,Murrupula,93555.0
 2025,Fevereiro,Nampula,Nacala-Velha,48617.0
 2025,Fevereiro,Nampula,Nacaroa,54373.0
 2025,Fevereiro,Nampula,Namapa-Erati,96196.0
-2025,Fevereiro,Nampula,Namuno,58574.0
-2025,Fevereiro,Nampula,Nangade,40542.0
-2025,Fevereiro,Nampula,Palma,62885.0
-2025,Fevereiro,Nampula,Pemba-Metuge,75071.0
-2025,Fevereiro,Nampula,Quissanga,11704.0
 2025,Fevereiro,Nampula,Rapale-Nampula,114084.0
 2025,Fevereiro,Nampula,Ribaué,120292.0
 2025,Fevereiro,Niassa,Chimbunhila,39599.0
@@ -623,6 +619,23 @@ Year,Month,Province,District,Subscribers
 2025,Fevereiro,Zambézia,Namarroi,55856.4
 2025,Fevereiro,Zambézia,Nicoadala,147789.0
 2025,Fevereiro,Zambézia,Pebane,102940.0
+2025,Janeiro,Cabo Delgado,Ancuabe,91416.0
+2025,Janeiro,Cabo Delgado,Balama,65886.0
+2025,Janeiro,Cabo Delgado,Chiúre,110872.0
+2025,Janeiro,Cabo Delgado,Cidade de Pemba,314836.0
+2025,Janeiro,Cabo Delgado,Ibo,9142.0
+2025,Janeiro,Cabo Delgado,Macomia,39172.0
+2025,Janeiro,Cabo Delgado,Mecufi,18728.0
+2025,Janeiro,Cabo Delgado,Meluco,12839.0
+2025,Janeiro,Cabo Delgado,Mocimboa da Praia,82066.0
+2025,Janeiro,Cabo Delgado,Montepuez,191861.0
+2025,Janeiro,Cabo Delgado,Mueda,121832.0
+2025,Janeiro,Cabo Delgado,Muidumbe,21048.0
+2025,Janeiro,Cabo Delgado,Namuno,58043.0
+2025,Janeiro,Cabo Delgado,Nangade,40356.0
+2025,Janeiro,Cabo Delgado,Palma,62176.0
+2025,Janeiro,Cabo Delgado,Pemba-Metuge,74566.0
+2025,Janeiro,Cabo Delgado,Quissanga,11579.0
 2025,Janeiro,Gaza,Bilene-Macia,190110.0
 2025,Janeiro,Gaza,Chibuto,156250.0
 2025,Janeiro,Gaza,Chicualacuala,16145.0
@@ -663,45 +676,27 @@ Year,Month,Province,District,Subscribers
 2025,Janeiro,Manica,Sussundenga,95982.0
 2025,Janeiro,Manica,Tambara,23073.0
 2025,Janeiro,Manica,Vanduzi,103757.0
-2025,Janeiro,Nampula,Ancuabe,91416.0
 2025,Janeiro,Nampula,Angoche,380102.0
-2025,Janeiro,Nampula,Balama,65886.0
-2025,Janeiro,Nampula,Cabo-Delgado,1326418.0
-2025,Janeiro,Nampula,Chiúre,110872.0
 2025,Janeiro,Nampula,Cidade de Nacala-Porto,460915.0
 2025,Janeiro,Nampula,Cidade de Nampula,1348667.0
-2025,Janeiro,Nampula,Cidade de Pemba,314836.0
-2025,Janeiro,Nampula,Ibo,9142.0
 2025,Janeiro,Nampula,Ilha de Moçambique,67610.0
 2025,Janeiro,Nampula,Lalaua,24819.0
 2025,Janeiro,Nampula,Larde,6029.0
 2025,Janeiro,Nampula,Liupo,8780.0
-2025,Janeiro,Nampula,Macomia,39172.0
 2025,Janeiro,Nampula,Malema,85904.0
 2025,Janeiro,Nampula,Meconta (Namialo),402036.0
 2025,Janeiro,Nampula,Mecuburi,61409.0
-2025,Janeiro,Nampula,Mecufi,18728.0
-2025,Janeiro,Nampula,Meluco,12839.0
 2025,Janeiro,Nampula,Memba,107784.0
-2025,Janeiro,Nampula,Mocimboa da Praia,82066.0
 2025,Janeiro,Nampula,Mogincual,85522.0
 2025,Janeiro,Nampula,Mogovolas,133281.0
 2025,Janeiro,Nampula,Moma,197135.0
 2025,Janeiro,Nampula,Monapo,176902.0
-2025,Janeiro,Nampula,Montepuez,191861.0
 2025,Janeiro,Nampula,Mossuril,78651.0
 2025,Janeiro,Nampula,Muecate,59763.0
-2025,Janeiro,Nampula,Mueda,121832.0
-2025,Janeiro,Nampula,Muidumbe,21048.0
 2025,Janeiro,Nampula,Murrupula,92512.0
 2025,Janeiro,Nampula,Nacala-Velha,47954.0
 2025,Janeiro,Nampula,Nacaroa,54198.0
 2025,Janeiro,Nampula,Namapa-Erati,93549.0
-2025,Janeiro,Nampula,Namuno,58043.0
-2025,Janeiro,Nampula,Nangade,40356.0
-2025,Janeiro,Nampula,Palma,62176.0
-2025,Janeiro,Nampula,Pemba-Metuge,74566.0
-2025,Janeiro,Nampula,Quissanga,11579.0
 2025,Janeiro,Nampula,Rapale-Nampula,114025.0
 2025,Janeiro,Nampula,Ribaué,118029.0
 2025,Janeiro,Niassa,Chimbunhila,38371.0
@@ -779,6 +774,23 @@ Year,Month,Province,District,Subscribers
 2025,Janeiro,Zambézia,Namarroi,57401.0
 2025,Janeiro,Zambézia,Nicoadala,146057.0
 2025,Janeiro,Zambézia,Pebane,104575.0
+2025,Julho,Cabo Delgado,Ancuabe,115987.0
+2025,Julho,Cabo Delgado,Balama,89701.0
+2025,Julho,Cabo Delgado,Chiúre,154574.0
+2025,Julho,Cabo Delgado,Cidade de Pemba,333300.0
+2025,Julho,Cabo Delgado,Ibo,10690.0
+2025,Julho,Cabo Delgado,Macomia,46603.0
+2025,Julho,Cabo Delgado,Mecufi,19426.0
+2025,Julho,Cabo Delgado,Meluco,14289.0
+2025,Julho,Cabo Delgado,Mocimboa da Praia,87788.0
+2025,Julho,Cabo Delgado,Montepuez,206781.0
+2025,Julho,Cabo Delgado,Mueda,135764.0
+2025,Julho,Cabo Delgado,Muidumbe,26156.0
+2025,Julho,Cabo Delgado,Namuno,80264.0
+2025,Julho,Cabo Delgado,Nangade,41518.0
+2025,Julho,Cabo Delgado,Palma,60390.0
+2025,Julho,Cabo Delgado,Pemba-Metuge,87585.0
+2025,Julho,Cabo Delgado,Quissanga,14684.0
 2025,Julho,Gaza,Bilene-Macia,231766.0
 2025,Julho,Gaza,Chibuto,190596.0
 2025,Julho,Gaza,Chicualacuala,19228.0
@@ -819,45 +831,27 @@ Year,Month,Province,District,Subscribers
 2025,Julho,Manica,Sussundenga,97525.0
 2025,Julho,Manica,Tambara,25753.0
 2025,Julho,Manica,Vanduzi,100224.0
-2025,Julho,Nampula,Ancuabe,115987.0
 2025,Julho,Nampula,Angoche,387938.0
-2025,Julho,Nampula,Balama,89701.0
-2025,Julho,Nampula,Cabo-Delgado,1525500.0
-2025,Julho,Nampula,Chiúre,154574.0
 2025,Julho,Nampula,Cidade de Nacala-Porto,506172.0
 2025,Julho,Nampula,Cidade de Nampula,1527865.0
-2025,Julho,Nampula,Cidade de Pemba,333300.0
-2025,Julho,Nampula,Ibo,10690.0
 2025,Julho,Nampula,Ilha de Moçambique,74059.0
 2025,Julho,Nampula,Lalaua,32811.0
 2025,Julho,Nampula,Larde,10821.0
 2025,Julho,Nampula,Liupo,10735.0
-2025,Julho,Nampula,Macomia,46603.0
 2025,Julho,Nampula,Malema,103271.0
 2025,Julho,Nampula,Meconta (Namialo),486294.0
 2025,Julho,Nampula,Mecuburi,74740.0
-2025,Julho,Nampula,Mecufi,19426.0
-2025,Julho,Nampula,Meluco,14289.0
 2025,Julho,Nampula,Memba,131442.0
-2025,Julho,Nampula,Mocimboa da Praia,87788.0
 2025,Julho,Nampula,Mogincual,94342.0
 2025,Julho,Nampula,Mogovolas,148100.0
 2025,Julho,Nampula,Moma,207799.0
 2025,Julho,Nampula,Monapo,168876.0
-2025,Julho,Nampula,Montepuez,206781.0
 2025,Julho,Nampula,Mossuril,64475.0
 2025,Julho,Nampula,Muecate,63346.0
-2025,Julho,Nampula,Mueda,135764.0
-2025,Julho,Nampula,Muidumbe,26156.0
 2025,Julho,Nampula,Murrupula,91410.0
 2025,Julho,Nampula,Nacala-Velha,50009.0
 2025,Julho,Nampula,Nacaroa,65793.0
 2025,Julho,Nampula,Namapa-Erati,113647.0
-2025,Julho,Nampula,Namuno,80264.0
-2025,Julho,Nampula,Nangade,41518.0
-2025,Julho,Nampula,Palma,60390.0
-2025,Julho,Nampula,Pemba-Metuge,87585.0
-2025,Julho,Nampula,Quissanga,14684.0
 2025,Julho,Nampula,Rapale-Nampula,133791.0
 2025,Julho,Nampula,Ribaué,119411.0
 2025,Julho,Niassa,Chimbunhila,47377.0
@@ -935,6 +929,23 @@ Year,Month,Province,District,Subscribers
 2025,Julho,Zambézia,Namarroi,66642.0
 2025,Julho,Zambézia,Nicoadala,138446.0
 2025,Julho,Zambézia,Pebane,109433.0
+2025,Junho,Cabo Delgado,Ancuabe,113233.0
+2025,Junho,Cabo Delgado,Balama,88715.0
+2025,Junho,Cabo Delgado,Chiúre,146721.0
+2025,Junho,Cabo Delgado,Cidade de Pemba,333996.0
+2025,Junho,Cabo Delgado,Ibo,9631.0
+2025,Junho,Cabo Delgado,Macomia,45602.0
+2025,Junho,Cabo Delgado,Mecufi,18626.0
+2025,Junho,Cabo Delgado,Meluco,13817.0
+2025,Junho,Cabo Delgado,Mocimboa da Praia,87899.0
+2025,Junho,Cabo Delgado,Montepuez,205764.0
+2025,Junho,Cabo Delgado,Mueda,132889.0
+2025,Junho,Cabo Delgado,Muidumbe,25046.0
+2025,Junho,Cabo Delgado,Namuno,75337.0
+2025,Junho,Cabo Delgado,Nangade,40630.0
+2025,Junho,Cabo Delgado,Palma,59806.0
+2025,Junho,Cabo Delgado,Pemba-Metuge,83811.0
+2025,Junho,Cabo Delgado,Quissanga,12781.0
 2025,Junho,Gaza,Bilene-Macia,228148.0
 2025,Junho,Gaza,Chibuto,188308.0
 2025,Junho,Gaza,Chicualacuala,18241.0
@@ -975,45 +986,27 @@ Year,Month,Province,District,Subscribers
 2025,Junho,Manica,Sussundenga,98008.0
 2025,Junho,Manica,Tambara,24984.0
 2025,Junho,Manica,Vanduzi,98592.0
-2025,Junho,Nampula,Ancuabe,113233.0
 2025,Junho,Nampula,Angoche,416963.0
-2025,Junho,Nampula,Balama,88715.0
-2025,Junho,Nampula,Cabo-Delgado,1494304.0
-2025,Junho,Nampula,Chiúre,146721.0
 2025,Junho,Nampula,Cidade de Nacala-Porto,515338.0
 2025,Junho,Nampula,Cidade de Nampula,1582594.0
-2025,Junho,Nampula,Cidade de Pemba,333996.0
-2025,Junho,Nampula,Ibo,9631.0
 2025,Junho,Nampula,Ilha de Moçambique,73557.0
 2025,Junho,Nampula,Lalaua,31088.0
 2025,Junho,Nampula,Larde,10944.0
 2025,Junho,Nampula,Liupo,12477.0
-2025,Junho,Nampula,Macomia,45602.0
 2025,Junho,Nampula,Malema,100382.0
 2025,Junho,Nampula,Meconta (Namialo),524528.0
 2025,Junho,Nampula,Mecuburi,72241.0
-2025,Junho,Nampula,Mecufi,18626.0
-2025,Junho,Nampula,Meluco,13817.0
 2025,Junho,Nampula,Memba,125057.0
-2025,Junho,Nampula,Mocimboa da Praia,87899.0
 2025,Junho,Nampula,Mogincual,92205.0
 2025,Junho,Nampula,Mogovolas,150872.0
 2025,Junho,Nampula,Moma,205352.0
 2025,Junho,Nampula,Monapo,174624.0
-2025,Junho,Nampula,Montepuez,205764.0
 2025,Junho,Nampula,Mossuril,65927.0
 2025,Junho,Nampula,Muecate,63754.0
-2025,Junho,Nampula,Mueda,132889.0
-2025,Junho,Nampula,Muidumbe,25046.0
 2025,Junho,Nampula,Murrupula,94162.0
 2025,Junho,Nampula,Nacala-Velha,47630.0
 2025,Junho,Nampula,Nacaroa,64604.0
 2025,Junho,Nampula,Namapa-Erati,110321.0
-2025,Junho,Nampula,Namuno,75337.0
-2025,Junho,Nampula,Nangade,40630.0
-2025,Junho,Nampula,Palma,59806.0
-2025,Junho,Nampula,Pemba-Metuge,83811.0
-2025,Junho,Nampula,Quissanga,12781.0
 2025,Junho,Nampula,Rapale-Nampula,133508.0
 2025,Junho,Nampula,Ribaué,125132.0
 2025,Junho,Niassa,Chimbunhila,49170.0
@@ -1091,6 +1084,23 @@ Year,Month,Province,District,Subscribers
 2025,Junho,Zambézia,Namarroi,65783.0
 2025,Junho,Zambézia,Nicoadala,140614.0
 2025,Junho,Zambézia,Pebane,108425.0
+2025,Maio,Cabo Delgado,Ancuabe,100173.0
+2025,Maio,Cabo Delgado,Balama,76559.0
+2025,Maio,Cabo Delgado,Chiúre,129784.0
+2025,Maio,Cabo Delgado,Cidade de Pemba,337148.0
+2025,Maio,Cabo Delgado,Ibo,9608.0
+2025,Maio,Cabo Delgado,Macomia,44500.0
+2025,Maio,Cabo Delgado,Mecufi,19330.0
+2025,Maio,Cabo Delgado,Meluco,14109.0
+2025,Maio,Cabo Delgado,Mocimboa da Praia,88214.0
+2025,Maio,Cabo Delgado,Montepuez,212524.0
+2025,Maio,Cabo Delgado,Mueda,132837.0
+2025,Maio,Cabo Delgado,Muidumbe,25054.0
+2025,Maio,Cabo Delgado,Namuno,72101.0
+2025,Maio,Cabo Delgado,Nangade,41630.0
+2025,Maio,Cabo Delgado,Palma,67214.0
+2025,Maio,Cabo Delgado,Pemba-Metuge,81573.0
+2025,Maio,Cabo Delgado,Quissanga,12970.0
 2025,Maio,Gaza,Bilene-Macia,198563.0
 2025,Maio,Gaza,Chibuto,167878.0
 2025,Maio,Gaza,Chicualacuala,17296.0
@@ -1131,45 +1141,27 @@ Year,Month,Province,District,Subscribers
 2025,Maio,Manica,Sussundenga,105067.0
 2025,Maio,Manica,Tambara,24993.0
 2025,Maio,Manica,Vanduzi,109355.0
-2025,Maio,Nampula,Ancuabe,100173.0
 2025,Maio,Nampula,Angoche,391073.0
-2025,Maio,Nampula,Balama,76559.0
-2025,Maio,Nampula,Cabo-Delgado,1465328.0
-2025,Maio,Nampula,Chiúre,129784.0
 2025,Maio,Nampula,Cidade de Nacala-Porto,501919.0
 2025,Maio,Nampula,Cidade de Nampula,1539000.0
-2025,Maio,Nampula,Cidade de Pemba,337148.0
-2025,Maio,Nampula,Ibo,9608.0
 2025,Maio,Nampula,Ilha de Moçambique,70004.0
 2025,Maio,Nampula,Lalaua,28640.0
 2025,Maio,Nampula,Larde,9738.0
 2025,Maio,Nampula,Liupo,10041.0
-2025,Maio,Nampula,Macomia,44500.0
 2025,Maio,Nampula,Malema,96468.0
 2025,Maio,Nampula,Meconta (Namialo),549130.0
 2025,Maio,Nampula,Mecuburi,69827.0
-2025,Maio,Nampula,Mecufi,19330.0
-2025,Maio,Nampula,Meluco,14109.0
 2025,Maio,Nampula,Memba,121571.0
-2025,Maio,Nampula,Mocimboa da Praia,88214.0
 2025,Maio,Nampula,Mogincual,95730.0
 2025,Maio,Nampula,Mogovolas,149331.0
 2025,Maio,Nampula,Moma,202903.0
 2025,Maio,Nampula,Monapo,187033.0
-2025,Maio,Nampula,Montepuez,212524.0
 2025,Maio,Nampula,Mossuril,76512.0
 2025,Maio,Nampula,Muecate,63639.0
-2025,Maio,Nampula,Mueda,132837.0
-2025,Maio,Nampula,Muidumbe,25054.0
 2025,Maio,Nampula,Murrupula,98086.0
 2025,Maio,Nampula,Nacala-Velha,53347.0
 2025,Maio,Nampula,Nacaroa,62956.0
 2025,Maio,Nampula,Namapa-Erati,111262.0
-2025,Maio,Nampula,Namuno,72101.0
-2025,Maio,Nampula,Nangade,41630.0
-2025,Maio,Nampula,Palma,67214.0
-2025,Maio,Nampula,Pemba-Metuge,81573.0
-2025,Maio,Nampula,Quissanga,12970.0
 2025,Maio,Nampula,Rapale-Nampula,135660.0
 2025,Maio,Nampula,Ribaué,132609.0
 2025,Maio,Niassa,Chimbunhila,41382.0
@@ -1247,6 +1239,23 @@ Year,Month,Province,District,Subscribers
 2025,Maio,Zambézia,Namarroi,66731.0
 2025,Maio,Zambézia,Nicoadala,154286.0
 2025,Maio,Zambézia,Pebane,109729.0
+2025,Março,Cabo Delgado,Ancuabe,93947.0
+2025,Março,Cabo Delgado,Balama,68361.0
+2025,Março,Cabo Delgado,Chiúre,115183.0
+2025,Março,Cabo Delgado,Cidade de Pemba,330681.0
+2025,Março,Cabo Delgado,Ibo,9723.0
+2025,Março,Cabo Delgado,Macomia,44263.0
+2025,Março,Cabo Delgado,Mecufi,19303.0
+2025,Março,Cabo Delgado,Meluco,14241.0
+2025,Março,Cabo Delgado,Mocimboa da Praia,87737.0
+2025,Março,Cabo Delgado,Montepuez,203013.0
+2025,Março,Cabo Delgado,Mueda,129347.0
+2025,Março,Cabo Delgado,Muidumbe,23498.0
+2025,Março,Cabo Delgado,Namuno,63129.0
+2025,Março,Cabo Delgado,Nangade,40746.0
+2025,Março,Cabo Delgado,Palma,65345.0
+2025,Março,Cabo Delgado,Pemba-Metuge,77322.0
+2025,Março,Cabo Delgado,Quissanga,12241.0
 2025,Março,Gaza,Bilene-Macia,186421.0
 2025,Março,Gaza,Chibuto,157457.0
 2025,Março,Gaza,Chicualacuala,16603.0
@@ -1287,45 +1296,27 @@ Year,Month,Province,District,Subscribers
 2025,Março,Manica,Sussundenga,101988.0
 2025,Março,Manica,Tambara,23320.0
 2025,Março,Manica,Vanduzi,106437.0
-2025,Março,Nampula,Ancuabe,93947.0
 2025,Março,Nampula,Angoche,380091.0
-2025,Março,Nampula,Balama,68361.0
-2025,Março,Nampula,Cabo-Delgado,1398080.0
-2025,Março,Nampula,Chiúre,115183.0
 2025,Março,Nampula,Cidade de Nacala-Porto,490855.0
 2025,Março,Nampula,Cidade de Nampula,1482284.0
-2025,Março,Nampula,Cidade de Pemba,330681.0
-2025,Março,Nampula,Ibo,9723.0
 2025,Março,Nampula,Ilha de Moçambique,70530.0
 2025,Março,Nampula,Lalaua,24524.0
 2025,Março,Nampula,Larde,5351.0
 2025,Março,Nampula,Liupo,9000.0
-2025,Março,Nampula,Macomia,44263.0
 2025,Março,Nampula,Malema,91284.0
 2025,Março,Nampula,Meconta (Namialo),520694.0
 2025,Março,Nampula,Mecuburi,63592.0
-2025,Março,Nampula,Mecufi,19303.0
-2025,Março,Nampula,Meluco,14241.0
 2025,Março,Nampula,Memba,106860.0
-2025,Março,Nampula,Mocimboa da Praia,87737.0
 2025,Março,Nampula,Mogincual,93892.0
 2025,Março,Nampula,Mogovolas,134309.0
 2025,Março,Nampula,Moma,192808.0
 2025,Março,Nampula,Monapo,178380.0
-2025,Março,Nampula,Montepuez,203013.0
 2025,Março,Nampula,Mossuril,77672.0
 2025,Março,Nampula,Muecate,59980.0
-2025,Março,Nampula,Mueda,129347.0
-2025,Março,Nampula,Muidumbe,23498.0
 2025,Março,Nampula,Murrupula,94254.0
 2025,Março,Nampula,Nacala-Velha,47911.0
 2025,Março,Nampula,Nacaroa,56784.0
 2025,Março,Nampula,Namapa-Erati,101837.0
-2025,Março,Nampula,Namuno,63129.0
-2025,Março,Nampula,Nangade,40746.0
-2025,Março,Nampula,Palma,65345.0
-2025,Março,Nampula,Pemba-Metuge,77322.0
-2025,Março,Nampula,Quissanga,12241.0
 2025,Março,Nampula,Rapale-Nampula,120921.0
 2025,Março,Nampula,Ribaué,123614.0
 2025,Março,Niassa,Chimbunhila,40100.0
@@ -1403,6 +1394,23 @@ Year,Month,Province,District,Subscribers
 2025,Março,Zambézia,Namarroi,58896.0
 2025,Março,Zambézia,Nicoadala,148419.0
 2025,Março,Zambézia,Pebane,103989.0
+2025,Novembro,Cabo Delgado,Ancuabe,128182.0
+2025,Novembro,Cabo Delgado,Balama,108850.0
+2025,Novembro,Cabo Delgado,Chiúre,175388.0
+2025,Novembro,Cabo Delgado,Cidade de Pemba,320650.0
+2025,Novembro,Cabo Delgado,Ibo,11687.0
+2025,Novembro,Cabo Delgado,Macomia,52491.0
+2025,Novembro,Cabo Delgado,Mecufi,29540.0
+2025,Novembro,Cabo Delgado,Meluco,16757.0
+2025,Novembro,Cabo Delgado,Mocimboa da Praia,79796.0
+2025,Novembro,Cabo Delgado,Montepuez,233773.0
+2025,Novembro,Cabo Delgado,Mueda,156035.0
+2025,Novembro,Cabo Delgado,Muidumbe,30494.0
+2025,Novembro,Cabo Delgado,Namuno,90433.0
+2025,Novembro,Cabo Delgado,Nangade,49197.0
+2025,Novembro,Cabo Delgado,Palma,70000.0
+2025,Novembro,Cabo Delgado,Pemba-Metuge,104589.0
+2025,Novembro,Cabo Delgado,Quissanga,19705.0
 2025,Novembro,Gaza,Bilene-Macia,249211.0
 2025,Novembro,Gaza,Chibuto,213626.0
 2025,Novembro,Gaza,Chicualacuala,20777.0
@@ -1443,45 +1451,27 @@ Year,Month,Province,District,Subscribers
 2025,Novembro,Manica,Sussundenga,104734.0
 2025,Novembro,Manica,Tambara,28280.0
 2025,Novembro,Manica,Vanduzi,114746.0
-2025,Novembro,Nampula,Ancuabe,128182.0
 2025,Novembro,Nampula,Angoche,413825.0
-2025,Novembro,Nampula,Balama,108850.0
-2025,Novembro,Nampula,Cabo-Delgado,1677567.0
-2025,Novembro,Nampula,Chiúre,175388.0
 2025,Novembro,Nampula,Cidade de Nacala-Porto,560433.0
 2025,Novembro,Nampula,Cidade de Nampula,1701801.0
-2025,Novembro,Nampula,Cidade de Pemba,320650.0
-2025,Novembro,Nampula,Ibo,11687.0
 2025,Novembro,Nampula,Ilha de Moçambique,73251.0
 2025,Novembro,Nampula,Lalaua,37306.0
 2025,Novembro,Nampula,Larde,32402.0
 2025,Novembro,Nampula,Liupo,36024.0
-2025,Novembro,Nampula,Macomia,52491.0
 2025,Novembro,Nampula,Malema,118787.0
 2025,Novembro,Nampula,Meconta (Namialo),500490.0
 2025,Novembro,Nampula,Mecuburi,85693.0
-2025,Novembro,Nampula,Mecufi,29540.0
-2025,Novembro,Nampula,Meluco,16757.0
 2025,Novembro,Nampula,Memba,146804.0
-2025,Novembro,Nampula,Mocimboa da Praia,79796.0
 2025,Novembro,Nampula,Mogincual,77655.0
 2025,Novembro,Nampula,Mogovolas,165502.0
 2025,Novembro,Nampula,Moma,213348.0
 2025,Novembro,Nampula,Monapo,185871.0
-2025,Novembro,Nampula,Montepuez,233773.0
 2025,Novembro,Nampula,Mossuril,75777.0
 2025,Novembro,Nampula,Muecate,72625.0
-2025,Novembro,Nampula,Mueda,156035.0
-2025,Novembro,Nampula,Muidumbe,30494.0
 2025,Novembro,Nampula,Murrupula,103448.0
 2025,Novembro,Nampula,Nacala-Velha,56205.0
 2025,Novembro,Nampula,Nacaroa,72194.0
 2025,Novembro,Nampula,Namapa-Erati,137430.0
-2025,Novembro,Nampula,Namuno,90433.0
-2025,Novembro,Nampula,Nangade,49197.0
-2025,Novembro,Nampula,Palma,70000.0
-2025,Novembro,Nampula,Pemba-Metuge,104589.0
-2025,Novembro,Nampula,Quissanga,19705.0
 2025,Novembro,Nampula,Rapale-Nampula,164033.0
 2025,Novembro,Nampula,Ribaué,138212.0
 2025,Novembro,Niassa,Chimbunhila,53853.0
@@ -1559,6 +1549,23 @@ Year,Month,Province,District,Subscribers
 2025,Novembro,Zambézia,Namarroi,73047.0
 2025,Novembro,Zambézia,Nicoadala,157597.0
 2025,Novembro,Zambézia,Pebane,122145.0
+2025,Outubro,Cabo Delgado,Ancuabe,127062.0
+2025,Outubro,Cabo Delgado,Balama,104038.0
+2025,Outubro,Cabo Delgado,Chiúre,173714.0
+2025,Outubro,Cabo Delgado,Cidade de Pemba,331760.0
+2025,Outubro,Cabo Delgado,Ibo,11673.0
+2025,Outubro,Cabo Delgado,Macomia,51061.0
+2025,Outubro,Cabo Delgado,Mecufi,26446.0
+2025,Outubro,Cabo Delgado,Meluco,15929.0
+2025,Outubro,Cabo Delgado,Mocimboa da Praia,81454.0
+2025,Outubro,Cabo Delgado,Montepuez,228077.0
+2025,Outubro,Cabo Delgado,Mueda,151785.0
+2025,Outubro,Cabo Delgado,Muidumbe,28851.0
+2025,Outubro,Cabo Delgado,Namuno,90922.0
+2025,Outubro,Cabo Delgado,Nangade,45091.0
+2025,Outubro,Cabo Delgado,Palma,67008.0
+2025,Outubro,Cabo Delgado,Pemba-Metuge,97871.0
+2025,Outubro,Cabo Delgado,Quissanga,18385.0
 2025,Outubro,Gaza,Bilene-Macia,240623.0
 2025,Outubro,Gaza,Chibuto,206408.0
 2025,Outubro,Gaza,Chicualacuala,20359.0
@@ -1599,45 +1606,27 @@ Year,Month,Province,District,Subscribers
 2025,Outubro,Manica,Sussundenga,105606.0
 2025,Outubro,Manica,Tambara,28165.0
 2025,Outubro,Manica,Vanduzi,115172.0
-2025,Outubro,Nampula,Ancuabe,127062.0
 2025,Outubro,Nampula,Angoche,391131.0
-2025,Outubro,Nampula,Balama,104038.0
-2025,Outubro,Nampula,Cabo-Delgado,1651127.0
-2025,Outubro,Nampula,Chiúre,173714.0
 2025,Outubro,Nampula,Cidade de Nacala-Porto,533673.0
 2025,Outubro,Nampula,Cidade de Nampula,1632050.0
-2025,Outubro,Nampula,Cidade de Pemba,331760.0
-2025,Outubro,Nampula,Ibo,11673.0
 2025,Outubro,Nampula,Ilha de Moçambique,70695.0
 2025,Outubro,Nampula,Lalaua,38094.0
 2025,Outubro,Nampula,Larde,31780.0
 2025,Outubro,Nampula,Liupo,33607.0
-2025,Outubro,Nampula,Macomia,51061.0
 2025,Outubro,Nampula,Malema,119143.0
 2025,Outubro,Nampula,Meconta (Namialo),486414.0
 2025,Outubro,Nampula,Mecuburi,84388.0
-2025,Outubro,Nampula,Mecufi,26446.0
-2025,Outubro,Nampula,Meluco,15929.0
 2025,Outubro,Nampula,Memba,147137.0
-2025,Outubro,Nampula,Mocimboa da Praia,81454.0
 2025,Outubro,Nampula,Mogincual,74328.0
 2025,Outubro,Nampula,Mogovolas,154627.0
 2025,Outubro,Nampula,Moma,204961.0
 2025,Outubro,Nampula,Monapo,178233.0
-2025,Outubro,Nampula,Montepuez,228077.0
 2025,Outubro,Nampula,Mossuril,73254.0
 2025,Outubro,Nampula,Muecate,67630.0
-2025,Outubro,Nampula,Mueda,151785.0
-2025,Outubro,Nampula,Muidumbe,28851.0
 2025,Outubro,Nampula,Murrupula,98527.0
 2025,Outubro,Nampula,Nacala-Velha,53628.0
 2025,Outubro,Nampula,Nacaroa,68452.0
 2025,Outubro,Nampula,Namapa-Erati,129759.0
-2025,Outubro,Nampula,Namuno,90922.0
-2025,Outubro,Nampula,Nangade,45091.0
-2025,Outubro,Nampula,Palma,67008.0
-2025,Outubro,Nampula,Pemba-Metuge,97871.0
-2025,Outubro,Nampula,Quissanga,18385.0
 2025,Outubro,Nampula,Rapale-Nampula,157085.0
 2025,Outubro,Nampula,Ribaué,137663.0
 2025,Outubro,Niassa,Chimbunhila,54411.0
@@ -1715,6 +1704,23 @@ Year,Month,Province,District,Subscribers
 2025,Outubro,Zambézia,Namarroi,75110.0
 2025,Outubro,Zambézia,Nicoadala,153956.0
 2025,Outubro,Zambézia,Pebane,118194.0
+2025,Setembro,Cabo Delgado,Ancuabe,124052.0
+2025,Setembro,Cabo Delgado,Balama,97855.0
+2025,Setembro,Cabo Delgado,Chiúre,170873.0
+2025,Setembro,Cabo Delgado,Cidade de Pemba,344823.0
+2025,Setembro,Cabo Delgado,Ibo,11269.0
+2025,Setembro,Cabo Delgado,Macomia,49329.0
+2025,Setembro,Cabo Delgado,Mecufi,22527.0
+2025,Setembro,Cabo Delgado,Meluco,15273.0
+2025,Setembro,Cabo Delgado,Mocimboa da Praia,87471.0
+2025,Setembro,Cabo Delgado,Montepuez,219012.0
+2025,Setembro,Cabo Delgado,Mueda,142619.0
+2025,Setembro,Cabo Delgado,Muidumbe,27934.0
+2025,Setembro,Cabo Delgado,Namuno,90278.0
+2025,Setembro,Cabo Delgado,Nangade,42711.0
+2025,Setembro,Cabo Delgado,Palma,64231.0
+2025,Setembro,Cabo Delgado,Pemba-Metuge,91478.0
+2025,Setembro,Cabo Delgado,Quissanga,17079.0
 2025,Setembro,Gaza,Bilene-Macia,236578.0
 2025,Setembro,Gaza,Chibuto,197300.0
 2025,Setembro,Gaza,Chicualacuala,19816.0
@@ -1755,45 +1761,27 @@ Year,Month,Province,District,Subscribers
 2025,Setembro,Manica,Sussundenga,101873.0
 2025,Setembro,Manica,Tambara,27134.0
 2025,Setembro,Manica,Vanduzi,109032.0
-2025,Setembro,Nampula,Ancuabe,124052.0
 2025,Setembro,Nampula,Angoche,389775.0
-2025,Setembro,Nampula,Balama,97855.0
-2025,Setembro,Nampula,Cabo-Delgado,1618814.0
-2025,Setembro,Nampula,Chiúre,170873.0
 2025,Setembro,Nampula,Cidade de Nacala-Porto,521384.0
 2025,Setembro,Nampula,Cidade de Nampula,1560199.0
-2025,Setembro,Nampula,Cidade de Pemba,344823.0
-2025,Setembro,Nampula,Ibo,11269.0
 2025,Setembro,Nampula,Ilha de Moçambique,75323.0
 2025,Setembro,Nampula,Lalaua,36841.0
 2025,Setembro,Nampula,Larde,11492.0
 2025,Setembro,Nampula,Liupo,12182.0
-2025,Setembro,Nampula,Macomia,49329.0
 2025,Setembro,Nampula,Malema,113027.0
 2025,Setembro,Nampula,Meconta (Namialo),474091.0
 2025,Setembro,Nampula,Mecuburi,82110.0
-2025,Setembro,Nampula,Mecufi,22527.0
-2025,Setembro,Nampula,Meluco,15273.0
 2025,Setembro,Nampula,Memba,140668.0
-2025,Setembro,Nampula,Mocimboa da Praia,87471.0
 2025,Setembro,Nampula,Mogincual,91585.0
 2025,Setembro,Nampula,Mogovolas,152050.0
 2025,Setembro,Nampula,Moma,218275.0
 2025,Setembro,Nampula,Monapo,172127.0
-2025,Setembro,Nampula,Montepuez,219012.0
 2025,Setembro,Nampula,Mossuril,66306.0
 2025,Setembro,Nampula,Muecate,66533.0
-2025,Setembro,Nampula,Mueda,142619.0
-2025,Setembro,Nampula,Muidumbe,27934.0
 2025,Setembro,Nampula,Murrupula,95547.0
 2025,Setembro,Nampula,Nacala-Velha,52746.0
 2025,Setembro,Nampula,Nacaroa,66688.0
 2025,Setembro,Nampula,Namapa-Erati,124415.0
-2025,Setembro,Nampula,Namuno,90278.0
-2025,Setembro,Nampula,Nangade,42711.0
-2025,Setembro,Nampula,Palma,64231.0
-2025,Setembro,Nampula,Pemba-Metuge,91478.0
-2025,Setembro,Nampula,Quissanga,17079.0
 2025,Setembro,Nampula,Rapale-Nampula,148103.0
 2025,Setembro,Nampula,Ribaué,131283.0
 2025,Setembro,Niassa,Chimbunhila,51250.0
