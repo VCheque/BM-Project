@@ -2201,18 +2201,32 @@ with tab_forecast:
                     "N/A" if model_meta["holdout_mape"] is None else f"{model_meta['holdout_mape']:.2f}%"
                 )
                 r2_label = "N/A" if r2 is None else f"{r2:.3f}"
-                current_v = hist_yr.iloc[-1]["Valor"] if not hist_yr.empty else None
-                projected_v = pred_yr.iloc[-1]["Valor"] if not pred_yr.empty else None
+                if is_wallet_indicator:
+                    hist_tail = combined[combined["Tipo"] == hist_tag].sort_values("t")
+                    pred_tail = combined[combined["Tipo"] == pred_tag].sort_values("t")
+                    current_v = float(hist_tail.iloc[-1]["Value"]) if not hist_tail.empty else None
+                    projected_v = float(pred_tail.iloc[-1]["Value"]) if not pred_tail.empty else None
+                    horizon_for_rate = wallet_forecast_months
+                    avg_change_abs = 0.0
+                    avg_change_pct = None
+                    if current_v is not None and projected_v is not None and horizon_for_rate > 0:
+                        avg_change_abs = (projected_v - current_v) / horizon_for_rate
+                        if current_v > 0:
+                            avg_change_pct = (((projected_v / current_v) ** (1 / horizon_for_rate)) - 1) * 100
+                else:
+                    current_v = hist_yr.iloc[-1]["Valor"] if not hist_yr.empty else None
+                    projected_v = pred_yr.iloc[-1]["Valor"] if not pred_yr.empty else None
+                    horizon_for_rate = forecast_horizon
+                    avg_change_abs = 0.0
+                    avg_change_pct = None
+                    if current_v is not None and projected_v is not None and horizon_for_rate > 0:
+                        avg_change_abs = (projected_v - current_v) / horizon_for_rate
+                        if current_v > 0:
+                            avg_change_pct = (((projected_v / current_v) ** (1 / horizon_for_rate)) - 1) * 100
+
                 change_pct = 0.0
                 if current_v is not None and projected_v is not None and current_v > 0:
                     change_pct = ((projected_v - current_v) / current_v) * 100
-                avg_annual_abs = 0.0
-                avg_annual_pct = None
-                horizon_for_rate = forecast_horizon_years if is_wallet_indicator else forecast_horizon
-                if current_v is not None and projected_v is not None and horizon_for_rate > 0:
-                    avg_annual_abs = (projected_v - current_v) / horizon_for_rate
-                    if current_v > 0:
-                        avg_annual_pct = (((projected_v / current_v) ** (1 / horizon_for_rate)) - 1) * 100
 
                 if change_pct > 3:
                     trend_pt, trend_en = "aumento", "increase"
@@ -2242,37 +2256,49 @@ with tab_forecast:
                 if st.session_state.lang == "PT":
                     r2_sentence = f"O ajuste histórico é forte (R²={r2:.0%}). " if (r2 is not None and r2 >= 0.75) else ""
                     avg_pct_label = (
-                        f"{avg_annual_pct:+.1f}%"
-                        if avg_annual_pct is not None
+                        f"{avg_change_pct:+.1f}%"
+                        if avg_change_pct is not None
                         else "N/A"
                     )
-                    horizon_text = (
-                        f"{wallet_forecast_months} meses" if is_wallet_indicator else f"{forecast_horizon} anos"
-                    )
-                    summary = (
-                        f"Para o indicador {forecast_indicator}, a projecção aponta para {trend_pt} "
-                        f"no horizonte de {horizon_text}, com confiança {conf_pt}. "
-                        f"Em média, a variação anual estimada é de {avg_pct_label} "
-                        f"({format_compact(avg_annual_abs)} por ano). "
-                        f"{r2_sentence}"
-                    )
+                    if is_wallet_indicator:
+                        summary = (
+                            f"Para o indicador {forecast_indicator}, a projecção aponta para {trend_pt} "
+                            f"no horizonte de {wallet_forecast_months} meses, com confiança {conf_pt}. "
+                            f"Em média, a variação mensal estimada é de {avg_pct_label} "
+                            f"({format_compact(avg_change_abs)} por mês). "
+                            f"{r2_sentence}"
+                        )
+                    else:
+                        summary = (
+                            f"Para o indicador {forecast_indicator}, a projecção aponta para {trend_pt} "
+                            f"no horizonte de {forecast_horizon} anos, com confiança {conf_pt}. "
+                            f"Em média, a variação anual estimada é de {avg_pct_label} "
+                            f"({format_compact(avg_change_abs)} por ano). "
+                            f"{r2_sentence}"
+                        )
                 else:
                     r2_sentence = f"Historical fit is strong (R²={r2:.0%}). " if (r2 is not None and r2 >= 0.75) else ""
                     avg_pct_label = (
-                        f"{avg_annual_pct:+.1f}%"
-                        if avg_annual_pct is not None
+                        f"{avg_change_pct:+.1f}%"
+                        if avg_change_pct is not None
                         else "N/A"
                     )
-                    horizon_text = (
-                        f"{wallet_forecast_months} months" if is_wallet_indicator else f"{forecast_horizon}-year"
-                    )
-                    summary = (
-                        f"For {forecast_indicator}, the projection indicates an expected {trend_en} "
-                        f"over the {horizon_text} horizon, with {conf_en} confidence. "
-                        f"Average estimated annual change is {avg_pct_label} "
-                        f"({format_compact(avg_annual_abs)} per year). "
-                        f"{r2_sentence}"
-                    )
+                    if is_wallet_indicator:
+                        summary = (
+                            f"For {forecast_indicator}, the projection indicates an expected {trend_en} "
+                            f"over the {wallet_forecast_months}-month horizon, with {conf_en} confidence. "
+                            f"Average estimated monthly change is {avg_pct_label} "
+                            f"({format_compact(avg_change_abs)} per month). "
+                            f"{r2_sentence}"
+                        )
+                    else:
+                        summary = (
+                            f"For {forecast_indicator}, the projection indicates an expected {trend_en} "
+                            f"over the {forecast_horizon}-year horizon, with {conf_en} confidence. "
+                            f"Average estimated annual change is {avg_pct_label} "
+                            f"({format_compact(avg_change_abs)} per year). "
+                            f"{r2_sentence}"
+                        )
 
                 st.info(summary)
                 with st.expander("Detalhes técnicos" if st.session_state.lang == "PT" else "Technical details"):
