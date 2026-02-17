@@ -124,6 +124,29 @@ def single_choice_toggle(label: str, options: list[str], key: str) -> str:
     return st.radio(label, options, horizontal=True, key=key)
 
 
+def metric_with_help(
+    target,
+    label: str,
+    value,
+    *,
+    delta=None,
+    help_pt: str | None = None,
+    help_en: str | None = None,
+) -> None:
+    """Render metric with localized help tooltip and fallback caption."""
+    help_text = help_pt if st.session_state.lang == "PT" else help_en
+    if help_text:
+        try:
+            target.metric(label, value, delta=delta, help=help_text)
+            return
+        except TypeError:
+            target.metric(label, value, delta=delta)
+            if hasattr(target, "caption"):
+                target.caption(f"ℹ️ {help_text}")
+            return
+    target.metric(label, value, delta=delta)
+
+
 def format_compact(value: float) -> str:
     """Compact number formatting (K/M/B) for KPI readability."""
     v = float(value)
@@ -1821,17 +1844,47 @@ with tab_overview:
 
     ov1, ov2, ov3 = st.columns(3)
     ov4, ov5, ov6 = st.columns(3)
-    ov1.metric("Subscritores de Carteira Móvel" if st.session_state.lang == "PT" else "Mobile Wallet subscribers", format_compact(wallet_subs_total))
-    ov2.metric("Agentes de Carteira Móvel" if st.session_state.lang == "PT" else "Mobile Wallet agents", format_compact(wallet_agents_total))
-    ov3.metric("Mobile Banking (Valor)" if st.session_state.lang == "PT" else "Mobile Banking (Value)", format_compact(mobile_value_total))
-    ov4.metric("Internet Banking (Valor)" if st.session_state.lang == "PT" else "Internet Banking (Value)", format_compact(internet_value_total))
-    ov5.metric(
+    metric_with_help(
+        ov1,
+        "Subscritores de Carteira Móvel" if st.session_state.lang == "PT" else "Mobile Wallet subscribers",
+        format_compact(wallet_subs_total),
+        help_pt="Total de subscritores reportados no recorte seleccionado.",
+        help_en="Total reported subscribers in the selected scope.",
+    )
+    metric_with_help(
+        ov2,
+        "Agentes de Carteira Móvel" if st.session_state.lang == "PT" else "Mobile Wallet agents",
+        format_compact(wallet_agents_total),
+        help_pt="Total de agentes reportados no recorte seleccionado.",
+        help_en="Total reported agents in the selected scope.",
+    )
+    metric_with_help(
+        ov3,
+        "Mobile Banking (Valor)" if st.session_state.lang == "PT" else "Mobile Banking (Value)",
+        format_compact(mobile_value_total),
+        help_pt="Valor anual agregado das transacções de Mobile Banking.",
+        help_en="Annual aggregated transaction value for Mobile Banking.",
+    )
+    metric_with_help(
+        ov4,
+        "Internet Banking (Valor)" if st.session_state.lang == "PT" else "Internet Banking (Value)",
+        format_compact(internet_value_total),
+        help_pt="Valor anual agregado das transacções de Internet Banking.",
+        help_en="Annual aggregated transaction value for Internet Banking.",
+    )
+    metric_with_help(
+        ov5,
         "Contas por adulto (oficial)" if st.session_state.lang == "PT" else "Accounts per adult (official)",
         "N/A" if accounts_pc_off is None else f"{accounts_pc_off:.2f}",
+        help_pt="Indicador oficial do Banco de Moçambique (por 100 adultos), convertido para per capita.",
+        help_en="Official Banco de Moçambique indicator (per 100 adults), converted to per-capita.",
     )
-    ov6.metric(
+    metric_with_help(
+        ov6,
         "Província líder (oportunidade)" if st.session_state.lang == "PT" else "Top opportunity province",
         top_opp_label,
+        help_pt="Província com maior pontuação no índice de oportunidade.",
+        help_en="Province with the highest opportunity-score ranking.",
     )
 
     st.caption(
@@ -1927,22 +1980,31 @@ with tab_overview:
         bridge_row = bridge_row.iloc[0]
 
         bridge_m1, bridge_m2, bridge_m3 = st.columns(3)
-        bridge_m1.metric(
+        metric_with_help(
+            bridge_m1,
             "Transferências Mobile Banking → telemóveis (valor)" if st.session_state.lang == "PT" else "Mobile Banking transfers → mobile (value)",
             format_compact(float(bridge_row["MB_To_Wallet_Value"])),
+            help_pt="Valor anual transferido de Mobile Banking para telemóveis.",
+            help_en="Annual value transferred from Mobile Banking to mobile numbers.",
         )
-        bridge_m2.metric(
+        metric_with_help(
+            bridge_m2,
             "Levantamentos ATM de fundos em telemóveis (valor)" if st.session_state.lang == "PT" else "ATM withdrawals of mobile-wallet funds (value)",
             format_compact(float(bridge_row["ATM_Wallet_Withdrawals_Value"])),
+            help_pt="Valor anual levantado em ATM a partir de fundos depositados em telemóveis.",
+            help_en="Annual ATM withdrawal value from funds deposited in mobile-wallet accounts.",
         )
         cashout_ratio = (
             float(bridge_row["ATM_Wallet_Withdrawals_Value"]) / float(bridge_row["MB_To_Wallet_Value"])
             if float(bridge_row["MB_To_Wallet_Value"]) > 0
             else math.nan
         )
-        bridge_m3.metric(
+        metric_with_help(
+            bridge_m3,
             "Rácio saída/entrada" if st.session_state.lang == "PT" else "Outflow/inflow ratio",
             "N/A" if math.isnan(cashout_ratio) else f"{cashout_ratio:.2f}x",
+            help_pt="Relação entre levantamentos ATM (saída) e transferências Mobile Banking para telemóveis (entrada).",
+            help_en="Ratio between ATM withdrawals (outflow) and Mobile Banking transfers to mobile numbers (inflow).",
         )
 
         bridge_value_opt = "Valor" if st.session_state.lang == "PT" else "Value"
@@ -2182,6 +2244,37 @@ with tab_ime:
         tx_totals = {
             t: float(tx_month.loc[tx_month["Transaction_Type"] == t, tx_metric_col].sum()) for t in tx_types
         }
+        tx_type_labels = {
+            "Depósitos": ("Depósitos", "Deposits"),
+            "Levantamentos": ("Levantamentos", "Withdrawals"),
+            "Transferências": ("Transferências", "Transfers"),
+            "Pagamentos": ("Pagamentos", "Payments"),
+        }
+        tx_help_en = {
+            "Depósitos": "Money deposited into Mobile Wallet agent accounts.",
+            "Levantamentos": "Money withdrawals from Mobile Wallet.",
+            "Transferências": "Transfers between Mobile Wallet accounts.",
+            "Pagamentos": "Service payments using Mobile Wallet.",
+        }
+        tx_help_pt = {
+            "Depósitos": "Dinheiro depositado em contas de agente de Carteira Móvel.",
+            "Levantamentos": "Levantamento de dinheiro a partir da Carteira Móvel.",
+            "Transferências": "Transferências entre contas de Carteira Móvel.",
+            "Pagamentos": "Pagamento de serviços com Carteira Móvel.",
+        }
+
+        def _metric_with_optional_help(col, tx_key: str) -> None:
+            pt_label, en_label = tx_type_labels[tx_key]
+            label = f"{pt_label if st.session_state.lang == 'PT' else en_label} ({ime_measure})"
+            value = format_compact(tx_totals[tx_key])
+            metric_with_help(
+                col,
+                label,
+                value,
+                help_pt=tx_help_pt[tx_key],
+                help_en=tx_help_en[tx_key],
+            )
+
         if stock_month_ref is None:
             st.info(
                 "Sem dados de Dezembro para indicadores de stock (Subscritores/Agentes)."
@@ -2191,24 +2284,24 @@ with tab_ime:
 
         k1, k2, k3 = st.columns(3)
         k4, k5, k6 = st.columns(3)
-        k1.metric("Subscritores" if st.session_state.lang == "PT" else "Subscribers", format_compact(subs_total))
-        k2.metric("Agentes" if st.session_state.lang == "PT" else "Agents", format_compact(agents_total))
-        k3.metric(
-            f"Depósitos ({ime_measure})",
-            format_compact(tx_totals["Depósitos"]),
+        metric_with_help(
+            k1,
+            "Subscritores" if st.session_state.lang == "PT" else "Subscribers",
+            format_compact(subs_total),
+            help_pt="Número de subscritores de Carteira Móvel reportados no período.",
+            help_en="Number of Mobile Wallet subscribers reported in the period.",
         )
-        k4.metric(
-            f"Levantamentos ({ime_measure})",
-            format_compact(tx_totals["Levantamentos"]),
+        metric_with_help(
+            k2,
+            "Agentes" if st.session_state.lang == "PT" else "Agents",
+            format_compact(agents_total),
+            help_pt="Número de agentes de Carteira Móvel reportados no período.",
+            help_en="Number of Mobile Wallet agents reported in the period.",
         )
-        k5.metric(
-            f"Transferências ({ime_measure})",
-            format_compact(tx_totals["Transferências"]),
-        )
-        k6.metric(
-            f"Pagamentos ({ime_measure})",
-            format_compact(tx_totals["Pagamentos"]),
-        )
+        _metric_with_optional_help(k3, "Depósitos")
+        _metric_with_optional_help(k4, "Levantamentos")
+        _metric_with_optional_help(k5, "Transferências")
+        _metric_with_optional_help(k6, "Pagamentos")
         st.caption(
             (
                 f"ℹ️ Subscritores e Agentes (stock) usam o valor reportado em {localize_month(stock_month_ref)}."
@@ -2503,12 +2596,25 @@ with tab_ime:
                 .rename(columns={tx_metric_col: "Total"})
             )
             if not tx_trend.empty:
+                tx_type_col = "Tipo de transacção" if st.session_state.lang == "PT" else "Transaction Type"
+                tx_trend = tx_trend.copy()
+                if st.session_state.lang == "EN":
+                    tx_trend[tx_type_col] = tx_trend["Transaction_Type"].replace(
+                        {
+                            "Depósitos": "Deposits",
+                            "Levantamentos": "Withdrawals",
+                            "Transferências": "Transfers",
+                            "Pagamentos": "Payments",
+                        }
+                    )
+                else:
+                    tx_trend[tx_type_col] = tx_trend["Transaction_Type"]
                 tx_trend = localize_month_df(tx_trend, source_col="Month", target_col="Month_Display")
                 fig_tx_trend = px.line(
                     tx_trend,
                     x="Month_Display",
                     y="Total",
-                    color="Transaction_Type",
+                    color=tx_type_col,
                     markers=True,
                     title=(
                         f"Tendência - transacções de carteira móvel ({ime_measure})"
