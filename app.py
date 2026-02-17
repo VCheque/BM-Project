@@ -3103,6 +3103,9 @@ with tab_decision:
             var_name="Component",
             value_name="Score",
         )
+        province_order = opp_df.sort_values("Opportunity_Score", ascending=False)["Province"].astype(str).tolist()
+        comp_long["Province"] = pd.Categorical(comp_long["Province"].astype(str), categories=province_order, ordered=True)
+        comp_long = comp_long.sort_values(["Province", "Component"])
         component_defs = (
             {
                 "Procura": "Menor penetração de contas por população elegível = maior espaço de expansão.",
@@ -3125,6 +3128,7 @@ with tab_decision:
             y="Score",
             color="Component",
             barmode="stack",
+            category_orders={"Province": province_order},
             custom_data=["Definition"],
             hover_data={"Score": ":.1f", "Definition": False},
             title="Score decomposition by province" if st.session_state.lang == "EN" else "Decomposição da pontuação por província",
@@ -3136,9 +3140,11 @@ with tab_decision:
                 "Componente: %{fullData.name}<br>"
                 "Score: %{y:.1f}<br>"
                 f"{definition_label}: %{{customdata[0]}}<extra></extra>"
-            )
+            ),
+            selector=dict(type="bar"),
+            offsetgroup="opportunity_stack",
         )
-        fig_opp.update_layout(yaxis=dict(range=[0, 400]))
+        fig_opp.update_layout(barmode="stack", yaxis=dict(rangemode="tozero"))
         plot_chart(fig_opp, use_container_width=True)
 
         st.markdown(
