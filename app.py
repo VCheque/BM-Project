@@ -581,17 +581,591 @@ f_atm_snap = last_month_snapshot(f_atm)
 f_pos_snap = last_month_snapshot(f_pos)
 
 
+def build_scope_opportunity_df(year: int) -> pd.DataFrame:
+    """Compute opportunity score table for current scope."""
+    acc_opp = last_month_snapshot(apply_geo_only(acc_df[acc_df["Year"] == year]))
+    atm_opp = last_month_snapshot(apply_geo_only(atm_df[atm_df["Year"] == year]))
+    pos_opp = last_month_snapshot(apply_geo_only(pos_df[pos_df["Year"] == year]))
+
+    census_scope = census_df[census_df["Province"].isin(selected_prov)].copy()
+    if census_scope.empty:
+        census_scope = census_df.copy()
+    pop_rows = []
+    for _, row in census_scope.iterrows():
+        pop_rows.append(
+            {
+                "Province": row["Province"],
+                "Population": row_denominator_population(row, year),
+            }
+        )
+    pop_df = pd.DataFrame(pop_rows)
+
+    ime_sub_opp = apply_geo_only(ime_sub_df.copy()) if not ime_sub_df.empty else pd.DataFrame()
+    ime_agents_opp = apply_geo_only(ime_agents_df.copy()) if not ime_agents_df.empty else pd.DataFrame()
+    ime_tx_opp = apply_geo_only(ime_txn_district_df.copy()) if not ime_txn_district_df.empty else pd.DataFrame()
+
+    return build_opportunity_scores(
+        population_by_province=pop_df,
+        accounts_snapshot=acc_opp,
+        atm_snapshot=atm_opp,
+        pos_snapshot=pos_opp,
+        ime_subscribers=ime_sub_opp,
+        ime_agents=ime_agents_opp,
+        ime_transactions=ime_tx_opp,
+        year=year,
+        weights=OpportunityWeights(),
+    )
+
+
+def render_deterministic_qa_panel(opp_df: pd.DataFrame | None = None, key_prefix: str = "overview") -> None:
+    """Render deterministic Q&A with one dynamic chart per selected question."""
+    st.subheader(
+        "Perguntas e respostas (determinísticas)" if st.session_state.lang == "PT" else "Deterministic Q&A",
+        help=(
+            "Respostas calculadas directamente das tabelas carregadas, sem geração livre."
+            if st.session_state.lang == "PT"
+            else "Answers computed directly from loaded tables, without free-form generation."
+        ),
+    )
+    st.caption(
+        "Respostas calculadas diretamente das tabelas carregadas (sem geração livre de texto)."
+        if st.session_state.lang == "PT"
+        else "Answers are computed directly from loaded tables (no free-form generation)."
+    )
+
+    question_bank_pt = [
+        ("Qual distrito lidera em valor de transacções de Carteira Móvel no último mês disponível?", "ime_top_value"),
+        ("Qual distrito tem maior rácio de subscritores por agente de Carteira Móvel?", "ime_top_subs_per_agent"),
+        ("Mobile Banking cresce mais em valor do que Internet Banking (YoY)?", "mobile_vs_internet_yoy"),
+        ("Como evoluiu o indicador oficial de contas por adulto desde 2020?", "official_accounts_change"),
+        ("Como evoluiu o indicador oficial de cartões por adulto desde 2020?", "official_cards_change"),
+        ("Quais são as 3 províncias com maior pontuação de oportunidade?", "opp_top3"),
+        ("Que província lidera no índice IME/INCM (subscrições por 100)?", "incm_top_index"),
+        ("Que província tem menor capacidade de agentes por 10 mil subscritores móveis?", "incm_low_agent_capacity"),
+        ("Qual a quota feminina de contas e cartões no recorte atual?", "gender_shares"),
+        ("Qual a quota da faixa 17-21 em contas e cartões no recorte atual?", "age_17_21_shares"),
+        ("[Stock] Quantas contas existem no último snapshot?", "stock_accounts"),
+        ("[Stock] Quantos cartões existem no último snapshot?", "stock_cards"),
+        ("[Stock] Quantos ATM existem no último snapshot?", "stock_atm"),
+        ("[Stock] Quantos POS existem no último snapshot?", "stock_pos"),
+        ("[Stock] Que província lidera em ATM no recorte atual?", "stock_top_atm_prov"),
+        ("[Stock] Que província lidera em POS no recorte atual?", "stock_top_pos_prov"),
+    ]
+    question_bank_en = [
+        ("Which district leads Mobile Wallet transaction value in the latest available month?", "ime_top_value"),
+        ("Which district has the highest Mobile Wallet subscribers-per-agent ratio?", "ime_top_subs_per_agent"),
+        ("Is Mobile Banking value growing faster YoY than Internet Banking?", "mobile_vs_internet_yoy"),
+        ("How has the official accounts-per-adult indicator changed since 2020?", "official_accounts_change"),
+        ("How has the official cards-per-adult indicator changed since 2020?", "official_cards_change"),
+        ("Which are the top 3 provinces by opportunity score?", "opp_top3"),
+        ("Which province leads the IME/INCM index (subscriptions per 100)?", "incm_top_index"),
+        ("Which province has the lowest agent capacity per 10k mobile subscribers?", "incm_low_agent_capacity"),
+        ("What is the female share in accounts and cards for the current scope?", "gender_shares"),
+        ("What is the 17-21 age share in accounts and cards for the current scope?", "age_17_21_shares"),
+        ("[Stock] How many accounts exist in the latest snapshot?", "stock_accounts"),
+        ("[Stock] How many cards exist in the latest snapshot?", "stock_cards"),
+        ("[Stock] How many ATMs exist in the latest snapshot?", "stock_atm"),
+        ("[Stock] How many POS exist in the latest snapshot?", "stock_pos"),
+        ("[Stock] Which province leads ATM count in the current scope?", "stock_top_atm_prov"),
+        ("[Stock] Which province leads POS count in the current scope?", "stock_top_pos_prov"),
+    ]
+    q_bank = question_bank_pt if st.session_state.lang == "PT" else question_bank_en
+    q_label = st.selectbox(
+        "Escolha uma pergunta" if st.session_state.lang == "PT" else "Choose a question",
+        [q for q, _ in q_bank],
+        key=f"{key_prefix}_det_qna_question",
+    )
+    q_id = dict(q_bank)[q_label]
+
+    answer = ""
+    source = ""
+    caveat = ""
+    chart = None
+
+    if opp_df is None:
+        opp_df = build_scope_opportunity_df(selected_year)
+
+    ime_year_q = int(pd.to_numeric(ime_sub_df["Year"], errors="coerce").dropna().max()) if not ime_sub_df.empty else None
+    ime_sub_q = ime_sub_df[ime_sub_df["Year"] == ime_year_q].copy() if ime_year_q else pd.DataFrame()
+    ime_agents_q = ime_agents_df[ime_agents_df["Year"] == ime_year_q].copy() if ime_year_q else pd.DataFrame()
+    ime_tx_q = ime_txn_district_df[ime_txn_district_df["Year"] == ime_year_q].copy() if ime_year_q else pd.DataFrame()
+    if not ime_sub_q.empty:
+        ime_sub_q = ime_sub_q[ime_sub_q["Province"].isin(selected_prov)]
+    if not ime_agents_q.empty:
+        ime_agents_q = ime_agents_q[ime_agents_q["Province"].isin(selected_prov)]
+    if not ime_tx_q.empty:
+        ime_tx_q = ime_tx_q[ime_tx_q["Province"].isin(selected_prov)]
+    if selected_dist:
+        if not ime_sub_q.empty:
+            ime_sub_q = ime_sub_q[ime_sub_q["District"].isin(selected_dist)]
+        if not ime_agents_q.empty:
+            ime_agents_q = ime_agents_q[ime_agents_q["District"].isin(selected_dist)]
+        if not ime_tx_q.empty:
+            ime_tx_q = ime_tx_q[ime_tx_q["District"].isin(selected_dist)]
+
+    incm_benchmark_q = pd.DataFrame()
+    if ime_year_q is not None:
+        month_series = ime_sub_df[ime_sub_df["Year"] == ime_year_q]["Month"].dropna().astype(str).unique().tolist()
+        month_ref_q = "Junho" if "Junho" in month_series else (max(month_series, key=lambda m: MONTH_RANK.get(m, 0)) if month_series else None)
+        if month_ref_q is not None:
+            ime_prov_scope_q = sorted(set(selected_prov) & set(INCM_MOBILE_SUBSCRIBERS_Q2_2025["Province"].astype(str).tolist()))
+            sub_prov_q = (
+                ime_sub_df[
+                    (ime_sub_df["Year"] == ime_year_q)
+                    & (ime_sub_df["Month"].astype(str) == month_ref_q)
+                    & (ime_sub_df["Province"].isin(ime_prov_scope_q))
+                ]
+                .groupby("Province", as_index=False)["Subscribers"]
+                .sum()
+            )
+            ag_prov_q = (
+                ime_agents_df[
+                    (ime_agents_df["Year"] == ime_year_q)
+                    & (ime_agents_df["Month"].astype(str) == month_ref_q)
+                    & (ime_agents_df["Province"].isin(ime_prov_scope_q))
+                ]
+                .groupby("Province", as_index=False)["Agents"]
+                .sum()
+            )
+            incm_benchmark_q = (
+                INCM_MOBILE_SUBSCRIBERS_Q2_2025[INCM_MOBILE_SUBSCRIBERS_Q2_2025["Province"].isin(ime_prov_scope_q)]
+                .merge(sub_prov_q, on="Province", how="left")
+                .merge(ag_prov_q, on="Province", how="left")
+            )
+            for col in ["Subscribers", "Agents"]:
+                incm_benchmark_q[col] = pd.to_numeric(incm_benchmark_q[col], errors="coerce").fillna(0.0)
+            incm_benchmark_q["IME_INCM_Index_per_100"] = incm_benchmark_q.apply(
+                lambda r: (r["Subscribers"] / r["Mobile_Subscribers"] * 100) if r["Mobile_Subscribers"] > 0 else 0.0,
+                axis=1,
+            )
+            incm_benchmark_q["Agents_per_10k_Mobile"] = incm_benchmark_q.apply(
+                lambda r: (r["Agents"] / r["Mobile_Subscribers"] * 10_000) if r["Mobile_Subscribers"] > 0 else 0.0,
+                axis=1,
+            )
+
+    if q_id == "ime_top_value":
+        if ime_tx_q.empty:
+            answer = "Sem dados de Carteira Móvel no recorte atual." if st.session_state.lang == "PT" else "No Mobile Wallet data for current scope."
+        else:
+            tx = ime_tx_q.copy()
+            tx["Month_Ord"] = tx["Month"].astype(str).map(MONTH_RANK)
+            latest_m = tx["Month_Ord"].max()
+            tx_m = tx[tx["Month_Ord"] == latest_m]
+            top = tx_m.groupby("District", as_index=False)["Value"].sum().sort_values("Value", ascending=False)
+            top10 = top.head(10)
+            if top10.empty:
+                answer = "Sem dados suficientes." if st.session_state.lang == "PT" else "Insufficient data."
+            else:
+                district = top10.iloc[0]["District"]
+                val = top10.iloc[0]["Value"]
+                answer = (
+                    f"{district} lidera com {format_compact(val)} em valor de transacções de Carteira Móvel."
+                    if st.session_state.lang == "PT"
+                    else f"{district} leads with {format_compact(val)} in Mobile Wallet transaction value."
+                )
+                chart = px.bar(
+                    top10,
+                    x="District",
+                    y="Value",
+                    text=[format_compact(v) for v in top10["Value"]],
+                    title=(
+                        "Top 10 distritos por valor de transacções (Carteira Móvel)"
+                        if st.session_state.lang == "PT"
+                        else "Top 10 districts by Mobile Wallet transaction value"
+                    ),
+                )
+                chart.update_layout(xaxis_tickangle=-25, yaxis=dict(rangemode="tozero"))
+            source = "Mobile_Wallet_Transactions_District_2025.csv"
+            caveat = "Cobertura distrital de Carteira Móvel de 2025." if st.session_state.lang == "PT" else "Mobile Wallet district coverage is for 2025."
+    elif q_id == "ime_top_subs_per_agent":
+        if ime_sub_q.empty or ime_agents_q.empty:
+            answer = "Sem dados de Carteira Móvel no recorte atual." if st.session_state.lang == "PT" else "No Mobile Wallet data for current scope."
+        else:
+            sub_a = ime_sub_q.groupby("District", as_index=False)["Subscribers"].sum()
+            ag_a = ime_agents_q.groupby("District", as_index=False)["Agents"].sum()
+            merged = pd.merge(sub_a, ag_a, on="District", how="outer")
+            merged["Subscribers"] = pd.to_numeric(merged["Subscribers"], errors="coerce").fillna(0)
+            merged["Agents"] = pd.to_numeric(merged["Agents"], errors="coerce").fillna(0)
+            merged["Ratio"] = merged.apply(lambda r: (r["Subscribers"] / r["Agents"]) if r["Agents"] > 0 else 0, axis=1)
+            top = merged.sort_values("Ratio", ascending=False).head(10)
+            if top.empty:
+                answer = "Sem dados suficientes." if st.session_state.lang == "PT" else "Insufficient data."
+            else:
+                answer = (
+                    f"{top.iloc[0]['District']} tem o maior rácio, com {top.iloc[0]['Ratio']:.1f} subscritores por agente."
+                    if st.session_state.lang == "PT"
+                    else f"{top.iloc[0]['District']} has the highest ratio at {top.iloc[0]['Ratio']:.1f} subscribers per agent."
+                )
+                chart = px.bar(
+                    top,
+                    x="District",
+                    y="Ratio",
+                    text=[f"{v:.1f}" for v in top["Ratio"]],
+                    title=(
+                        "Top 10 distritos por subscritores por agente"
+                        if st.session_state.lang == "PT"
+                        else "Top 10 districts by subscribers per agent"
+                    ),
+                )
+                chart.update_layout(xaxis_tickangle=-25, yaxis=dict(rangemode="tozero"))
+            source = "Mobile_Wallet_Subscribers_District_2025.csv + Mobile_Wallet_Agents_District_2025.csv"
+            caveat = "Rácio não mede qualidade de serviço." if st.session_state.lang == "PT" else "Ratio does not measure service quality."
+    elif q_id == "mobile_vs_internet_yoy":
+        mob_val = mob_df[mob_df["Metric"].astype(str).str.contains("Valor", case=False, na=False)].groupby("Year")["Value"].sum().sort_index()
+        net_val = net_df[net_df["Metric"].astype(str).str.contains("Valor", case=False, na=False)].groupby("Year")["Value"].sum().sort_index()
+        if selected_year in mob_val.index and (selected_year - 1) in mob_val.index and selected_year in net_val.index and (selected_year - 1) in net_val.index:
+            mob_yoy = ((mob_val.loc[selected_year] - mob_val.loc[selected_year - 1]) / mob_val.loc[selected_year - 1] * 100) if mob_val.loc[selected_year - 1] > 0 else 0
+            net_yoy = ((net_val.loc[selected_year] - net_val.loc[selected_year - 1]) / net_val.loc[selected_year - 1] * 100) if net_val.loc[selected_year - 1] > 0 else 0
+            winner = "Mobile Banking" if mob_yoy >= net_yoy else "Internet Banking"
+            answer = (
+                f"{winner} cresce mais no ano seleccionado: Mobile {mob_yoy:+.1f}% vs Internet {net_yoy:+.1f}%."
+                if st.session_state.lang == "PT"
+                else f"{winner} grows faster in the selected year: Mobile {mob_yoy:+.1f}% vs Internet {net_yoy:+.1f}%."
+            )
+            yoy_df = pd.DataFrame(
+                {
+                    "Channel": ["Mobile Banking", "Internet Banking"],
+                    "Growth": [mob_yoy, net_yoy],
+                }
+            )
+            chart = px.bar(
+                yoy_df,
+                x="Channel",
+                y="Growth",
+                text=[f"{v:+.1f}%" for v in yoy_df["Growth"]],
+                title="YoY de valor por canal" if st.session_state.lang == "PT" else "Value YoY by channel",
+            )
+            chart.update_layout(yaxis=dict(rangemode="tozero"))
+        else:
+            answer = "Sem histórico suficiente para YoY." if st.session_state.lang == "PT" else "Insufficient history for YoY."
+        source = "Mobile_Banking_2020_2025.csv + Internet_Banking_2020_2025.csv"
+        caveat = "Comparação nacional agregada por canal." if st.session_state.lang == "PT" else "National channel-level aggregate comparison."
+    elif q_id in {"official_accounts_change", "official_cards_change"}:
+        indicator = "Contas bancárias (por 100 adultos)" if q_id == "official_accounts_change" else "Cartões bancários (por 100 adultos)"
+        idf = fi_indicators_df[fi_indicators_df["Indicator"].astype(str).apply(lambda x: _norm_key(x) == _norm_key(indicator))].copy()
+        v2020, plast = None, None
+        vlast = None
+        if not idf.empty:
+            d2020 = idf[pd.to_numeric(idf["Year"], errors="coerce") == 2020]
+            dlast = idf[pd.to_numeric(idf["Year"], errors="coerce") == pd.to_numeric(idf["Year"], errors="coerce").max()]
+            v2020, _ = _pick_latest_period_value(d2020)
+            vlast, plast = _pick_latest_period_value(dlast)
+            series_rows = []
+            for y in sorted(pd.to_numeric(idf["Year"], errors="coerce").dropna().astype(int).unique().tolist()):
+                y_df = idf[pd.to_numeric(idf["Year"], errors="coerce") == y]
+                y_val, _ = _pick_latest_period_value(y_df)
+                if y_val is not None:
+                    series_rows.append({"Year": y, "Value": y_val})
+            if series_rows:
+                series_df = pd.DataFrame(series_rows)
+                chart = px.line(
+                    series_df,
+                    x="Year",
+                    y="Value",
+                    markers=True,
+                    title=(
+                        "Evolução oficial do indicador"
+                        if st.session_state.lang == "PT"
+                        else "Official indicator evolution"
+                    ),
+                )
+                chart.update_layout(xaxis=dict(dtick=1), yaxis=dict(rangemode="tozero"))
+        if v2020 is None or vlast is None:
+            answer = "Sem dados oficiais suficientes." if st.session_state.lang == "PT" else "Insufficient official data."
+        else:
+            delta = vlast - v2020
+            pct = (delta / v2020 * 100) if v2020 > 0 else 0
+            answer = (
+                f"O indicador variou de {v2020:.2f} para {vlast:.2f} ({pct:+.1f}%) até {plast}."
+                if st.session_state.lang == "PT"
+                else f"The indicator moved from {v2020:.2f} to {vlast:.2f} ({pct:+.1f}%) up to {plast}."
+            )
+        source = "Financial_Inclusion_Indicators_2020_2025Q3.csv"
+        caveat = "Indicador oficial nacional por 100 adultos." if st.session_state.lang == "PT" else "Official national indicator per 100 adults."
+    elif q_id == "opp_top3":
+        if not opp_df.empty:
+            top3 = opp_df.head(3)
+            labels = [f"{r['Province']} ({r['Opportunity_Score']:.1f})" for _, r in top3.iterrows()]
+            answer = (
+                "Top 3 oportunidades: " + ", ".join(labels) + "."
+                if st.session_state.lang == "PT"
+                else "Top 3 opportunities: " + ", ".join(labels) + "."
+            )
+            chart = px.bar(
+                top3,
+                x="Province",
+                y="Opportunity_Score",
+                text=[f"{v:.1f}" for v in top3["Opportunity_Score"]],
+                title=(
+                    "Top 3 províncias por pontuação de oportunidade"
+                    if st.session_state.lang == "PT"
+                    else "Top 3 provinces by opportunity score"
+                ),
+            )
+            chart.update_layout(yaxis=dict(rangemode="tozero"))
+        else:
+            answer = "Sem dados de oportunidade no recorte atual." if st.session_state.lang == "PT" else "No opportunity data for current scope."
+        source = "Opportunity score (derived from Mobile Wallet + stock + infrastructure datasets)"
+        caveat = "Pontuação de priorização, não causalidade." if st.session_state.lang == "PT" else "Prioritization score, not causality."
+    elif q_id == "incm_top_index":
+        if incm_benchmark_q.empty:
+            answer = "Sem dados INCM/IME suficientes no recorte atual." if st.session_state.lang == "PT" else "Insufficient INCM/IME data in current scope."
+        else:
+            top = incm_benchmark_q.sort_values("IME_INCM_Index_per_100", ascending=False)
+            prov = str(top.iloc[0]["Province"])
+            idx = float(top.iloc[0]["IME_INCM_Index_per_100"])
+            answer = (
+                f"{prov} lidera com índice IME/INCM de {idx:.1f} subscrições por 100 subscritores móveis."
+                if st.session_state.lang == "PT"
+                else f"{prov} leads with an IME/INCM index of {idx:.1f} subscriptions per 100 mobile subscribers."
+            )
+            chart = px.bar(
+                top,
+                x="Province",
+                y="IME_INCM_Index_per_100",
+                text=[f"{v:.1f}" for v in top["IME_INCM_Index_per_100"]],
+                title=(
+                    "Índice IME/INCM por província"
+                    if st.session_state.lang == "PT"
+                    else "IME/INCM index by province"
+                ),
+            )
+            chart.update_layout(yaxis=dict(rangemode="tozero"), xaxis_tickangle=-20)
+        source = "INCM Acervo (Q2 2025) + IME_Subscribers_District_2025.csv"
+        caveat = (
+            "Índice relativo (não representa pessoas únicas) e pode exceder 100."
+            if st.session_state.lang == "PT"
+            else "Relative index (not unique persons) and may exceed 100."
+        )
+    elif q_id == "incm_low_agent_capacity":
+        if incm_benchmark_q.empty:
+            answer = "Sem dados INCM/IME suficientes no recorte atual." if st.session_state.lang == "PT" else "Insufficient INCM/IME data in current scope."
+        else:
+            low = incm_benchmark_q.sort_values("Agents_per_10k_Mobile", ascending=True)
+            prov = str(low.iloc[0]["Province"])
+            cap = float(low.iloc[0]["Agents_per_10k_Mobile"])
+            answer = (
+                f"{prov} apresenta a menor capacidade, com {cap:.1f} agentes por 10 mil subscritores móveis."
+                if st.session_state.lang == "PT"
+                else f"{prov} has the lowest capacity at {cap:.1f} agents per 10k mobile subscribers."
+            )
+            chart = px.bar(
+                low,
+                x="Province",
+                y="Agents_per_10k_Mobile",
+                text=[f"{v:.1f}" for v in low["Agents_per_10k_Mobile"]],
+                title=(
+                    "Capacidade de agentes por 10 mil subscritores móveis"
+                    if st.session_state.lang == "PT"
+                    else "Agent capacity per 10k mobile subscribers"
+                ),
+            )
+            chart.update_layout(yaxis=dict(rangemode="tozero"), xaxis_tickangle=-20)
+        source = "INCM Acervo (Q2 2025) + IME_Agents_District_2025.csv"
+        caveat = (
+            "Leitura de capacidade relativa; não mede qualidade de serviço."
+            if st.session_state.lang == "PT"
+            else "Relative capacity reading; does not measure service quality."
+        )
+    elif q_id == "gender_shares":
+        acc_total = f_acc_snap["Total_Accounts"].sum()
+        card_total = f_card_snap["Total_Cards"].sum()
+        acc_f = f_acc_snap[f_acc_snap["Gender"] == "Mulheres"]["Total_Accounts"].sum()
+        card_f = f_card_snap[f_card_snap["Gender"] == "Mulheres"]["Total_Cards"].sum()
+        a_share = (acc_f / acc_total * 100) if acc_total > 0 else 0
+        c_share = (card_f / card_total * 100) if card_total > 0 else 0
+        answer = (
+            f"Quota feminina: contas {a_share:.1f}% e cartões {c_share:.1f}%."
+            if st.session_state.lang == "PT"
+            else f"Female share: accounts {a_share:.1f}% and cards {c_share:.1f}%."
+        )
+        sh_df = pd.DataFrame(
+            [
+                {"Indicator": "Contas" if st.session_state.lang == "PT" else "Accounts", "Segment": "Mulheres" if st.session_state.lang == "PT" else "Female", "Share": a_share},
+                {"Indicator": "Contas" if st.session_state.lang == "PT" else "Accounts", "Segment": "Outros" if st.session_state.lang == "PT" else "Others", "Share": max(0.0, 100 - a_share)},
+                {"Indicator": "Cartões" if st.session_state.lang == "PT" else "Cards", "Segment": "Mulheres" if st.session_state.lang == "PT" else "Female", "Share": c_share},
+                {"Indicator": "Cartões" if st.session_state.lang == "PT" else "Cards", "Segment": "Outros" if st.session_state.lang == "PT" else "Others", "Share": max(0.0, 100 - c_share)},
+            ]
+        )
+        chart = px.bar(
+            sh_df,
+            x="Indicator",
+            y="Share",
+            color="Segment",
+            barmode="stack",
+            text=[f"{v:.1f}%" for v in sh_df["Share"]],
+            title="Distribuição por género" if st.session_state.lang == "PT" else "Gender distribution",
+        )
+        chart.update_layout(yaxis=dict(range=[0, 100]))
+        source = "accounts_2020_2025.csv + cards_2020_2025.csv"
+        caveat = "Quota mede distribuição, não qualidade de acesso." if st.session_state.lang == "PT" else "Share measures distribution, not quality of access."
+    elif q_id == "age_17_21_shares":
+        acc_total = f_acc_snap["Total_Accounts"].sum()
+        card_total = f_card_snap["Total_Cards"].sum()
+        acc_y = f_acc_snap[f_acc_snap["Age"] == "17-21"]["Total_Accounts"].sum()
+        card_y = f_card_snap[f_card_snap["Age"] == "17-21"]["Total_Cards"].sum()
+        a_share = (acc_y / acc_total * 100) if acc_total > 0 else 0
+        c_share = (card_y / card_total * 100) if card_total > 0 else 0
+        answer = (
+            f"Faixa 17-21: contas {a_share:.1f}% e cartões {c_share:.1f}%."
+            if st.session_state.lang == "PT"
+            else f"Age 17-21: accounts {a_share:.1f}% and cards {c_share:.1f}%."
+        )
+        age_df = pd.DataFrame(
+            [
+                {"Indicator": "Contas" if st.session_state.lang == "PT" else "Accounts", "Segment": "17-21", "Share": a_share},
+                {"Indicator": "Contas" if st.session_state.lang == "PT" else "Accounts", "Segment": "Outras idades" if st.session_state.lang == "PT" else "Other ages", "Share": max(0.0, 100 - a_share)},
+                {"Indicator": "Cartões" if st.session_state.lang == "PT" else "Cards", "Segment": "17-21", "Share": c_share},
+                {"Indicator": "Cartões" if st.session_state.lang == "PT" else "Cards", "Segment": "Outras idades" if st.session_state.lang == "PT" else "Other ages", "Share": max(0.0, 100 - c_share)},
+            ]
+        )
+        chart = px.bar(
+            age_df,
+            x="Indicator",
+            y="Share",
+            color="Segment",
+            barmode="stack",
+            text=[f"{v:.1f}%" for v in age_df["Share"]],
+            title="Distribuição por faixa etária (17-21)" if st.session_state.lang == "PT" else "Age-group distribution (17-21)",
+        )
+        chart.update_layout(yaxis=dict(range=[0, 100]))
+        source = "accounts_2020_2025.csv + cards_2020_2025.csv"
+        caveat = "Depende da disponibilidade de reporte por faixa etária." if st.session_state.lang == "PT" else "Depends on age-group reporting availability."
+    elif q_id == "stock_accounts":
+        total_val = f_acc_snap["Total_Accounts"].sum()
+        answer = (
+            f"O último snapshot mostra {format_compact(total_val)} contas."
+            if st.session_state.lang == "PT"
+            else f"Latest snapshot shows {format_compact(total_val)} accounts."
+        )
+        byp = f_acc_snap.groupby("Province", as_index=False)["Total_Accounts"].sum().sort_values("Total_Accounts", ascending=False).head(10)
+        chart = px.bar(
+            byp,
+            x="Province",
+            y="Total_Accounts",
+            text=[format_compact(v) for v in byp["Total_Accounts"]],
+            title="Top províncias por contas" if st.session_state.lang == "PT" else "Top provinces by accounts",
+        )
+        chart.update_layout(yaxis=dict(rangemode="tozero"), xaxis_tickangle=-20)
+        source = "accounts_2020_2025.csv"
+        caveat = "Stock de fim de período." if st.session_state.lang == "PT" else "End-of-period stock."
+    elif q_id == "stock_cards":
+        total_val = f_card_snap["Total_Cards"].sum()
+        answer = (
+            f"O último snapshot mostra {format_compact(total_val)} cartões."
+            if st.session_state.lang == "PT"
+            else f"Latest snapshot shows {format_compact(total_val)} cards."
+        )
+        byp = f_card_snap.groupby("Province", as_index=False)["Total_Cards"].sum().sort_values("Total_Cards", ascending=False).head(10)
+        chart = px.bar(
+            byp,
+            x="Province",
+            y="Total_Cards",
+            text=[format_compact(v) for v in byp["Total_Cards"]],
+            title="Top províncias por cartões" if st.session_state.lang == "PT" else "Top provinces by cards",
+        )
+        chart.update_layout(yaxis=dict(rangemode="tozero"), xaxis_tickangle=-20)
+        source = "cards_2020_2025.csv"
+        caveat = "Stock de fim de período." if st.session_state.lang == "PT" else "End-of-period stock."
+    elif q_id == "stock_atm":
+        total_val = f_atm_snap["ATMs_Number"].sum()
+        answer = (
+            f"O último snapshot mostra {format_compact(total_val)} ATM."
+            if st.session_state.lang == "PT"
+            else f"Latest snapshot shows {format_compact(total_val)} ATMs."
+        )
+        byp = f_atm_snap.groupby("Province", as_index=False)["ATMs_Number"].sum().sort_values("ATMs_Number", ascending=False).head(10)
+        chart = px.bar(
+            byp,
+            x="Province",
+            y="ATMs_Number",
+            text=[format_compact(v) for v in byp["ATMs_Number"]],
+            title="Top províncias por ATM" if st.session_state.lang == "PT" else "Top provinces by ATMs",
+        )
+        chart.update_layout(yaxis=dict(rangemode="tozero"), xaxis_tickangle=-20)
+        source = "ATM_Infrastructure_2020_2025.csv"
+        caveat = "Infraestrutura física reportada." if st.session_state.lang == "PT" else "Reported physical infrastructure."
+    elif q_id == "stock_pos":
+        total_val = f_pos_snap["POSs_Number"].sum()
+        answer = (
+            f"O último snapshot mostra {format_compact(total_val)} POS."
+            if st.session_state.lang == "PT"
+            else f"Latest snapshot shows {format_compact(total_val)} POS."
+        )
+        byp = f_pos_snap.groupby("Province", as_index=False)["POSs_Number"].sum().sort_values("POSs_Number", ascending=False).head(10)
+        chart = px.bar(
+            byp,
+            x="Province",
+            y="POSs_Number",
+            text=[format_compact(v) for v in byp["POSs_Number"]],
+            title="Top províncias por POS" if st.session_state.lang == "PT" else "Top provinces by POS",
+        )
+        chart.update_layout(yaxis=dict(rangemode="tozero"), xaxis_tickangle=-20)
+        source = "POS_Infrastructure_2020_2025.csv"
+        caveat = "Infraestrutura física reportada." if st.session_state.lang == "PT" else "Reported physical infrastructure."
+    elif q_id == "stock_top_atm_prov":
+        atm_top = f_atm_snap.groupby("Province", as_index=False)["ATMs_Number"].sum().sort_values("ATMs_Number", ascending=False).head(1)
+        if atm_top.empty:
+            answer = "Sem dados ATM no recorte." if st.session_state.lang == "PT" else "No ATM data in scope."
+        else:
+            answer = (
+                f"{atm_top.iloc[0]['Province']} lidera com {format_compact(atm_top.iloc[0]['ATMs_Number'])} ATM."
+                if st.session_state.lang == "PT"
+                else f"{atm_top.iloc[0]['Province']} leads with {format_compact(atm_top.iloc[0]['ATMs_Number'])} ATMs."
+            )
+        byp = f_atm_snap.groupby("Province", as_index=False)["ATMs_Number"].sum().sort_values("ATMs_Number", ascending=False).head(10)
+        chart = px.bar(
+            byp,
+            x="Province",
+            y="ATMs_Number",
+            text=[format_compact(v) for v in byp["ATMs_Number"]],
+            title="Ranking de ATM por província" if st.session_state.lang == "PT" else "ATM ranking by province",
+        )
+        chart.update_layout(yaxis=dict(rangemode="tozero"), xaxis_tickangle=-20)
+        source = "ATM_Infrastructure_2020_2025.csv"
+        caveat = "Ranking no recorte geográfico atual." if st.session_state.lang == "PT" else "Ranking within current geographic scope."
+    elif q_id == "stock_top_pos_prov":
+        pos_top = f_pos_snap.groupby("Province", as_index=False)["POSs_Number"].sum().sort_values("POSs_Number", ascending=False).head(1)
+        if pos_top.empty:
+            answer = "Sem dados POS no recorte." if st.session_state.lang == "PT" else "No POS data in scope."
+        else:
+            answer = (
+                f"{pos_top.iloc[0]['Province']} lidera com {format_compact(pos_top.iloc[0]['POSs_Number'])} POS."
+                if st.session_state.lang == "PT"
+                else f"{pos_top.iloc[0]['Province']} leads with {format_compact(pos_top.iloc[0]['POSs_Number'])} POS."
+            )
+        byp = f_pos_snap.groupby("Province", as_index=False)["POSs_Number"].sum().sort_values("POSs_Number", ascending=False).head(10)
+        chart = px.bar(
+            byp,
+            x="Province",
+            y="POSs_Number",
+            text=[format_compact(v) for v in byp["POSs_Number"]],
+            title="Ranking de POS por província" if st.session_state.lang == "PT" else "POS ranking by province",
+        )
+        chart.update_layout(yaxis=dict(rangemode="tozero"), xaxis_tickangle=-20)
+        source = "POS_Infrastructure_2020_2025.csv"
+        caveat = "Ranking no recorte geográfico atual." if st.session_state.lang == "PT" else "Ranking within current geographic scope."
+
+    st.info(answer)
+    if chart is not None:
+        plot_chart(chart, use_container_width=True)
+    if caveat:
+        st.caption(("Nota: " if st.session_state.lang == "PT" else "Caveat: ") + caveat)
+    if source:
+        st.caption(("Fonte: " if st.session_state.lang == "PT" else "Source: ") + source)
+
+
 # ── Dashboard tabs ──────────────────────────────────────────────────────────
-tab_demo, tab_overview, tab_ime, tab_accounts_cards, tab_infra, tab_channels, tab_trends, tab_decision, tab_forecast = st.tabs(
+tab_overview, tab_ime, tab_decision, tab_demo, tab_accounts_cards, tab_infra, tab_channels, tab_trends, tab_forecast = st.tabs(
     [
-        T("tab_demo"),
         T("tab_overview"),
         T("tab_ime"),
+        T("tab_decision"),
+        T("tab_demo"),
         f"{T('tab_accounts')} + {T('tab_cards')}",
         T("tab_infra"),
         f"{T('tab_digital')} + {T('tab_txn')}",
         T("tab_trends"),
-        T("tab_decision"),
         T("tab_forecast"),
     ]
 )
@@ -906,60 +1480,126 @@ with tab_overview:
     st.caption(T("caption_overview"))
     st.caption(tab_story("overview"))
 
-    # YoY comparison metrics (last-month snapshots for stock metrics)
-    prev_year = selected_year - 1
-    if prev_year not in all_years:
-        st.info(
-            f"{prev_year} não está disponível para comparação direta."
-            if st.session_state.lang == "PT"
-            else f"{prev_year} is not available for direct comparison."
-        )
-    prev_acc = dataframes["accounts"][(dataframes["accounts"]['Year'] == prev_year) & (dataframes["accounts"]['Province'].isin(selected_prov))]
-    prev_card = dataframes["cards"][(dataframes["cards"]['Year'] == prev_year) & (dataframes["cards"]['Province'].isin(selected_prov))]
-    prev_atm = dataframes["atm"][(dataframes["atm"]['Year'] == prev_year) & (dataframes["atm"]['Province'].isin(selected_prov))]
-    prev_acc = last_month_snapshot(prev_acc)
-    prev_card = last_month_snapshot(prev_card)
-    prev_atm = last_month_snapshot(prev_atm)
+    opp_df_overview = build_scope_opportunity_df(selected_year)
 
-    curr_acc_total = f_acc_snap['Total_Accounts'].sum()
-    prev_acc_total = prev_acc['Total_Accounts'].sum()
-    curr_card_total = f_card_snap['Total_Cards'].sum()
-    prev_card_total = prev_card['Total_Cards'].sum()
-    curr_atm_total = f_atm_snap['ATMs_Number'].sum()
-    prev_atm_total = prev_atm['ATMs_Number'].sum()
+    wallet_subs_total = 0.0
+    wallet_agents_total = 0.0
+    if not ime_sub_df.empty:
+        ime_year_overview = int(pd.to_numeric(ime_sub_df["Year"], errors="coerce").dropna().max())
+        ime_sub_scope = apply_geo_only(ime_sub_df[ime_sub_df["Year"] == ime_year_overview].copy())
+        if not ime_sub_scope.empty:
+            ime_sub_scope["Month_Ord"] = ime_sub_scope["Month"].astype(str).map(MONTH_RANK)
+            ime_sub_scope = ime_sub_scope[ime_sub_scope["Month_Ord"] == ime_sub_scope["Month_Ord"].max()]
+            wallet_subs_total = float(ime_sub_scope["Subscribers"].sum())
+    if not ime_agents_df.empty:
+        ime_year_agents = int(pd.to_numeric(ime_agents_df["Year"], errors="coerce").dropna().max())
+        ime_agents_scope = apply_geo_only(ime_agents_df[ime_agents_df["Year"] == ime_year_agents].copy())
+        if not ime_agents_scope.empty:
+            ime_agents_scope["Month_Ord"] = ime_agents_scope["Month"].astype(str).map(MONTH_RANK)
+            ime_agents_scope = ime_agents_scope[ime_agents_scope["Month_Ord"] == ime_agents_scope["Month_Ord"].max()]
+            wallet_agents_total = float(ime_agents_scope["Agents"].sum())
 
-    def calc_delta(curr, prev):
-        if prev > 0:
-            pct = ((curr - prev) / prev) * 100
-            return f"{pct:+.1f}%"
-        return None
-
-    c1, c2, c3 = st.columns(3)
-    c1.metric(T("total_accounts"), format_compact(curr_acc_total), delta=calc_delta(curr_acc_total, prev_acc_total))
-    c2.metric(T("total_cards"), format_compact(curr_card_total), delta=calc_delta(curr_card_total, prev_card_total))
-    c3.metric("Total ATMs", format_compact(curr_atm_total), delta=calc_delta(curr_atm_total, prev_atm_total))
-
-    # Per-capita KPIs from census
-    st.markdown(f"###### {T('census_kpis')}")
-    total_pop_sel = denominator_population(census_df[census_df['Province'].isin(selected_prov)], selected_year)
-    if total_pop_sel > 0:
-        ov_k1, ov_k2, ov_k3 = st.columns(3)
-        ov_k1.metric(T("accounts_per_capita"), f"{curr_acc_total / total_pop_sel:.2f}")
-        ov_k2.metric(T("cards_per_capita"), f"{curr_card_total / total_pop_sel:.2f}")
-        ov_k3.metric(T("atm_per_100k"), f"{curr_atm_total / total_pop_sel * 100_000:.1f}")
-        st.caption(T("census_note_short"))
-        st.caption(f"ℹ️ {inclusion_method_note(selected_year)}")
-
-    st.caption(
-        "Detalhes por género e faixa etária estão concentrados na página de Contas + Cartões."
-        if st.session_state.lang == "PT"
-        else "Gender and age details are consolidated in the Accounts + Cards page."
+    mobile_value_total = float(
+        mob_df[
+            (mob_df["Year"] == selected_year)
+            & (mob_df["Metric"].astype(str).str.contains("Valor", case=False, na=False))
+        ]["Value"].sum()
+    )
+    internet_value_total = float(
+        net_df[
+            (net_df["Year"] == selected_year)
+            & (net_df["Metric"].astype(str).str.contains("Valor", case=False, na=False))
+        ]["Value"].sum()
+    )
+    official_metrics, official_period = official_inclusion_metrics(selected_year)
+    accounts_pc_off = official_metrics.get("accounts_per_capita")
+    top_opp_label = (
+        f"{opp_df_overview.iloc[0]['Province']} ({opp_df_overview.iloc[0]['Opportunity_Score']:.1f})"
+        if not opp_df_overview.empty
+        else ("N/A")
     )
 
-    st.subheader(f"{T('accounts_distribution')} {title_suffix} ({selected_year})")
-    prov_summary = f_acc_snap.groupby(geo_axis)['Total_Accounts'].sum().sort_values(ascending=False).reset_index()
-    prov_summary.columns = [geo_axis_label, T("total_accounts")]
-    plot_chart(px.bar(prov_summary, x=geo_axis_label, y=T("total_accounts"), color=geo_axis_label), use_container_width=True)
+    ov1, ov2, ov3 = st.columns(3)
+    ov4, ov5, ov6 = st.columns(3)
+    ov1.metric("Subscritores de Carteira Móvel" if st.session_state.lang == "PT" else "Mobile Wallet subscribers", format_compact(wallet_subs_total))
+    ov2.metric("Agentes de Carteira Móvel" if st.session_state.lang == "PT" else "Mobile Wallet agents", format_compact(wallet_agents_total))
+    ov3.metric("Mobile Banking (Valor)" if st.session_state.lang == "PT" else "Mobile Banking (Value)", format_compact(mobile_value_total))
+    ov4.metric("Internet Banking (Valor)" if st.session_state.lang == "PT" else "Internet Banking (Value)", format_compact(internet_value_total))
+    ov5.metric(
+        "Contas por adulto (oficial)" if st.session_state.lang == "PT" else "Accounts per adult (official)",
+        "N/A" if accounts_pc_off is None else f"{accounts_pc_off:.2f}",
+    )
+    ov6.metric(
+        "Província líder (oportunidade)" if st.session_state.lang == "PT" else "Top opportunity province",
+        top_opp_label,
+    )
+
+    st.caption(
+        (
+            f"Indicador oficial de inclusão: período {official_period}."
+            if official_period
+            else "Indicador oficial de inclusão indisponível para o período seleccionado."
+        )
+        if st.session_state.lang == "PT"
+        else (
+            f"Official inclusion indicator period: {official_period}."
+            if official_period
+            else "Official inclusion indicator unavailable for the selected period."
+        )
+    )
+
+    chart_col1, chart_col2 = st.columns(2)
+    with chart_col1:
+        mob_series = (
+            mob_df[mob_df["Metric"].astype(str).str.contains("Valor", case=False, na=False)]
+            .groupby("Year", as_index=False)["Value"]
+            .sum()
+            .rename(columns={"Value": "Mobile"})
+        )
+        net_series = (
+            net_df[net_df["Metric"].astype(str).str.contains("Valor", case=False, na=False)]
+            .groupby("Year", as_index=False)["Value"]
+            .sum()
+            .rename(columns={"Value": "Internet"})
+        )
+        trend_df = pd.merge(mob_series, net_series, on="Year", how="outer").fillna(0).sort_values("Year")
+        trend_long = trend_df.melt(id_vars=["Year"], value_vars=["Mobile", "Internet"], var_name="Channel", value_name="Value")
+        fig_ov_trend = px.line(
+            trend_long,
+            x="Year",
+            y="Value",
+            color="Channel",
+            markers=True,
+            title=(
+                "Tendência de valor: Mobile vs Internet Banking"
+                if st.session_state.lang == "PT"
+                else "Value trend: Mobile vs Internet Banking"
+            ),
+        )
+        fig_ov_trend.update_layout(xaxis=dict(dtick=1), yaxis=dict(rangemode="tozero"))
+        plot_chart(fig_ov_trend, use_container_width=True)
+
+    with chart_col2:
+        if opp_df_overview.empty:
+            st.info("Sem dados de oportunidade no recorte actual." if st.session_state.lang == "PT" else "No opportunity data in current scope.")
+        else:
+            top5_opp = opp_df_overview.head(5).copy()
+            fig_ov_opp = px.bar(
+                top5_opp,
+                x="Province",
+                y="Opportunity_Score",
+                text=[f"{v:.1f}" for v in top5_opp["Opportunity_Score"]],
+                title=(
+                    "Top 5 províncias por oportunidade"
+                    if st.session_state.lang == "PT"
+                    else "Top 5 provinces by opportunity"
+                ),
+            )
+            fig_ov_opp.update_layout(yaxis=dict(rangemode="tozero"), xaxis_tickangle=-20)
+            plot_chart(fig_ov_opp, use_container_width=True)
+
+    st.markdown("---")
+    render_deterministic_qa_panel(opp_df=opp_df_overview, key_prefix="overview")
     render_page_caveats()
 
 # ==========================================
@@ -3019,45 +3659,7 @@ with tab_decision:
     )
 
     opp_year = selected_year
-    acc_opp = last_month_snapshot(apply_geo_only(acc_df[acc_df["Year"] == opp_year]))
-    atm_opp = last_month_snapshot(apply_geo_only(atm_df[atm_df["Year"] == opp_year]))
-    pos_opp = last_month_snapshot(apply_geo_only(pos_df[pos_df["Year"] == opp_year]))
-
-    census_scope = census_df[census_df["Province"].isin(selected_prov)].copy()
-    if census_scope.empty:
-        census_scope = census_df.copy()
-    pop_rows = []
-    for _, row in census_scope.iterrows():
-        pop_rows.append(
-            {
-                "Province": row["Province"],
-                "Population": row_denominator_population(row, opp_year),
-            }
-        )
-    pop_df = pd.DataFrame(pop_rows)
-
-    ime_sub_opp = ime_sub_df[ime_sub_df["Province"].isin(selected_prov)].copy() if not ime_sub_df.empty else pd.DataFrame()
-    ime_agents_opp = ime_agents_df[ime_agents_df["Province"].isin(selected_prov)].copy() if not ime_agents_df.empty else pd.DataFrame()
-    ime_tx_opp = ime_txn_district_df[ime_txn_district_df["Province"].isin(selected_prov)].copy() if not ime_txn_district_df.empty else pd.DataFrame()
-    if selected_dist:
-        if not ime_sub_opp.empty:
-            ime_sub_opp = ime_sub_opp[ime_sub_opp["District"].isin(selected_dist)]
-        if not ime_agents_opp.empty:
-            ime_agents_opp = ime_agents_opp[ime_agents_opp["District"].isin(selected_dist)]
-        if not ime_tx_opp.empty:
-            ime_tx_opp = ime_tx_opp[ime_tx_opp["District"].isin(selected_dist)]
-
-    opp_df = build_opportunity_scores(
-        population_by_province=pop_df,
-        accounts_snapshot=acc_opp,
-        atm_snapshot=atm_opp,
-        pos_snapshot=pos_opp,
-        ime_subscribers=ime_sub_opp,
-        ime_agents=ime_agents_opp,
-        ime_transactions=ime_tx_opp,
-        year=opp_year,
-        weights=OpportunityWeights(),
-    )
+    opp_df = build_scope_opportunity_df(opp_year)
 
     if opp_df.empty:
         st.info("Opportunity score not available for current filters." if st.session_state.lang == "EN" else "Pontuação de oportunidade indisponível para os filtros actuais.")
@@ -3351,362 +3953,11 @@ with tab_decision:
     a3.metric("ATM+POS por 100 mil" if st.session_state.lang == "PT" else "ATM+POS per 100k", f"{infra_pc:.1f}")
 
     st.markdown("---")
-    st.subheader(
-        "Perguntas e respostas (determinísticas)" if st.session_state.lang == "PT" else "Deterministic Q&A",
-        help=(
-            "Respostas calculadas directamente das tabelas carregadas, sem geração livre."
-            if st.session_state.lang == "PT"
-            else "Answers computed directly from loaded tables, without free-form generation."
-        ),
-    )
     st.caption(
-        "Respostas calculadas diretamente das tabelas carregadas (sem geração livre de texto)."
+        "Perguntas determinísticas e respectivos visuais dinâmicos foram movidos para a página `📊 Visão Geral + Q&A`."
         if st.session_state.lang == "PT"
-        else "Answers are computed directly from loaded tables (no free-form generation)."
+        else "Deterministic questions with dynamic visuals were moved to the `📊 Overview + Q&A` page."
     )
-
-    question_bank_pt = [
-        ("Qual distrito lidera em valor de transacções de Carteira Móvel no último mês disponível?", "ime_top_value"),
-        ("Qual distrito tem maior rácio de subscritores por agente de Carteira Móvel?", "ime_top_subs_per_agent"),
-        ("Mobile Banking cresce mais em valor do que Internet Banking (YoY)?", "mobile_vs_internet_yoy"),
-        ("Como evoluiu o indicador oficial de contas por adulto desde 2020?", "official_accounts_change"),
-        ("Como evoluiu o indicador oficial de cartões por adulto desde 2020?", "official_cards_change"),
-        ("Quais são as 3 províncias com maior pontuação de oportunidade?", "opp_top3"),
-        ("Que província lidera no índice IME/INCM (subscrições por 100)?", "incm_top_index"),
-        ("Que província tem menor capacidade de agentes por 10 mil subscritores móveis?", "incm_low_agent_capacity"),
-        ("Qual a quota feminina de contas e cartões no recorte atual?", "gender_shares"),
-        ("Qual a quota da faixa 17-21 em contas e cartões no recorte atual?", "age_17_21_shares"),
-        ("[Stock] Quantas contas existem no último snapshot?", "stock_accounts"),
-        ("[Stock] Quantos cartões existem no último snapshot?", "stock_cards"),
-        ("[Stock] Quantos ATM existem no último snapshot?", "stock_atm"),
-        ("[Stock] Quantos POS existem no último snapshot?", "stock_pos"),
-        ("[Stock] Que província lidera em ATM no recorte atual?", "stock_top_atm_prov"),
-        ("[Stock] Que província lidera em POS no recorte atual?", "stock_top_pos_prov"),
-    ]
-    question_bank_en = [
-        ("Which district leads Mobile Wallet transaction value in the latest available month?", "ime_top_value"),
-        ("Which district has the highest Mobile Wallet subscribers-per-agent ratio?", "ime_top_subs_per_agent"),
-        ("Is Mobile Banking value growing faster YoY than Internet Banking?", "mobile_vs_internet_yoy"),
-        ("How has the official accounts-per-adult indicator changed since 2020?", "official_accounts_change"),
-        ("How has the official cards-per-adult indicator changed since 2020?", "official_cards_change"),
-        ("Which are the top 3 provinces by opportunity score?", "opp_top3"),
-        ("Which province leads the IME/INCM index (subscriptions per 100)?", "incm_top_index"),
-        ("Which province has the lowest agent capacity per 10k mobile subscribers?", "incm_low_agent_capacity"),
-        ("What is the female share in accounts and cards for the current scope?", "gender_shares"),
-        ("What is the 17-21 age share in accounts and cards for the current scope?", "age_17_21_shares"),
-        ("[Stock] How many accounts exist in the latest snapshot?", "stock_accounts"),
-        ("[Stock] How many cards exist in the latest snapshot?", "stock_cards"),
-        ("[Stock] How many ATMs exist in the latest snapshot?", "stock_atm"),
-        ("[Stock] How many POS exist in the latest snapshot?", "stock_pos"),
-        ("[Stock] Which province leads ATM count in the current scope?", "stock_top_atm_prov"),
-        ("[Stock] Which province leads POS count in the current scope?", "stock_top_pos_prov"),
-    ]
-    q_bank = question_bank_pt if st.session_state.lang == "PT" else question_bank_en
-    q_label = st.selectbox(
-        "Escolha uma pergunta" if st.session_state.lang == "PT" else "Choose a question",
-        [q for q, _ in q_bank],
-        key="det_qna_question",
-    )
-    q_id = dict(q_bank)[q_label]
-
-    answer = ""
-    source = ""
-    caveat = ""
-
-    # Shared slices for deterministic answers
-    ime_year_q = int(pd.to_numeric(ime_sub_df["Year"], errors="coerce").dropna().max()) if not ime_sub_df.empty else None
-    ime_sub_q = ime_sub_df[ime_sub_df["Year"] == ime_year_q].copy() if ime_year_q else pd.DataFrame()
-    ime_agents_q = ime_agents_df[ime_agents_df["Year"] == ime_year_q].copy() if ime_year_q else pd.DataFrame()
-    ime_tx_q = ime_txn_district_df[ime_txn_district_df["Year"] == ime_year_q].copy() if ime_year_q else pd.DataFrame()
-    if not ime_sub_q.empty:
-        ime_sub_q = ime_sub_q[ime_sub_q["Province"].isin(selected_prov)]
-    if not ime_agents_q.empty:
-        ime_agents_q = ime_agents_q[ime_agents_q["Province"].isin(selected_prov)]
-    if not ime_tx_q.empty:
-        ime_tx_q = ime_tx_q[ime_tx_q["Province"].isin(selected_prov)]
-    if selected_dist:
-        if not ime_sub_q.empty:
-            ime_sub_q = ime_sub_q[ime_sub_q["District"].isin(selected_dist)]
-        if not ime_agents_q.empty:
-            ime_agents_q = ime_agents_q[ime_agents_q["District"].isin(selected_dist)]
-        if not ime_tx_q.empty:
-            ime_tx_q = ime_tx_q[ime_tx_q["District"].isin(selected_dist)]
-
-    month_rank = {"Janeiro": 1, "Fevereiro": 2, "Março": 3, "Abril": 4, "Maio": 5, "Junho": 6,
-                  "Julho": 7, "Agosto": 8, "Setembro": 9, "Outubro": 10, "Novembro": 11, "Dezembro": 12}
-    incm_benchmark_q = pd.DataFrame()
-    if ime_year_q is not None:
-        month_series = ime_sub_df[ime_sub_df["Year"] == ime_year_q]["Month"].dropna().astype(str).unique().tolist()
-        month_ref_q = "Junho" if "Junho" in month_series else (max(month_series, key=lambda m: month_rank.get(m, 0)) if month_series else None)
-        if month_ref_q is not None:
-            ime_prov_scope_q = sorted(set(selected_prov) & set(INCM_MOBILE_SUBSCRIBERS_Q2_2025["Province"].astype(str).tolist()))
-            sub_prov_q = (
-                ime_sub_df[
-                    (ime_sub_df["Year"] == ime_year_q)
-                    & (ime_sub_df["Month"].astype(str) == month_ref_q)
-                    & (ime_sub_df["Province"].isin(ime_prov_scope_q))
-                ]
-                .groupby("Province", as_index=False)["Subscribers"]
-                .sum()
-            )
-            ag_prov_q = (
-                ime_agents_df[
-                    (ime_agents_df["Year"] == ime_year_q)
-                    & (ime_agents_df["Month"].astype(str) == month_ref_q)
-                    & (ime_agents_df["Province"].isin(ime_prov_scope_q))
-                ]
-                .groupby("Province", as_index=False)["Agents"]
-                .sum()
-            )
-            tx_prov_q = (
-                ime_txn_district_df[
-                    (ime_txn_district_df["Year"] == ime_year_q)
-                    & (ime_txn_district_df["Month"].astype(str) == month_ref_q)
-                    & (ime_txn_district_df["Province"].isin(ime_prov_scope_q))
-                ]
-                .groupby("Province", as_index=False)
-                .agg(Tx_Value=("Value", "sum"))
-            )
-            incm_benchmark_q = (
-                INCM_MOBILE_SUBSCRIBERS_Q2_2025[INCM_MOBILE_SUBSCRIBERS_Q2_2025["Province"].isin(ime_prov_scope_q)]
-                .merge(sub_prov_q, on="Province", how="left")
-                .merge(ag_prov_q, on="Province", how="left")
-                .merge(tx_prov_q, on="Province", how="left")
-            )
-            for col in ["Subscribers", "Agents", "Tx_Value"]:
-                incm_benchmark_q[col] = pd.to_numeric(incm_benchmark_q[col], errors="coerce").fillna(0.0)
-            incm_benchmark_q["IME_INCM_Index_per_100"] = incm_benchmark_q.apply(
-                lambda r: (r["Subscribers"] / r["Mobile_Subscribers"] * 100) if r["Mobile_Subscribers"] > 0 else 0.0,
-                axis=1,
-            )
-            incm_benchmark_q["Agents_per_10k_Mobile"] = incm_benchmark_q.apply(
-                lambda r: (r["Agents"] / r["Mobile_Subscribers"] * 10_000) if r["Mobile_Subscribers"] > 0 else 0.0,
-                axis=1,
-            )
-
-    if q_id == "ime_top_value":
-        if ime_tx_q.empty:
-            answer = "Sem dados de Carteira Móvel no recorte atual." if st.session_state.lang == "PT" else "No Mobile Wallet data for current scope."
-        else:
-            tx = ime_tx_q.copy()
-            tx["Month_Ord"] = tx["Month"].astype(str).map(month_rank)
-            latest_m = tx["Month_Ord"].max()
-            tx_m = tx[tx["Month_Ord"] == latest_m]
-            top = tx_m.groupby("District", as_index=False)["Value"].sum().sort_values("Value", ascending=False).head(1)
-            if top.empty:
-                answer = "Sem dados suficientes." if st.session_state.lang == "PT" else "Insufficient data."
-            else:
-                district = top.iloc[0]["District"]
-                val = top.iloc[0]["Value"]
-                answer = (
-                    f"{district} lidera com {format_compact(val)} em valor de transacções de Carteira Móvel."
-                    if st.session_state.lang == "PT"
-                    else f"{district} leads with {format_compact(val)} in Mobile Wallet transaction value."
-                )
-            source = "Mobile_Wallet_Transactions_District_2025.csv"
-            caveat = "Cobertura distrital de Carteira Móvel de 2025." if st.session_state.lang == "PT" else "Mobile Wallet district coverage is for 2025."
-    elif q_id == "ime_top_subs_per_agent":
-        if ime_sub_q.empty or ime_agents_q.empty:
-            answer = "Sem dados de Carteira Móvel no recorte atual." if st.session_state.lang == "PT" else "No Mobile Wallet data for current scope."
-        else:
-            sub_a = ime_sub_q.groupby("District", as_index=False)["Subscribers"].sum()
-            ag_a = ime_agents_q.groupby("District", as_index=False)["Agents"].sum()
-            merged = pd.merge(sub_a, ag_a, on="District", how="outer")
-            merged["Subscribers"] = pd.to_numeric(merged["Subscribers"], errors="coerce").fillna(0)
-            merged["Agents"] = pd.to_numeric(merged["Agents"], errors="coerce").fillna(0)
-            merged["Ratio"] = merged.apply(lambda r: (r["Subscribers"] / r["Agents"]) if r["Agents"] > 0 else 0, axis=1)
-            top = merged.sort_values("Ratio", ascending=False).head(1)
-            if top.empty:
-                answer = "Sem dados suficientes." if st.session_state.lang == "PT" else "Insufficient data."
-            else:
-                answer = (
-                    f"{top.iloc[0]['District']} tem o maior rácio, com {top.iloc[0]['Ratio']:.1f} subscritores por agente."
-                    if st.session_state.lang == "PT"
-                    else f"{top.iloc[0]['District']} has the highest ratio at {top.iloc[0]['Ratio']:.1f} subscribers per agent."
-                )
-            source = "Mobile_Wallet_Subscribers_District_2025.csv + Mobile_Wallet_Agents_District_2025.csv"
-            caveat = "Rácio não mede qualidade de serviço." if st.session_state.lang == "PT" else "Ratio does not measure service quality."
-    elif q_id == "mobile_vs_internet_yoy":
-        mob_val = mob_df[mob_df["Metric"].astype(str).str.contains("Valor", case=False, na=False)].groupby("Year")["Value"].sum().sort_index()
-        net_val = net_df[net_df["Metric"].astype(str).str.contains("Valor", case=False, na=False)].groupby("Year")["Value"].sum().sort_index()
-        if selected_year in mob_val.index and (selected_year - 1) in mob_val.index and selected_year in net_val.index and (selected_year - 1) in net_val.index:
-            mob_yoy = ((mob_val.loc[selected_year] - mob_val.loc[selected_year - 1]) / mob_val.loc[selected_year - 1] * 100) if mob_val.loc[selected_year - 1] > 0 else 0
-            net_yoy = ((net_val.loc[selected_year] - net_val.loc[selected_year - 1]) / net_val.loc[selected_year - 1] * 100) if net_val.loc[selected_year - 1] > 0 else 0
-            winner = "Mobile Banking" if mob_yoy >= net_yoy else "Internet Banking"
-            answer = (
-                f"{winner} cresce mais no ano seleccionado: Mobile {mob_yoy:+.1f}% vs Internet {net_yoy:+.1f}%."
-                if st.session_state.lang == "PT"
-                else f"{winner} grows faster in the selected year: Mobile {mob_yoy:+.1f}% vs Internet {net_yoy:+.1f}%."
-            )
-        else:
-            answer = "Sem histórico suficiente para YoY." if st.session_state.lang == "PT" else "Insufficient history for YoY."
-        source = "Mobile_Banking_2020_2025.csv + Internet_Banking_2020_2025.csv"
-        caveat = "Comparação nacional agregada por canal." if st.session_state.lang == "PT" else "National channel-level aggregate comparison."
-    elif q_id in {"official_accounts_change", "official_cards_change"}:
-        indicator = "Contas bancárias (por 100 adultos)" if q_id == "official_accounts_change" else "Cartões bancários (por 100 adultos)"
-        idf = fi_indicators_df[fi_indicators_df["Indicator"].astype(str).apply(lambda x: _norm_key(x) == _norm_key(indicator))].copy()
-        v2020, plast = None, None
-        vlast = None
-        if not idf.empty:
-            d2020 = idf[pd.to_numeric(idf["Year"], errors="coerce") == 2020]
-            dlast = idf[pd.to_numeric(idf["Year"], errors="coerce") == pd.to_numeric(idf["Year"], errors="coerce").max()]
-            v2020, _ = _pick_latest_period_value(d2020)
-            vlast, plast = _pick_latest_period_value(dlast)
-        if v2020 is None or vlast is None:
-            answer = "Sem dados oficiais suficientes." if st.session_state.lang == "PT" else "Insufficient official data."
-        else:
-            delta = vlast - v2020
-            pct = (delta / v2020 * 100) if v2020 > 0 else 0
-            answer = (
-                f"O indicador variou de {v2020:.2f} para {vlast:.2f} ({pct:+.1f}%) até {plast}."
-                if st.session_state.lang == "PT"
-                else f"The indicator moved from {v2020:.2f} to {vlast:.2f} ({pct:+.1f}%) up to {plast}."
-            )
-        source = "Financial_Inclusion_Indicators_2020_2025Q3.csv"
-        caveat = "Indicador oficial nacional por 100 adultos." if st.session_state.lang == "PT" else "Official national indicator per 100 adults."
-    elif q_id == "opp_top3":
-        if "opp_df" in locals() and not opp_df.empty:
-            top3 = opp_df.head(3)
-            labels = [f"{r['Province']} ({r['Opportunity_Score']:.1f})" for _, r in top3.iterrows()]
-            answer = (
-                "Top 3 oportunidades: " + ", ".join(labels) + "."
-                if st.session_state.lang == "PT"
-                else "Top 3 opportunities: " + ", ".join(labels) + "."
-            )
-        else:
-            answer = "Sem dados de oportunidade no recorte atual." if st.session_state.lang == "PT" else "No opportunity data for current scope."
-        source = "Opportunity score (derived from Mobile Wallet + stock + infrastructure datasets)"
-        caveat = "Pontuação de priorização, não causalidade." if st.session_state.lang == "PT" else "Prioritization score, not causality."
-    elif q_id == "incm_top_index":
-        if incm_benchmark_q.empty:
-            answer = "Sem dados INCM/IME suficientes no recorte atual." if st.session_state.lang == "PT" else "Insufficient INCM/IME data in current scope."
-        else:
-            top = incm_benchmark_q.sort_values("IME_INCM_Index_per_100", ascending=False).head(1)
-            if top.empty:
-                answer = "Sem dados suficientes." if st.session_state.lang == "PT" else "Insufficient data."
-            else:
-                prov = str(top.iloc[0]["Province"])
-                idx = float(top.iloc[0]["IME_INCM_Index_per_100"])
-                answer = (
-                    f"{prov} lidera com índice IME/INCM de {idx:.1f} subscrições por 100 subscritores móveis."
-                    if st.session_state.lang == "PT"
-                    else f"{prov} leads with an IME/INCM index of {idx:.1f} subscriptions per 100 mobile subscribers."
-                )
-        source = "INCM Acervo (Q2 2025) + IME_Subscribers_District_2025.csv"
-        caveat = (
-            "Índice relativo (não representa pessoas únicas) e pode exceder 100."
-            if st.session_state.lang == "PT"
-            else "Relative index (not unique persons) and may exceed 100."
-        )
-    elif q_id == "incm_low_agent_capacity":
-        if incm_benchmark_q.empty:
-            answer = "Sem dados INCM/IME suficientes no recorte atual." if st.session_state.lang == "PT" else "Insufficient INCM/IME data in current scope."
-        else:
-            low = incm_benchmark_q.sort_values("Agents_per_10k_Mobile", ascending=True).head(1)
-            if low.empty:
-                answer = "Sem dados suficientes." if st.session_state.lang == "PT" else "Insufficient data."
-            else:
-                prov = str(low.iloc[0]["Province"])
-                cap = float(low.iloc[0]["Agents_per_10k_Mobile"])
-                answer = (
-                    f"{prov} apresenta a menor capacidade, com {cap:.1f} agentes por 10 mil subscritores móveis."
-                    if st.session_state.lang == "PT"
-                    else f"{prov} has the lowest capacity at {cap:.1f} agents per 10k mobile subscribers."
-                )
-        source = "INCM Acervo (Q2 2025) + IME_Agents_District_2025.csv"
-        caveat = (
-            "Leitura de capacidade relativa; não mede qualidade de serviço."
-            if st.session_state.lang == "PT"
-            else "Relative capacity reading; does not measure service quality."
-        )
-    elif q_id == "gender_shares":
-        acc_total = f_acc_snap["Total_Accounts"].sum()
-        card_total = f_card_snap["Total_Cards"].sum()
-        acc_f = f_acc_snap[f_acc_snap["Gender"] == "Mulheres"]["Total_Accounts"].sum()
-        card_f = f_card_snap[f_card_snap["Gender"] == "Mulheres"]["Total_Cards"].sum()
-        a_share = (acc_f / acc_total * 100) if acc_total > 0 else 0
-        c_share = (card_f / card_total * 100) if card_total > 0 else 0
-        answer = (
-            f"Quota feminina: contas {a_share:.1f}% e cartões {c_share:.1f}%."
-            if st.session_state.lang == "PT"
-            else f"Female share: accounts {a_share:.1f}% and cards {c_share:.1f}%."
-        )
-        source = "accounts_2020_2025.csv + cards_2020_2025.csv"
-        caveat = "Quota mede distribuição, não qualidade de acesso." if st.session_state.lang == "PT" else "Share measures distribution, not quality of access."
-    elif q_id == "age_17_21_shares":
-        acc_total = f_acc_snap["Total_Accounts"].sum()
-        card_total = f_card_snap["Total_Cards"].sum()
-        acc_y = f_acc_snap[f_acc_snap["Age"] == "17-21"]["Total_Accounts"].sum()
-        card_y = f_card_snap[f_card_snap["Age"] == "17-21"]["Total_Cards"].sum()
-        a_share = (acc_y / acc_total * 100) if acc_total > 0 else 0
-        c_share = (card_y / card_total * 100) if card_total > 0 else 0
-        answer = (
-            f"Faixa 17-21: contas {a_share:.1f}% e cartões {c_share:.1f}%."
-            if st.session_state.lang == "PT"
-            else f"Age 17-21: accounts {a_share:.1f}% and cards {c_share:.1f}%."
-        )
-        source = "accounts_2020_2025.csv + cards_2020_2025.csv"
-        caveat = "Depende da disponibilidade de reporte por faixa etária." if st.session_state.lang == "PT" else "Depends on age-group reporting availability."
-    elif q_id == "stock_accounts":
-        answer = (
-            f"O último snapshot mostra {format_compact(f_acc_snap['Total_Accounts'].sum())} contas."
-            if st.session_state.lang == "PT"
-            else f"Latest snapshot shows {format_compact(f_acc_snap['Total_Accounts'].sum())} accounts."
-        )
-        source = "accounts_2020_2025.csv"
-        caveat = "Stock de fim de período." if st.session_state.lang == "PT" else "End-of-period stock."
-    elif q_id == "stock_cards":
-        answer = (
-            f"O último snapshot mostra {format_compact(f_card_snap['Total_Cards'].sum())} cartões."
-            if st.session_state.lang == "PT"
-            else f"Latest snapshot shows {format_compact(f_card_snap['Total_Cards'].sum())} cards."
-        )
-        source = "cards_2020_2025.csv"
-        caveat = "Stock de fim de período." if st.session_state.lang == "PT" else "End-of-period stock."
-    elif q_id == "stock_atm":
-        answer = (
-            f"O último snapshot mostra {format_compact(f_atm_snap['ATMs_Number'].sum())} ATM."
-            if st.session_state.lang == "PT"
-            else f"Latest snapshot shows {format_compact(f_atm_snap['ATMs_Number'].sum())} ATMs."
-        )
-        source = "ATM_Infrastructure_2020_2025.csv"
-        caveat = "Infraestrutura física reportada." if st.session_state.lang == "PT" else "Reported physical infrastructure."
-    elif q_id == "stock_pos":
-        answer = (
-            f"O último snapshot mostra {format_compact(f_pos_snap['POSs_Number'].sum())} POS."
-            if st.session_state.lang == "PT"
-            else f"Latest snapshot shows {format_compact(f_pos_snap['POSs_Number'].sum())} POS."
-        )
-        source = "POS_Infrastructure_2020_2025.csv"
-        caveat = "Infraestrutura física reportada." if st.session_state.lang == "PT" else "Reported physical infrastructure."
-    elif q_id == "stock_top_atm_prov":
-        atm_top = f_atm_snap.groupby("Province", as_index=False)["ATMs_Number"].sum().sort_values("ATMs_Number", ascending=False).head(1)
-        if atm_top.empty:
-            answer = "Sem dados ATM no recorte." if st.session_state.lang == "PT" else "No ATM data in scope."
-        else:
-            answer = (
-                f"{atm_top.iloc[0]['Province']} lidera com {format_compact(atm_top.iloc[0]['ATMs_Number'])} ATM."
-                if st.session_state.lang == "PT"
-                else f"{atm_top.iloc[0]['Province']} leads with {format_compact(atm_top.iloc[0]['ATMs_Number'])} ATMs."
-            )
-        source = "ATM_Infrastructure_2020_2025.csv"
-        caveat = "Ranking no recorte geográfico atual." if st.session_state.lang == "PT" else "Ranking within current geographic scope."
-    elif q_id == "stock_top_pos_prov":
-        pos_top = f_pos_snap.groupby("Province", as_index=False)["POSs_Number"].sum().sort_values("POSs_Number", ascending=False).head(1)
-        if pos_top.empty:
-            answer = "Sem dados POS no recorte." if st.session_state.lang == "PT" else "No POS data in scope."
-        else:
-            answer = (
-                f"{pos_top.iloc[0]['Province']} lidera com {format_compact(pos_top.iloc[0]['POSs_Number'])} POS."
-                if st.session_state.lang == "PT"
-                else f"{pos_top.iloc[0]['Province']} leads with {format_compact(pos_top.iloc[0]['POSs_Number'])} POS."
-            )
-        source = "POS_Infrastructure_2020_2025.csv"
-        caveat = "Ranking no recorte geográfico atual." if st.session_state.lang == "PT" else "Ranking within current geographic scope."
-
-    st.info(answer)
-    if caveat:
-        st.caption(("Caveat: " if st.session_state.lang == "PT" else "Caveat: ") + caveat)
     render_page_caveats(
         [
             "A métrica de inclusão no comparador distrital é apresentada como contexto provincial.",

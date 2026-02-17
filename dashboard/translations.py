@@ -17,7 +17,7 @@ _TRANSLATIONS = {
     "help_dist": {"PT": "Opcional: refine a análise ao nível distrital.", "EN": "Optional: drill down to district level."},
     # Tab names
     "tab_demo": {"PT": "🗺️ Contexto Demográfico", "EN": "🗺️ Demographic Context"},
-    "tab_overview": {"PT": "📊 Visão Geral", "EN": "📊 Overview"},
+    "tab_overview": {"PT": "📊 Visão Geral + Q&A", "EN": "📊 Overview + Q&A"},
     "tab_ime": {"PT": "📱 Carteiras Móveis", "EN": "📱 Mobile Wallets"},
     "tab_accounts": {"PT": "🏦 Contas", "EN": "🏦 Accounts"},
     "tab_cards": {"PT": "💳 Cartões", "EN": "💳 Cards"},
@@ -30,7 +30,7 @@ _TRANSLATIONS = {
     "tab_decision": {"PT": "🎯 Insights Estratégicos / Oportunidades", "EN": "🎯 Strategic Insights / Opportunities"},
     # Page titles
     "title_demo": {"PT": "Contexto Demográfico de Moçambique", "EN": "Mozambique Demographic Context"},
-    "title_overview": {"PT": "Estado do Sistema Financeiro", "EN": "Financial System Status"},
+    "title_overview": {"PT": "Overview + Q&A", "EN": "Overview + Q&A"},
     "title_ime": {"PT": "Carteiras Móveis", "EN": "Mobile Wallets"},
     "title_accounts": {"PT": "Análise Detalhada de Contas", "EN": "Detailed Account Analysis"},
     "title_cards": {"PT": "Análise Detalhada de Cartões", "EN": "Detailed Card Analysis"},
@@ -121,8 +121,8 @@ _TRANSLATIONS = {
     },
     # Page captions
     "caption_overview": {
-        "PT": "ℹ️ Resumo dos principais indicadores do sistema financeiro para o ano e províncias seleccionadas. Os deltas mostram a variação face ao ano anterior.",
-        "EN": "ℹ️ Summary of key financial system indicators for the selected year and provinces. Deltas show year-on-year change."
+        "PT": "ℹ️ Síntese dos principais sinais e respostas determinísticas com visual dinâmico para leitura rápida.",
+        "EN": "ℹ️ Snapshot of key signals plus deterministic Q&A with dynamic chart for fast reading."
     },
     "caption_ime": {
         "PT": "ℹ️ Rede de carteiras móveis por província e distrito, com foco em subscritores, agentes e transacções por tipo.",
