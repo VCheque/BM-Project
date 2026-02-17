@@ -1807,19 +1807,20 @@ with tab_overview:
 
     opp_df_overview = build_scope_opportunity_df(selected_year)
 
-    wallet_subs_total = 0.0
-    wallet_agents_total = 0.0
-    if not ime_sub_df.empty:
-        ime_year_overview = int(pd.to_numeric(ime_sub_df["Year"], errors="coerce").dropna().max())
-        ime_sub_scope = apply_geo_only(ime_sub_df[ime_sub_df["Year"] == ime_year_overview].copy())
+    ime_sub_years_ov = set(pd.to_numeric(ime_sub_df["Year"], errors="coerce").dropna().astype(int).tolist()) if not ime_sub_df.empty else set()
+    ime_agents_years_ov = set(pd.to_numeric(ime_agents_df["Year"], errors="coerce").dropna().astype(int).tolist()) if not ime_agents_df.empty else set()
+    ime_years_overview = sorted(ime_sub_years_ov & ime_agents_years_ov)
+    ime_overview_available = selected_year in ime_years_overview
+    wallet_subs_total = None
+    wallet_agents_total = None
+    if ime_overview_available:
+        ime_sub_scope = apply_geo_only(ime_sub_df[ime_sub_df["Year"] == selected_year].copy())
+        ime_sub_scope = ime_sub_scope[ime_sub_scope["Month"].astype(str) == "Dezembro"]
         if not ime_sub_scope.empty:
-            ime_sub_scope = ime_sub_scope[ime_sub_scope["Month"].astype(str) == "Dezembro"]
             wallet_subs_total = float(ime_sub_scope["Subscribers"].sum())
-    if not ime_agents_df.empty:
-        ime_year_agents = int(pd.to_numeric(ime_agents_df["Year"], errors="coerce").dropna().max())
-        ime_agents_scope = apply_geo_only(ime_agents_df[ime_agents_df["Year"] == ime_year_agents].copy())
+        ime_agents_scope = apply_geo_only(ime_agents_df[ime_agents_df["Year"] == selected_year].copy())
+        ime_agents_scope = ime_agents_scope[ime_agents_scope["Month"].astype(str) == "Dezembro"]
         if not ime_agents_scope.empty:
-            ime_agents_scope = ime_agents_scope[ime_agents_scope["Month"].astype(str) == "Dezembro"]
             wallet_agents_total = float(ime_agents_scope["Agents"].sum())
 
     mobile_value_total = float(
@@ -1847,14 +1848,14 @@ with tab_overview:
     metric_with_help(
         ov1,
         "Subscritores de Carteira Móvel" if st.session_state.lang == "PT" else "Mobile Wallet subscribers",
-        format_compact(wallet_subs_total),
+        "N/A" if wallet_subs_total is None else format_compact(wallet_subs_total),
         help_pt="Total de subscritores reportados no recorte seleccionado.",
         help_en="Total reported subscribers in the selected scope.",
     )
     metric_with_help(
         ov2,
         "Agentes de Carteira Móvel" if st.session_state.lang == "PT" else "Mobile Wallet agents",
-        format_compact(wallet_agents_total),
+        "N/A" if wallet_agents_total is None else format_compact(wallet_agents_total),
         help_pt="Total de agentes reportados no recorte seleccionado.",
         help_en="Total reported agents in the selected scope.",
     )
@@ -1886,6 +1887,12 @@ with tab_overview:
         help_pt="Província com maior pontuação no índice de oportunidade.",
         help_en="Province with the highest opportunity-score ranking.",
     )
+    if not ime_overview_available:
+        st.info(
+            "Dados de Carteira Móvel indisponíveis para o ano seleccionado."
+            if st.session_state.lang == "PT"
+            else "Mobile Wallet data is unavailable for the selected year."
+        )
 
     st.caption(
         (
@@ -2103,618 +2110,620 @@ with tab_ime:
         ime_year_options = sorted(sub_years & ag_years & tx_years)
         if not ime_year_options:
             ime_year_options = sorted(sub_years or ag_years or tx_years)
-        ime_default_year = selected_year if selected_year in ime_year_options else ime_year_options[-1]
-        ime_year = st.selectbox(
-            "Ano (Carteira Móvel)" if st.session_state.lang == "PT" else "Year (Mobile Wallet)",
-            ime_year_options,
-            index=ime_year_options.index(ime_default_year),
-            key="ime_page_year",
-        )
+        ime_year = selected_year
+        ime_year_available = ime_year in ime_year_options
         st.caption(
             f"ℹ️ Série distrital de Carteira Móvel disponível para {ime_year_options[0]}-{ime_year_options[-1]}. "
             + (
-                f"A visualização usa o ano seleccionado na página ({ime_year})."
+                f"A visualização usa o ano seleccionado na barra lateral ({ime_year})."
                 if st.session_state.lang == "PT"
-                else f"The view uses the page-selected year ({ime_year})."
+                else f"The view uses the sidebar-selected year ({ime_year})."
             )
         )
+        if not ime_year_available:
+            st.info(
+                "Dados de Carteira Móvel indisponíveis para o ano seleccionado."
+                if st.session_state.lang == "PT"
+                else "Mobile Wallet data is unavailable for the selected year."
+            )
 
         sub_year = ime_sub_df[ime_sub_df["Year"] == ime_year].copy()
         ag_year = ime_agents_df[ime_agents_df["Year"] == ime_year].copy()
         tx_year = ime_txn_district_df[ime_txn_district_df["Year"] == ime_year].copy()
 
-        control_c1, control_c2 = st.columns(2)
-        with control_c1:
-            month_label = "Mês (Carteira Móvel)" if st.session_state.lang == "PT" else "Month (Mobile Wallet)"
-            all_months_label = "Todos" if st.session_state.lang == "PT" else "All"
-            month_values = sub_year["Month"].dropna()
-            available_months = (
-                sorted(
-                    month_values.astype(str).unique().tolist(),
-                    key=lambda m: month_to_num(m),
-                )
-                if not month_values.empty
-                else []
-            )
-            month_display_to_raw = {localize_month(m): m for m in available_months}
-            month_options_display = [all_months_label] + [localize_month(m) for m in available_months]
-            ime_month_pick = st.selectbox(
-                month_label,
-                month_options_display,
-                index=0,
-                key="ime_page_month",
-            )
-            ime_month = None if ime_month_pick == all_months_label else month_display_to_raw.get(ime_month_pick, ime_month_pick)
-        with control_c2:
-            measure_label = "Métrica de transacção" if st.session_state.lang == "PT" else "Transaction metric"
-            ime_measure = st.selectbox(
-                measure_label,
-                [T("value"), T("volume")],
-                index=0,
-                key="ime_page_measure",
-            )
-
-        available_prov = sorted(sub_year["Province"].dropna().astype(str).unique().tolist())
-        ime_prov = [p for p in selected_prov if p in available_prov]
-        if not ime_prov:
-            ime_prov = available_prov
-
-        available_dist = sorted(
-            sub_year[sub_year["Province"].isin(ime_prov)]["District"].dropna().astype(str).unique().tolist()
-        )
-        selected_dist_valid = [d for d in (selected_dist or []) if d in available_dist]
-        ime_dist = selected_dist_valid
-        if not ime_dist:
-            ime_dist = available_dist
-        use_district_axis = len(selected_dist_valid) > 0
-        all_month_fallback = (
-            "Dezembro" if "Dezembro" in available_months else (available_months[-1] if available_months else None)
-        )
-        # Note to self: 'Todos' is for trends; stock KPIs/rankings must still anchor to one month (December first).
-
-        tx_metric_col = "Value" if ime_measure == T("value") else "Volume"
-
-        st.caption(
-            (
-                f"Filtros aplicados: {len(ime_prov)} província(s), "
-                + (
-                    (
-                        f"{len(ime_dist)} distrito(s), mês: {localize_month(ime_month)}."
-                        if ime_month is not None
-                        else (
-                            f"{len(ime_dist)} distrito(s), mês: todos (KPIs/rankings usam {localize_month(all_month_fallback)})."
-                            if all_month_fallback is not None
-                            else f"{len(ime_dist)} distrito(s), mês: todos."
-                        )
+        if ime_year_available:
+            control_c1, control_c2 = st.columns(2)
+            with control_c1:
+                month_label = "Mês (Carteira Móvel)" if st.session_state.lang == "PT" else "Month (Mobile Wallet)"
+                all_months_label = "Todos" if st.session_state.lang == "PT" else "All"
+                month_values = sub_year["Month"].dropna()
+                available_months = (
+                    sorted(
+                        month_values.astype(str).unique().tolist(),
+                        key=lambda m: month_to_num(m),
                     )
+                    if not month_values.empty
+                    else []
                 )
-            )
-            if st.session_state.lang == "PT"
-            else (
-                f"Applied filters: {len(ime_prov)} province(s), "
-                + (
-                    (
-                        f"{len(ime_dist)} district(s), month: {localize_month(ime_month)}."
-                        if ime_month is not None
-                        else (
-                            f"{len(ime_dist)} district(s), month: all (KPIs/rankings use {localize_month(all_month_fallback)})."
-                            if all_month_fallback is not None
-                            else f"{len(ime_dist)} district(s), month: all."
-                        )
-                    )
+                month_display_to_raw = {localize_month(m): m for m in available_months}
+                month_options_display = [all_months_label] + [localize_month(m) for m in available_months]
+                ime_month_pick = st.selectbox(
+                    month_label,
+                    month_options_display,
+                    index=0,
+                    key="ime_page_month",
                 )
+                ime_month = None if ime_month_pick == all_months_label else month_display_to_raw.get(ime_month_pick, ime_month_pick)
+            with control_c2:
+                measure_label = "Métrica de transacção" if st.session_state.lang == "PT" else "Transaction metric"
+                ime_measure = st.selectbox(
+                    measure_label,
+                    [T("value"), T("volume")],
+                    index=0,
+                    key="ime_page_measure",
+                )
+    
+            available_prov = sorted(sub_year["Province"].dropna().astype(str).unique().tolist())
+            ime_prov = [p for p in selected_prov if p in available_prov]
+            if not ime_prov:
+                ime_prov = available_prov
+    
+            available_dist = sorted(
+                sub_year[sub_year["Province"].isin(ime_prov)]["District"].dropna().astype(str).unique().tolist()
             )
-        )
-
-        def _ime_geo_filter(df: pd.DataFrame) -> pd.DataFrame:
-            out = df[df["Province"].isin(ime_prov)].copy()
-            if "District" in out.columns:
-                out = out[out["District"].isin(ime_dist)]
-            return out
-
-        sub_geo = _ime_geo_filter(sub_year)
-        ag_geo = _ime_geo_filter(ag_year)
-        tx_geo = _ime_geo_filter(tx_year)
-        tx_all_geo = _ime_geo_filter(ime_txn_district_df.copy())
-
-        effective_month_ref = (
-            ime_month
-            if ime_month is not None else all_month_fallback
-        )
-        if effective_month_ref is not None:
-            tx_month = tx_geo[tx_geo["Month"].astype(str) == effective_month_ref].copy()
-        else:
-            tx_month = tx_geo.copy()
-
-        stock_month_ref = effective_month_ref
-        sub_stock = (
-            sub_geo[sub_geo["Month"].astype(str) == stock_month_ref].copy()
-            if stock_month_ref is not None
-            else pd.DataFrame(columns=sub_geo.columns)
-        )
-        ag_stock = (
-            ag_geo[ag_geo["Month"].astype(str) == stock_month_ref].copy()
-            if stock_month_ref is not None
-            else pd.DataFrame(columns=ag_geo.columns)
-        )
-
-        subs_total = sub_stock["Subscribers"].sum() if "Subscribers" in sub_stock.columns else 0
-        agents_total = ag_stock["Agents"].sum() if "Agents" in ag_stock.columns else 0
-        tx_types = ["Depósitos", "Levantamentos", "Transferências", "Pagamentos"]
-        tx_totals = {
-            t: float(tx_month.loc[tx_month["Transaction_Type"] == t, tx_metric_col].sum()) for t in tx_types
-        }
-        tx_type_labels = {
-            "Depósitos": ("Depósitos", "Deposits"),
-            "Levantamentos": ("Levantamentos", "Withdrawals"),
-            "Transferências": ("Transferências", "Transfers"),
-            "Pagamentos": ("Pagamentos", "Payments"),
-        }
-        tx_help_en = {
-            "Depósitos": "Money deposited into Mobile Wallet agent accounts.",
-            "Levantamentos": "Money withdrawals from Mobile Wallet.",
-            "Transferências": "Transfers between Mobile Wallet accounts.",
-            "Pagamentos": "Service payments using Mobile Wallet.",
-        }
-        tx_help_pt = {
-            "Depósitos": "Dinheiro depositado em contas de agente de Carteira Móvel.",
-            "Levantamentos": "Levantamento de dinheiro a partir da Carteira Móvel.",
-            "Transferências": "Transferências entre contas de Carteira Móvel.",
-            "Pagamentos": "Pagamento de serviços com Carteira Móvel.",
-        }
-
-        def _metric_with_optional_help(col, tx_key: str) -> None:
-            pt_label, en_label = tx_type_labels[tx_key]
-            label = f"{pt_label if st.session_state.lang == 'PT' else en_label} ({ime_measure})"
-            value = format_compact(tx_totals[tx_key])
-            metric_with_help(
-                col,
-                label,
-                value,
-                help_pt=tx_help_pt[tx_key],
-                help_en=tx_help_en[tx_key],
+            selected_dist_valid = [d for d in (selected_dist or []) if d in available_dist]
+            ime_dist = selected_dist_valid
+            if not ime_dist:
+                ime_dist = available_dist
+            use_district_axis = len(selected_dist_valid) > 0
+            all_month_fallback = (
+                "Dezembro" if "Dezembro" in available_months else (available_months[-1] if available_months else None)
             )
-
-        if stock_month_ref is None:
-            st.info(
-                "Sem dados de Dezembro para indicadores de stock (Subscritores/Agentes)."
-                if st.session_state.lang == "PT"
-                else "No December data found for stock indicators (Subscribers/Agents)."
-            )
-
-        k1, k2, k3 = st.columns(3)
-        k4, k5, k6 = st.columns(3)
-        metric_with_help(
-            k1,
-            "Subscritores" if st.session_state.lang == "PT" else "Subscribers",
-            format_compact(subs_total),
-            help_pt="Número de subscritores de Carteira Móvel reportados no período.",
-            help_en="Number of Mobile Wallet subscribers reported in the period.",
-        )
-        metric_with_help(
-            k2,
-            "Agentes" if st.session_state.lang == "PT" else "Agents",
-            format_compact(agents_total),
-            help_pt="Número de agentes de Carteira Móvel reportados no período.",
-            help_en="Number of Mobile Wallet agents reported in the period.",
-        )
-        _metric_with_optional_help(k3, "Depósitos")
-        _metric_with_optional_help(k4, "Levantamentos")
-        _metric_with_optional_help(k5, "Transferências")
-        _metric_with_optional_help(k6, "Pagamentos")
-        st.caption(
-            (
-                f"ℹ️ Subscritores e Agentes (stock) usam o valor reportado em {localize_month(stock_month_ref)}."
-                if stock_month_ref is not None
-                else "ℹ️ Subscritores e Agentes (stock) sem mês de referência disponível."
-            )
-            if st.session_state.lang == "PT"
-            else (
-                f"ℹ️ Subscribers and Agents (stock) use the reported value from {localize_month(stock_month_ref)}."
-                if stock_month_ref is not None
-                else "ℹ️ Subscribers and Agents (stock) have no reference month available."
-            )
-        )
-
-        st.markdown("---")
-        st.subheader(
-            "Baseline de mercado móvel (INCM)"
-            if st.session_state.lang == "PT"
-            else "Mobile market baseline (INCM)",
-            help=(
-                "INCM, 2025 T2: total de subscritores móveis por província. "
-                "Usado como contexto de mercado para leitura de intensidade relativa IME/INCM. "
-                "Subscritores representam subscrições de serviço (não pessoas únicas)."
-                if st.session_state.lang == "PT"
-                else "INCM, 2025 Q2: total mobile subscribers by province. "
-                "Used as market context for IME/INCM relative intensity reading. "
-                "Subscribers represent service subscriptions (not unique people)."
-            ),
-        )
-        st.caption(
-            f"[INCM Acervo]({INCM_SOURCE_TELECOM_URL}) · "
-            + (
-                "Período de referência: 2025 T2."
-                if st.session_state.lang == "PT"
-                else "Reference period: 2025 Q2."
-            )
-        )
-
-        incm_scope = INCM_MOBILE_SUBSCRIBERS_Q2_2025.copy()
-        if selected_prov:
-            incm_scope = incm_scope[incm_scope["Province"].isin(selected_prov)]
-        if not incm_scope.empty:
-            fig_incm = px.bar(
-                incm_scope.sort_values("Mobile_Subscribers", ascending=False),
-                x="Province",
-                y="Mobile_Subscribers",
-                text=[format_compact(v) for v in incm_scope.sort_values("Mobile_Subscribers", ascending=False)["Mobile_Subscribers"]],
-                title=(
-                    "Total de subscritores móveis por província (INCM)"
-                    if st.session_state.lang == "PT"
-                    else "Total mobile subscribers by province (INCM)"
-                ),
-            )
-            fig_incm.update_layout(xaxis_tickangle=-20, yaxis=dict(rangemode="tozero"), height=360)
-            plot_chart(fig_incm, use_container_width=True)
-        else:
-            st.info(
-                "Sem dados INCM no recorte geográfico actual."
-                if st.session_state.lang == "PT"
-                else "No INCM data for current geographic scope."
-            )
-
-        ratio_month_ref = stock_month_ref
-        if ratio_month_ref is not None:
-            sub_prov_ref = (
-                sub_year[(sub_year["Province"].isin(ime_prov)) & (sub_year["Month"].astype(str) == ratio_month_ref)]
-                .groupby("Province", as_index=False)["Subscribers"]
-                .sum()
-            )
-            ag_prov_ref = (
-                ag_year[(ag_year["Province"].isin(ime_prov)) & (ag_year["Month"].astype(str) == ratio_month_ref)]
-                .groupby("Province", as_index=False)["Agents"]
-                .sum()
-            )
-            tx_prov_ref = (
-                tx_year[(tx_year["Province"].isin(ime_prov)) & (tx_year["Month"].astype(str) == ratio_month_ref)]
-                .groupby("Province", as_index=False)
-                .agg(Tx_Value=("Value", "sum"), Tx_Volume=("Volume", "sum"))
-            )
-            incm_ratio_scope = INCM_MOBILE_SUBSCRIBERS_Q2_2025[INCM_MOBILE_SUBSCRIBERS_Q2_2025["Province"].isin(ime_prov)].copy()
-            ratio_df = (
-                incm_ratio_scope
-                .merge(sub_prov_ref, on="Province", how="left")
-                .merge(ag_prov_ref, on="Province", how="left")
-                .merge(tx_prov_ref, on="Province", how="left")
-            )
-            for col in ["Subscribers", "Agents", "Tx_Value", "Tx_Volume"]:
-                ratio_df[col] = pd.to_numeric(ratio_df[col], errors="coerce").fillna(0.0)
-            ratio_df["Wallet_Penetration"] = ratio_df.apply(
-                lambda r: (r["Subscribers"] / r["Mobile_Subscribers"]) if r["Mobile_Subscribers"] > 0 else 0.0,
-                axis=1,
-            )
-            ratio_df["IME_INCM_Index_per_100"] = ratio_df["Wallet_Penetration"] * 100
-            ratio_df["Agents_per_10k_Mobile"] = ratio_df.apply(
-                lambda r: (r["Agents"] / r["Mobile_Subscribers"] * 10_000) if r["Mobile_Subscribers"] > 0 else 0.0,
-                axis=1,
-            )
-            ratio_df["Tx_Value_per_Mobile"] = ratio_df.apply(
-                lambda r: (r["Tx_Value"] / r["Mobile_Subscribers"]) if r["Mobile_Subscribers"] > 0 else 0.0,
-                axis=1,
-            )
-            ratio_df["Tx_Volume_per_Mobile"] = ratio_df.apply(
-                lambda r: (r["Tx_Volume"] / r["Mobile_Subscribers"]) if r["Mobile_Subscribers"] > 0 else 0.0,
-                axis=1,
-            )
-
-            total_mobile = ratio_df["Mobile_Subscribers"].sum()
-            total_subs_ref = ratio_df["Subscribers"].sum()
-            total_agents_ref = ratio_df["Agents"].sum()
-            total_tx_value_ref = ratio_df["Tx_Value"].sum()
-            total_tx_volume_ref = ratio_df["Tx_Volume"].sum()
-            pen_total = (total_subs_ref / total_mobile) if total_mobile > 0 else 0.0
-            ime_incm_index_total = pen_total * 100
-            ag_10k_total = (total_agents_ref / total_mobile * 10_000) if total_mobile > 0 else 0.0
-            value_per_mobile_total = (total_tx_value_ref / total_mobile) if total_mobile > 0 else 0.0
-            volume_per_mobile_total = (total_tx_volume_ref / total_mobile) if total_mobile > 0 else 0.0
-
+            # Note to self: 'Todos' is for trends; stock KPIs/rankings must still anchor to one month (December first).
+    
+            tx_metric_col = "Value" if ime_measure == T("value") else "Volume"
+    
             st.caption(
                 (
-                    f"Leitura de oportunidade com IME de {localize_month(ratio_month_ref)} {ime_year}, "
-                    "alinhada ao baseline INCM 2025 T2."
+                    f"Filtros aplicados: {len(ime_prov)} província(s), "
+                    + (
+                        (
+                            f"{len(ime_dist)} distrito(s), mês: {localize_month(ime_month)}."
+                            if ime_month is not None
+                            else (
+                                f"{len(ime_dist)} distrito(s), mês: todos (KPIs/rankings usam {localize_month(all_month_fallback)})."
+                                if all_month_fallback is not None
+                                else f"{len(ime_dist)} distrito(s), mês: todos."
+                            )
+                        )
+                    )
                 )
                 if st.session_state.lang == "PT"
                 else (
-                    f"Opportunity lens uses IME data from {localize_month(ratio_month_ref)} {ime_year}, "
-                    "aligned with INCM 2025 Q2 baseline."
+                    f"Applied filters: {len(ime_prov)} province(s), "
+                    + (
+                        (
+                            f"{len(ime_dist)} district(s), month: {localize_month(ime_month)}."
+                            if ime_month is not None
+                            else (
+                                f"{len(ime_dist)} district(s), month: all (KPIs/rankings use {localize_month(all_month_fallback)})."
+                                if all_month_fallback is not None
+                                else f"{len(ime_dist)} district(s), month: all."
+                            )
+                        )
+                    )
                 )
             )
-            l1, l2, l3, l4 = st.columns(4)
-            l1.metric(
-                "Índice IME/INCM (por 100)" if st.session_state.lang == "PT" else "IME/INCM index (per 100)",
-                f"{ime_incm_index_total:.1f}",
+    
+            def _ime_geo_filter(df: pd.DataFrame) -> pd.DataFrame:
+                out = df[df["Province"].isin(ime_prov)].copy()
+                if "District" in out.columns:
+                    out = out[out["District"].isin(ime_dist)]
+                return out
+    
+            sub_geo = _ime_geo_filter(sub_year)
+            ag_geo = _ime_geo_filter(ag_year)
+            tx_geo = _ime_geo_filter(tx_year)
+            tx_all_geo = _ime_geo_filter(ime_txn_district_df.copy())
+    
+            effective_month_ref = (
+                ime_month
+                if ime_month is not None else all_month_fallback
             )
-            l2.metric(
-                "Agentes por 10 mil subscritores móveis" if st.session_state.lang == "PT" else "Agents per 10k mobile subscribers",
-                f"{ag_10k_total:.1f}",
+            if effective_month_ref is not None:
+                tx_month = tx_geo[tx_geo["Month"].astype(str) == effective_month_ref].copy()
+            else:
+                tx_month = tx_geo.copy()
+    
+            stock_month_ref = effective_month_ref
+            sub_stock = (
+                sub_geo[sub_geo["Month"].astype(str) == stock_month_ref].copy()
+                if stock_month_ref is not None
+                else pd.DataFrame(columns=sub_geo.columns)
             )
-            l3.metric(
-                "Valor por subscritor móvel" if st.session_state.lang == "PT" else "Value per mobile subscriber",
-                format_compact(value_per_mobile_total),
+            ag_stock = (
+                ag_geo[ag_geo["Month"].astype(str) == stock_month_ref].copy()
+                if stock_month_ref is not None
+                else pd.DataFrame(columns=ag_geo.columns)
             )
-            l4.metric(
-                "Volume por subscritor móvel" if st.session_state.lang == "PT" else "Volume per mobile subscriber",
-                format_compact(volume_per_mobile_total),
-            )
-            st.caption(
-                "ℹ️ O índice IME/INCM pode exceder 100 porque compara subscrições/reportes de serviço (não pessoas únicas). "
-                "Usar como sinal relativo entre províncias."
-                if st.session_state.lang == "PT"
-                else "ℹ️ The IME/INCM index may exceed 100 because it compares service subscriptions/reporting (not unique people). "
-                "Use it as a relative cross-province signal."
-            )
-
-            pen_plot = ratio_df.sort_values("IME_INCM_Index_per_100", ascending=False).copy()
-            fig_pen = px.bar(
-                pen_plot,
-                x="Province",
-                y="IME_INCM_Index_per_100",
-                text=[f"{v:.1f}" for v in pen_plot["IME_INCM_Index_per_100"]],
-                title=(
-                    "Índice IME/INCM por província (subscrições por 100)"
+    
+            subs_total = sub_stock["Subscribers"].sum() if "Subscribers" in sub_stock.columns else 0
+            agents_total = ag_stock["Agents"].sum() if "Agents" in ag_stock.columns else 0
+            tx_types = ["Depósitos", "Levantamentos", "Transferências", "Pagamentos"]
+            tx_totals = {
+                t: float(tx_month.loc[tx_month["Transaction_Type"] == t, tx_metric_col].sum()) for t in tx_types
+            }
+            tx_type_labels = {
+                "Depósitos": ("Depósitos", "Deposits"),
+                "Levantamentos": ("Levantamentos", "Withdrawals"),
+                "Transferências": ("Transferências", "Transfers"),
+                "Pagamentos": ("Pagamentos", "Payments"),
+            }
+            tx_help_en = {
+                "Depósitos": "Money deposited into Mobile Wallet agent accounts.",
+                "Levantamentos": "Money withdrawals from Mobile Wallet.",
+                "Transferências": "Transfers between Mobile Wallet accounts.",
+                "Pagamentos": "Service payments using Mobile Wallet.",
+            }
+            tx_help_pt = {
+                "Depósitos": "Dinheiro depositado em contas de agente de Carteira Móvel.",
+                "Levantamentos": "Levantamento de dinheiro a partir da Carteira Móvel.",
+                "Transferências": "Transferências entre contas de Carteira Móvel.",
+                "Pagamentos": "Pagamento de serviços com Carteira Móvel.",
+            }
+    
+            def _metric_with_optional_help(col, tx_key: str) -> None:
+                pt_label, en_label = tx_type_labels[tx_key]
+                label = f"{pt_label if st.session_state.lang == 'PT' else en_label} ({ime_measure})"
+                value = format_compact(tx_totals[tx_key])
+                metric_with_help(
+                    col,
+                    label,
+                    value,
+                    help_pt=tx_help_pt[tx_key],
+                    help_en=tx_help_en[tx_key],
+                )
+    
+            if stock_month_ref is None:
+                st.info(
+                    "Sem dados de Dezembro para indicadores de stock (Subscritores/Agentes)."
                     if st.session_state.lang == "PT"
-                    else "IME/INCM index by province (subscriptions per 100)"
+                    else "No December data found for stock indicators (Subscribers/Agents)."
+                )
+    
+            k1, k2, k3 = st.columns(3)
+            k4, k5, k6 = st.columns(3)
+            metric_with_help(
+                k1,
+                "Subscritores" if st.session_state.lang == "PT" else "Subscribers",
+                format_compact(subs_total),
+                help_pt="Número de subscritores de Carteira Móvel reportados no período.",
+                help_en="Number of Mobile Wallet subscribers reported in the period.",
+            )
+            metric_with_help(
+                k2,
+                "Agentes" if st.session_state.lang == "PT" else "Agents",
+                format_compact(agents_total),
+                help_pt="Número de agentes de Carteira Móvel reportados no período.",
+                help_en="Number of Mobile Wallet agents reported in the period.",
+            )
+            _metric_with_optional_help(k3, "Depósitos")
+            _metric_with_optional_help(k4, "Levantamentos")
+            _metric_with_optional_help(k5, "Transferências")
+            _metric_with_optional_help(k6, "Pagamentos")
+            st.caption(
+                (
+                    f"ℹ️ Subscritores e Agentes (stock) usam o valor reportado em {localize_month(stock_month_ref)}."
+                    if stock_month_ref is not None
+                    else "ℹ️ Subscritores e Agentes (stock) sem mês de referência disponível."
+                )
+                if st.session_state.lang == "PT"
+                else (
+                    f"ℹ️ Subscribers and Agents (stock) use the reported value from {localize_month(stock_month_ref)}."
+                    if stock_month_ref is not None
+                    else "ℹ️ Subscribers and Agents (stock) have no reference month available."
+                )
+            )
+    
+            st.markdown("---")
+            st.subheader(
+                "Baseline de mercado móvel (INCM)"
+                if st.session_state.lang == "PT"
+                else "Mobile market baseline (INCM)",
+                help=(
+                    "INCM, 2025 T2: total de subscritores móveis por província. "
+                    "Usado como contexto de mercado para leitura de intensidade relativa IME/INCM. "
+                    "Subscritores representam subscrições de serviço (não pessoas únicas)."
+                    if st.session_state.lang == "PT"
+                    else "INCM, 2025 Q2: total mobile subscribers by province. "
+                    "Used as market context for IME/INCM relative intensity reading. "
+                    "Subscribers represent service subscriptions (not unique people)."
                 ),
             )
-            fig_pen.update_layout(xaxis_tickangle=-20, yaxis=dict(rangemode="tozero"), height=360)
-            plot_chart(fig_pen, use_container_width=True)
-
-        c1, c2 = st.columns(2)
-        with c1:
-            group_axis = "District" if use_district_axis else "Province"
-            eff_df = pd.merge(
-                sub_stock.groupby(group_axis, as_index=False)["Subscribers"].sum(),
-                ag_stock.groupby(group_axis, as_index=False)["Agents"].sum(),
-                on=group_axis,
-                how="outer",
-            )
-            eff_df["Subscribers"] = pd.to_numeric(eff_df["Subscribers"], errors="coerce").fillna(0)
-            eff_df["Agents"] = pd.to_numeric(eff_df["Agents"], errors="coerce").fillna(0)
-            eff_df["Subscribers_per_Agent"] = eff_df.apply(
-                lambda r: (r["Subscribers"] / r["Agents"]) if r["Agents"] > 0 else 0,
-                axis=1,
-            )
-            if eff_df.empty:
-                st.info(
-                    "Sem dados para eficiência da rede com os filtros seleccionados."
+            st.caption(
+                f"[INCM Acervo]({INCM_SOURCE_TELECOM_URL}) · "
+                + (
+                    "Período de referência: 2025 T2."
                     if st.session_state.lang == "PT"
-                    else "No network-efficiency data for selected filters."
+                    else "Reference period: 2025 Q2."
                 )
-            else:
-                eff_show = eff_df.sort_values("Subscribers_per_Agent", ascending=False)
-                geo_label = (
-                    ("Distrito" if use_district_axis else "Província")
-                    if st.session_state.lang == "PT"
-                    else ("District" if use_district_axis else "Province")
-                )
-                ratio_label = "Subscritores por agente" if st.session_state.lang == "PT" else "Subscribers per agent"
-                eff_show_plot = eff_show.rename(columns={group_axis: geo_label}).copy()
-                eff_show_plot[ratio_label] = eff_show_plot["Subscribers_per_Agent"]
-                fig_eff = px.bar(
-                    eff_show_plot,
-                    x=geo_label,
-                    y=ratio_label,
-                    text=[f"{v:.1f}" for v in eff_show_plot[ratio_label]],
+            )
+    
+            incm_scope = INCM_MOBILE_SUBSCRIBERS_Q2_2025.copy()
+            if selected_prov:
+                incm_scope = incm_scope[incm_scope["Province"].isin(selected_prov)]
+            if not incm_scope.empty:
+                fig_incm = px.bar(
+                    incm_scope.sort_values("Mobile_Subscribers", ascending=False),
+                    x="Province",
+                    y="Mobile_Subscribers",
+                    text=[format_compact(v) for v in incm_scope.sort_values("Mobile_Subscribers", ascending=False)["Mobile_Subscribers"]],
                     title=(
-                        ("Subscritores por Agente por Distrito" if use_district_axis else "Subscritores por Agente por Província")
+                        "Total de subscritores móveis por província (INCM)"
                         if st.session_state.lang == "PT"
-                        else ("Subscribers per Agent by District" if use_district_axis else "Subscribers per Agent by Province")
+                        else "Total mobile subscribers by province (INCM)"
                     ),
                 )
-                fig_eff.update_layout(height=420)
-                plot_chart(fig_eff, use_container_width=True)
-
-        with c2:
-            metric_options = (
-                [
-                    "Subscritores",
-                    "Agentes",
-                    f"Depósitos ({ime_measure})",
-                    f"Levantamentos ({ime_measure})",
-                    f"Transferências ({ime_measure})",
-                    f"Pagamentos ({ime_measure})",
-                ]
-                if st.session_state.lang == "PT"
-                else [
-                    "Subscribers",
-                    "Agents",
-                    f"Deposits ({ime_measure})",
-                    f"Withdrawals ({ime_measure})",
-                    f"Transfers ({ime_measure})",
-                    f"Payments ({ime_measure})",
-                ]
-            )
-            top_metric = st.selectbox(
-                "Top distritos por" if st.session_state.lang == "PT" else "Top districts by",
-                metric_options,
-                key="ime_top_metric",
-            )
-            if top_metric in ["Subscritores", "Subscribers"]:
-                top_df = sub_stock.groupby("District", as_index=False)["Subscribers"].sum().rename(columns={"Subscribers": "Total"})
-            elif top_metric in ["Agentes", "Agents"]:
-                top_df = ag_stock.groupby("District", as_index=False)["Agents"].sum().rename(columns={"Agents": "Total"})
+                fig_incm.update_layout(xaxis_tickangle=-20, yaxis=dict(rangemode="tozero"), height=360)
+                plot_chart(fig_incm, use_container_width=True)
             else:
-                tx_label_map = {
-                    f"Depósitos ({ime_measure})": "Depósitos",
-                    f"Levantamentos ({ime_measure})": "Levantamentos",
-                    f"Transferências ({ime_measure})": "Transferências",
-                    f"Pagamentos ({ime_measure})": "Pagamentos",
-                    f"Deposits ({ime_measure})": "Depósitos",
-                    f"Withdrawals ({ime_measure})": "Levantamentos",
-                    f"Transfers ({ime_measure})": "Transferências",
-                    f"Payments ({ime_measure})": "Pagamentos",
-                }
-                tx_type = tx_label_map[top_metric]
-                top_df = (
-                    tx_month[tx_month["Transaction_Type"] == tx_type]
-                    .groupby("District", as_index=False)[tx_metric_col]
+                st.info(
+                    "Sem dados INCM no recorte geográfico actual."
+                    if st.session_state.lang == "PT"
+                    else "No INCM data for current geographic scope."
+                )
+    
+            ratio_month_ref = stock_month_ref
+            if ratio_month_ref is not None:
+                sub_prov_ref = (
+                    sub_year[(sub_year["Province"].isin(ime_prov)) & (sub_year["Month"].astype(str) == ratio_month_ref)]
+                    .groupby("Province", as_index=False)["Subscribers"]
+                    .sum()
+                )
+                ag_prov_ref = (
+                    ag_year[(ag_year["Province"].isin(ime_prov)) & (ag_year["Month"].astype(str) == ratio_month_ref)]
+                    .groupby("Province", as_index=False)["Agents"]
+                    .sum()
+                )
+                tx_prov_ref = (
+                    tx_year[(tx_year["Province"].isin(ime_prov)) & (tx_year["Month"].astype(str) == ratio_month_ref)]
+                    .groupby("Province", as_index=False)
+                    .agg(Tx_Value=("Value", "sum"), Tx_Volume=("Volume", "sum"))
+                )
+                incm_ratio_scope = INCM_MOBILE_SUBSCRIBERS_Q2_2025[INCM_MOBILE_SUBSCRIBERS_Q2_2025["Province"].isin(ime_prov)].copy()
+                ratio_df = (
+                    incm_ratio_scope
+                    .merge(sub_prov_ref, on="Province", how="left")
+                    .merge(ag_prov_ref, on="Province", how="left")
+                    .merge(tx_prov_ref, on="Province", how="left")
+                )
+                for col in ["Subscribers", "Agents", "Tx_Value", "Tx_Volume"]:
+                    ratio_df[col] = pd.to_numeric(ratio_df[col], errors="coerce").fillna(0.0)
+                ratio_df["Wallet_Penetration"] = ratio_df.apply(
+                    lambda r: (r["Subscribers"] / r["Mobile_Subscribers"]) if r["Mobile_Subscribers"] > 0 else 0.0,
+                    axis=1,
+                )
+                ratio_df["IME_INCM_Index_per_100"] = ratio_df["Wallet_Penetration"] * 100
+                ratio_df["Agents_per_10k_Mobile"] = ratio_df.apply(
+                    lambda r: (r["Agents"] / r["Mobile_Subscribers"] * 10_000) if r["Mobile_Subscribers"] > 0 else 0.0,
+                    axis=1,
+                )
+                ratio_df["Tx_Value_per_Mobile"] = ratio_df.apply(
+                    lambda r: (r["Tx_Value"] / r["Mobile_Subscribers"]) if r["Mobile_Subscribers"] > 0 else 0.0,
+                    axis=1,
+                )
+                ratio_df["Tx_Volume_per_Mobile"] = ratio_df.apply(
+                    lambda r: (r["Tx_Volume"] / r["Mobile_Subscribers"]) if r["Mobile_Subscribers"] > 0 else 0.0,
+                    axis=1,
+                )
+    
+                total_mobile = ratio_df["Mobile_Subscribers"].sum()
+                total_subs_ref = ratio_df["Subscribers"].sum()
+                total_agents_ref = ratio_df["Agents"].sum()
+                total_tx_value_ref = ratio_df["Tx_Value"].sum()
+                total_tx_volume_ref = ratio_df["Tx_Volume"].sum()
+                pen_total = (total_subs_ref / total_mobile) if total_mobile > 0 else 0.0
+                ime_incm_index_total = pen_total * 100
+                ag_10k_total = (total_agents_ref / total_mobile * 10_000) if total_mobile > 0 else 0.0
+                value_per_mobile_total = (total_tx_value_ref / total_mobile) if total_mobile > 0 else 0.0
+                volume_per_mobile_total = (total_tx_volume_ref / total_mobile) if total_mobile > 0 else 0.0
+    
+                st.caption(
+                    (
+                        f"Leitura de oportunidade com IME de {localize_month(ratio_month_ref)} {ime_year}, "
+                        "alinhada ao baseline INCM 2025 T2."
+                    )
+                    if st.session_state.lang == "PT"
+                    else (
+                        f"Opportunity lens uses IME data from {localize_month(ratio_month_ref)} {ime_year}, "
+                        "aligned with INCM 2025 Q2 baseline."
+                    )
+                )
+                l1, l2, l3, l4 = st.columns(4)
+                l1.metric(
+                    "Índice IME/INCM (por 100)" if st.session_state.lang == "PT" else "IME/INCM index (per 100)",
+                    f"{ime_incm_index_total:.1f}",
+                )
+                l2.metric(
+                    "Agentes por 10 mil subscritores móveis" if st.session_state.lang == "PT" else "Agents per 10k mobile subscribers",
+                    f"{ag_10k_total:.1f}",
+                )
+                l3.metric(
+                    "Valor por subscritor móvel" if st.session_state.lang == "PT" else "Value per mobile subscriber",
+                    format_compact(value_per_mobile_total),
+                )
+                l4.metric(
+                    "Volume por subscritor móvel" if st.session_state.lang == "PT" else "Volume per mobile subscriber",
+                    format_compact(volume_per_mobile_total),
+                )
+                st.caption(
+                    "ℹ️ O índice IME/INCM pode exceder 100 porque compara subscrições/reportes de serviço (não pessoas únicas). "
+                    "Usar como sinal relativo entre províncias."
+                    if st.session_state.lang == "PT"
+                    else "ℹ️ The IME/INCM index may exceed 100 because it compares service subscriptions/reporting (not unique people). "
+                    "Use it as a relative cross-province signal."
+                )
+    
+                pen_plot = ratio_df.sort_values("IME_INCM_Index_per_100", ascending=False).copy()
+                fig_pen = px.bar(
+                    pen_plot,
+                    x="Province",
+                    y="IME_INCM_Index_per_100",
+                    text=[f"{v:.1f}" for v in pen_plot["IME_INCM_Index_per_100"]],
+                    title=(
+                        "Índice IME/INCM por província (subscrições por 100)"
+                        if st.session_state.lang == "PT"
+                        else "IME/INCM index by province (subscriptions per 100)"
+                    ),
+                )
+                fig_pen.update_layout(xaxis_tickangle=-20, yaxis=dict(rangemode="tozero"), height=360)
+                plot_chart(fig_pen, use_container_width=True)
+    
+            c1, c2 = st.columns(2)
+            with c1:
+                group_axis = "District" if use_district_axis else "Province"
+                eff_df = pd.merge(
+                    sub_stock.groupby(group_axis, as_index=False)["Subscribers"].sum(),
+                    ag_stock.groupby(group_axis, as_index=False)["Agents"].sum(),
+                    on=group_axis,
+                    how="outer",
+                )
+                eff_df["Subscribers"] = pd.to_numeric(eff_df["Subscribers"], errors="coerce").fillna(0)
+                eff_df["Agents"] = pd.to_numeric(eff_df["Agents"], errors="coerce").fillna(0)
+                eff_df["Subscribers_per_Agent"] = eff_df.apply(
+                    lambda r: (r["Subscribers"] / r["Agents"]) if r["Agents"] > 0 else 0,
+                    axis=1,
+                )
+                if eff_df.empty:
+                    st.info(
+                        "Sem dados para eficiência da rede com os filtros seleccionados."
+                        if st.session_state.lang == "PT"
+                        else "No network-efficiency data for selected filters."
+                    )
+                else:
+                    eff_show = eff_df.sort_values("Subscribers_per_Agent", ascending=False)
+                    geo_label = (
+                        ("Distrito" if use_district_axis else "Província")
+                        if st.session_state.lang == "PT"
+                        else ("District" if use_district_axis else "Province")
+                    )
+                    ratio_label = "Subscritores por agente" if st.session_state.lang == "PT" else "Subscribers per agent"
+                    eff_show_plot = eff_show.rename(columns={group_axis: geo_label}).copy()
+                    eff_show_plot[ratio_label] = eff_show_plot["Subscribers_per_Agent"]
+                    fig_eff = px.bar(
+                        eff_show_plot,
+                        x=geo_label,
+                        y=ratio_label,
+                        text=[f"{v:.1f}" for v in eff_show_plot[ratio_label]],
+                        title=(
+                            ("Subscritores por Agente por Distrito" if use_district_axis else "Subscritores por Agente por Província")
+                            if st.session_state.lang == "PT"
+                            else ("Subscribers per Agent by District" if use_district_axis else "Subscribers per Agent by Province")
+                        ),
+                    )
+                    fig_eff.update_layout(height=420)
+                    plot_chart(fig_eff, use_container_width=True)
+    
+            with c2:
+                metric_options = (
+                    [
+                        "Subscritores",
+                        "Agentes",
+                        f"Depósitos ({ime_measure})",
+                        f"Levantamentos ({ime_measure})",
+                        f"Transferências ({ime_measure})",
+                        f"Pagamentos ({ime_measure})",
+                    ]
+                    if st.session_state.lang == "PT"
+                    else [
+                        "Subscribers",
+                        "Agents",
+                        f"Deposits ({ime_measure})",
+                        f"Withdrawals ({ime_measure})",
+                        f"Transfers ({ime_measure})",
+                        f"Payments ({ime_measure})",
+                    ]
+                )
+                top_metric = st.selectbox(
+                    "Top distritos por" if st.session_state.lang == "PT" else "Top districts by",
+                    metric_options,
+                    key="ime_top_metric",
+                )
+                if top_metric in ["Subscritores", "Subscribers"]:
+                    top_df = sub_stock.groupby("District", as_index=False)["Subscribers"].sum().rename(columns={"Subscribers": "Total"})
+                elif top_metric in ["Agentes", "Agents"]:
+                    top_df = ag_stock.groupby("District", as_index=False)["Agents"].sum().rename(columns={"Agents": "Total"})
+                else:
+                    tx_label_map = {
+                        f"Depósitos ({ime_measure})": "Depósitos",
+                        f"Levantamentos ({ime_measure})": "Levantamentos",
+                        f"Transferências ({ime_measure})": "Transferências",
+                        f"Pagamentos ({ime_measure})": "Pagamentos",
+                        f"Deposits ({ime_measure})": "Depósitos",
+                        f"Withdrawals ({ime_measure})": "Levantamentos",
+                        f"Transfers ({ime_measure})": "Transferências",
+                        f"Payments ({ime_measure})": "Pagamentos",
+                    }
+                    tx_type = tx_label_map[top_metric]
+                    top_df = (
+                        tx_month[tx_month["Transaction_Type"] == tx_type]
+                        .groupby("District", as_index=False)[tx_metric_col]
+                        .sum()
+                        .rename(columns={tx_metric_col: "Total"})
+                    )
+                if top_df.empty:
+                    st.info(
+                        "Sem dados para ranking distrital com os filtros seleccionados."
+                        if st.session_state.lang == "PT"
+                        else "No district ranking data for selected filters."
+                    )
+                else:
+                    top_show = top_df.sort_values("Total", ascending=False).head(10).sort_values("Total", ascending=True)
+                    district_axis = "Distrito" if st.session_state.lang == "PT" else "District"
+                    top_show_plot = top_show.rename(columns={"District": district_axis}).copy()
+                    fig_top = px.bar(
+                        top_show_plot,
+                        y=district_axis,
+                        x="Total",
+                        orientation="h",
+                        text=[format_compact(v) for v in top_show_plot["Total"]],
+                        title=(
+                            f"Top 10 distritos — {top_metric}"
+                            if st.session_state.lang == "PT"
+                            else f"Top 10 districts — {top_metric}"
+                        ),
+                    )
+                    fig_top.update_layout(height=420)
+                    plot_chart(fig_top, use_container_width=True)
+    
+            st.markdown("---")
+            t1, t2 = st.columns(2)
+            with t1:
+                tx_trend = (
+                    tx_geo.groupby(["Month", "Transaction_Type"], as_index=False)[tx_metric_col]
                     .sum()
                     .rename(columns={tx_metric_col: "Total"})
                 )
-            if top_df.empty:
-                st.info(
-                    "Sem dados para ranking distrital com os filtros seleccionados."
-                    if st.session_state.lang == "PT"
-                    else "No district ranking data for selected filters."
-                )
-            else:
-                top_show = top_df.sort_values("Total", ascending=False).head(10).sort_values("Total", ascending=True)
-                district_axis = "Distrito" if st.session_state.lang == "PT" else "District"
-                top_show_plot = top_show.rename(columns={"District": district_axis}).copy()
-                fig_top = px.bar(
-                    top_show_plot,
-                    y=district_axis,
-                    x="Total",
-                    orientation="h",
-                    text=[format_compact(v) for v in top_show_plot["Total"]],
-                    title=(
-                        f"Top 10 distritos — {top_metric}"
-                        if st.session_state.lang == "PT"
-                        else f"Top 10 districts — {top_metric}"
-                    ),
-                )
-                fig_top.update_layout(height=420)
-                plot_chart(fig_top, use_container_width=True)
-
-        st.markdown("---")
-        t1, t2 = st.columns(2)
-        with t1:
-            tx_trend = (
-                tx_geo.groupby(["Month", "Transaction_Type"], as_index=False)[tx_metric_col]
-                .sum()
-                .rename(columns={tx_metric_col: "Total"})
-            )
-            if not tx_trend.empty:
-                tx_type_col = "Tipo de transacção" if st.session_state.lang == "PT" else "Transaction Type"
-                tx_trend = tx_trend.copy()
-                if st.session_state.lang == "EN":
-                    tx_trend[tx_type_col] = tx_trend["Transaction_Type"].replace(
-                        {
-                            "Depósitos": "Deposits",
-                            "Levantamentos": "Withdrawals",
-                            "Transferências": "Transfers",
-                            "Pagamentos": "Payments",
-                        }
-                    )
-                else:
-                    tx_trend[tx_type_col] = tx_trend["Transaction_Type"]
-                tx_trend = localize_month_df(tx_trend, source_col="Month", target_col="Month_Display")
-                fig_tx_trend = px.line(
-                    tx_trend,
-                    x="Month_Display",
-                    y="Total",
-                    color=tx_type_col,
-                    markers=True,
-                    title=(
-                        f"Tendência - transacções de carteira móvel ({ime_measure})"
-                        if st.session_state.lang == "PT"
-                        else f"Trend - mobile wallet transactions ({ime_measure})"
-                    ),
-                )
-                fig_tx_trend.update_layout(yaxis=dict(rangemode="tozero"), height=420)
-                plot_chart(fig_tx_trend, use_container_width=True)
-        with t2:
-            year_mix = (
-                tx_all_geo.groupby("Year", as_index=False)
-                .agg(Volume=("Volume", "sum"), Value=("Value", "sum"))
-                .sort_values("Year")
-            )
-            if not year_mix.empty:
-                fig_mix = go.Figure()
-                fig_mix.add_trace(
-                    go.Bar(
-                        x=year_mix["Year"],
-                        y=year_mix["Volume"],
-                        name="Volume",
-                        marker_color="#2563eb",
-                    )
-                )
-                fig_mix.add_trace(
-                    go.Scatter(
-                        x=year_mix["Year"],
-                        y=year_mix["Value"],
-                        name="Valor" if st.session_state.lang == "PT" else "Value",
-                        mode="lines+markers",
-                        yaxis="y2",
-                        line=dict(color="#f97316", width=3),
-                    )
-                )
-                fig_mix.update_layout(
-                    title=(
-                        "Tendência anual de transacções de carteira móvel"
-                        if st.session_state.lang == "PT"
-                        else "Annual trend of mobile wallet transactions"
-                    ),
-                    yaxis=dict(rangemode="tozero"),
-                    yaxis2=dict(overlaying="y", side="right", rangemode="tozero"),
-                    xaxis=dict(dtick=1),
-                    height=420,
-                )
-                plot_chart(fig_mix, use_container_width=True)
-
-        if not ime_sub_demo_df.empty and effective_month_ref is not None:
-            demo_scope = ime_sub_demo_df[
-                (ime_sub_demo_df["Year"] == ime_year)
-                & (ime_sub_demo_df["Month"].astype(str) == effective_month_ref)
-                & (ime_sub_demo_df["Province"].isin(ime_prov))
-                & (ime_sub_demo_df["District"].isin(ime_dist))
-            ].copy()
-            if not demo_scope.empty:
-                d1, d2 = st.columns(2)
-                with d1:
-                    gender_split = demo_scope.groupby("Gender", as_index=False)["Subscribers"].sum()
-                    if not gender_split.empty:
-                        fig_gender = px.pie(
-                            gender_split,
-                            values="Subscribers",
-                            names="Gender",
-                            title="Subscritores de Carteira Móvel por género" if st.session_state.lang == "PT" else "Mobile Wallet subscribers by gender",
-                            hole=0.45,
+                if not tx_trend.empty:
+                    tx_type_col = "Tipo de transacção" if st.session_state.lang == "PT" else "Transaction Type"
+                    tx_trend = tx_trend.copy()
+                    if st.session_state.lang == "EN":
+                        tx_trend[tx_type_col] = tx_trend["Transaction_Type"].replace(
+                            {
+                                "Depósitos": "Deposits",
+                                "Levantamentos": "Withdrawals",
+                                "Transferências": "Transfers",
+                                "Pagamentos": "Payments",
+                            }
                         )
-                        fig_gender.update_layout(height=380)
-                        plot_chart(fig_gender, use_container_width=True)
-                with d2:
-                    age_col = "Age" if "Age" in demo_scope.columns else ("Age_Group" if "Age_Group" in demo_scope.columns else None)
-                    if age_col is None:
-                        age_split = pd.DataFrame()
                     else:
-                        unknown_label = "Não informado" if st.session_state.lang == "PT" else "Not informed"
-                        age_labels = demo_scope[age_col].astype(str).replace({"nan": unknown_label, "NaN": unknown_label})
-                        age_tmp = demo_scope.copy()
-                        age_tmp["_AgeLabel"] = age_labels
-                        age_split = age_tmp.groupby("_AgeLabel", as_index=False)["Subscribers"].sum()
-                        preferred_order = ["0-16", "17-21", "22-60", "+60", unknown_label]
-                        age_split["_order"] = age_split["_AgeLabel"].apply(
-                            lambda v: preferred_order.index(v) if v in preferred_order else len(preferred_order)
-                        )
-                        age_split = age_split.sort_values("_order").drop(columns=["_order"])
-                    if not age_split.empty:
-                        fig_age = px.bar(
-                            age_split,
-                            x="_AgeLabel",
-                            y="Subscribers",
-                            text=[format_compact(v) for v in age_split["Subscribers"]],
-                            title="Subscritores de Carteira Móvel por faixa etária" if st.session_state.lang == "PT" else "Mobile Wallet subscribers by age group",
-                        )
-                        fig_age.update_layout(height=380)
-                        plot_chart(fig_age, use_container_width=True)
-                    else:
-                        st.info(
-                            "Sem dados por faixa etária para os filtros seleccionados."
+                        tx_trend[tx_type_col] = tx_trend["Transaction_Type"]
+                    tx_trend = localize_month_df(tx_trend, source_col="Month", target_col="Month_Display")
+                    fig_tx_trend = px.line(
+                        tx_trend,
+                        x="Month_Display",
+                        y="Total",
+                        color=tx_type_col,
+                        markers=True,
+                        title=(
+                            f"Tendência - transacções de carteira móvel ({ime_measure})"
                             if st.session_state.lang == "PT"
-                            else "No age-group data for selected filters."
+                            else f"Trend - mobile wallet transactions ({ime_measure})"
+                        ),
+                    )
+                    fig_tx_trend.update_layout(yaxis=dict(rangemode="tozero"), height=420)
+                    plot_chart(fig_tx_trend, use_container_width=True)
+            with t2:
+                year_mix = (
+                    tx_all_geo.groupby("Year", as_index=False)
+                    .agg(Volume=("Volume", "sum"), Value=("Value", "sum"))
+                    .sort_values("Year")
+                )
+                if not year_mix.empty:
+                    fig_mix = go.Figure()
+                    fig_mix.add_trace(
+                        go.Bar(
+                            x=year_mix["Year"],
+                            y=year_mix["Volume"],
+                            name="Volume",
+                            marker_color="#2563eb",
                         )
+                    )
+                    fig_mix.add_trace(
+                        go.Scatter(
+                            x=year_mix["Year"],
+                            y=year_mix["Value"],
+                            name="Valor" if st.session_state.lang == "PT" else "Value",
+                            mode="lines+markers",
+                            yaxis="y2",
+                            line=dict(color="#f97316", width=3),
+                        )
+                    )
+                    fig_mix.update_layout(
+                        title=(
+                            "Tendência anual de transacções de carteira móvel"
+                            if st.session_state.lang == "PT"
+                            else "Annual trend of mobile wallet transactions"
+                        ),
+                        yaxis=dict(rangemode="tozero"),
+                        yaxis2=dict(overlaying="y", side="right", rangemode="tozero"),
+                        xaxis=dict(dtick=1),
+                        height=420,
+                    )
+                    plot_chart(fig_mix, use_container_width=True)
+    
+            if not ime_sub_demo_df.empty and effective_month_ref is not None:
+                demo_scope = ime_sub_demo_df[
+                    (ime_sub_demo_df["Year"] == ime_year)
+                    & (ime_sub_demo_df["Month"].astype(str) == effective_month_ref)
+                    & (ime_sub_demo_df["Province"].isin(ime_prov))
+                    & (ime_sub_demo_df["District"].isin(ime_dist))
+                ].copy()
+                if not demo_scope.empty:
+                    d1, d2 = st.columns(2)
+                    with d1:
+                        gender_split = demo_scope.groupby("Gender", as_index=False)["Subscribers"].sum()
+                        if not gender_split.empty:
+                            fig_gender = px.pie(
+                                gender_split,
+                                values="Subscribers",
+                                names="Gender",
+                                title="Subscritores de Carteira Móvel por género" if st.session_state.lang == "PT" else "Mobile Wallet subscribers by gender",
+                                hole=0.45,
+                            )
+                            fig_gender.update_layout(height=380)
+                            plot_chart(fig_gender, use_container_width=True)
+                    with d2:
+                        age_col = "Age" if "Age" in demo_scope.columns else ("Age_Group" if "Age_Group" in demo_scope.columns else None)
+                        if age_col is None:
+                            age_split = pd.DataFrame()
+                        else:
+                            unknown_label = "Não informado" if st.session_state.lang == "PT" else "Not informed"
+                            age_labels = demo_scope[age_col].astype(str).replace({"nan": unknown_label, "NaN": unknown_label})
+                            age_tmp = demo_scope.copy()
+                            age_tmp["_AgeLabel"] = age_labels
+                            age_split = age_tmp.groupby("_AgeLabel", as_index=False)["Subscribers"].sum()
+                            preferred_order = ["0-16", "17-21", "22-60", "+60", unknown_label]
+                            age_split["_order"] = age_split["_AgeLabel"].apply(
+                                lambda v: preferred_order.index(v) if v in preferred_order else len(preferred_order)
+                            )
+                            age_split = age_split.sort_values("_order").drop(columns=["_order"])
+                        if not age_split.empty:
+                            fig_age = px.bar(
+                                age_split,
+                                x="_AgeLabel",
+                                y="Subscribers",
+                                text=[format_compact(v) for v in age_split["Subscribers"]],
+                                title="Subscritores de Carteira Móvel por faixa etária" if st.session_state.lang == "PT" else "Mobile Wallet subscribers by age group",
+                            )
+                            fig_age.update_layout(height=380)
+                            plot_chart(fig_age, use_container_width=True)
+                        else:
+                            st.info(
+                                "Sem dados por faixa etária para os filtros seleccionados."
+                                if st.session_state.lang == "PT"
+                                else "No age-group data for selected filters."
+                            )
         render_page_caveats(
             [
                 "A leitura distrital de Carteira Móvel cobre os distritos presentes nos ficheiros oficiais dos anos disponíveis.",
