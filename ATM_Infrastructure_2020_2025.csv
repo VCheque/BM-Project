@@ -9508,22 +9508,10 @@ Year,Province,District,Month,ATMs_Number
 2025,Niassa,Cidade de Lichinga,Março,26.0
 2025,Niassa,Cidade de Lichinga,Fevereiro,26.0
 2025,Niassa,Cidade de Lichinga,Janeiro,26.0
-2025,Niassa,Niassa,Dezembro,85.0
 2025,Cabo Delgado,Nangade,Outubro,0.0
-2025,Niassa,Niassa,Novembro,59.0
-2025,Niassa,Niassa,Setembro,61.0
-2025,Niassa,Niassa,Agosto,61.0
-2025,Niassa,Niassa,Julho,60.0
-2025,Niassa,Niassa,Junho,60.0
-2025,Niassa,Niassa,Maio,60.0
-2025,Niassa,Niassa,Abril,60.0
-2025,Niassa,Niassa,Março,60.0
-2025,Niassa,Niassa,Fevereiro,60.0
-2025,Niassa,Niassa,Janeiro,60.0
 2025,Cabo Delgado,Quissanga,Dezembro,2.0
 2025,Cabo Delgado,Quissanga,Novembro,0.0
 2025,Cabo Delgado,Quissanga,Outubro,2.0
-2025,Niassa,Niassa,Outubro,88.0
 2025,Niassa,Manjune,Julho,1.0
 2025,Cabo Delgado,Nangade,Novembro,0.0
 2025,Cabo Delgado,Palma,Janeiro,10.0
@@ -9705,7 +9693,6 @@ Year,Province,District,Month,ATMs_Number
 2025,Cabo Delgado,Cidade de Pemba,Julho,38.0
 2025,Cabo Delgado,Ancuabe,Outubro,1.0
 2025,Nampula,Larde,Dezembro,0.0
-2025,Cabo Delgado,Cabo Delgado,Fevereiro,79.0
 2025,Niassa,Mecula,Fevereiro,2.0
 2025,Niassa,Mecula,Janeiro,2.0
 2025,Niassa,Mecanhelas,Dezembro,2.0
@@ -9718,20 +9705,9 @@ Year,Province,District,Month,ATMs_Number
 2025,Niassa,Mecanhelas,Abril,3.0
 2025,Nampula,Nacala-Velha,Setembro,4.0
 2025,Cabo Delgado,Nangade,Maio,0.0
-2025,Cabo Delgado,Cabo Delgado,Janeiro,79.0
 2025,Cabo Delgado,Nangade,Março,0.0
 2025,Cabo Delgado,Cidade de Pemba,Fevereiro,38.0
 2025,Cabo Delgado,Cidade de Pemba,Janeiro,38.0
-2025,Cabo Delgado,Cabo Delgado,Dezembro,79.0
-2025,Cabo Delgado,Cabo Delgado,Novembro,78.0
-2025,Cabo Delgado,Cabo Delgado,Outubro,80.0
-2025,Cabo Delgado,Cabo Delgado,Setembro,79.0
-2025,Cabo Delgado,Cabo Delgado,Agosto,79.0
-2025,Cabo Delgado,Cabo Delgado,Julho,79.0
-2025,Cabo Delgado,Cabo Delgado,Junho,80.0
-2025,Cabo Delgado,Cabo Delgado,Maio,78.0
-2025,Cabo Delgado,Cabo Delgado,Abril,77.0
-2025,Cabo Delgado,Cabo Delgado,Março,79.0
 2025,Cabo Delgado,Cidade de Pemba,Março,37.0
 2025,Niassa,Mecula,Abril,2.0
 2025,Cabo Delgado,Ancuabe,Setembro,1.0
@@ -9879,7 +9855,6 @@ Year,Province,District,Month,ATMs_Number
 2025,Nampula,Mogincual,Fevereiro,1.0
 2025,Nampula,Memba,Dezembro,1.0
 2025,Zambézia,Mulevala,Fevereiro,0.0
-2025,Zambézia,Zambézia,Dezembro,91.0
 2025,Zambézia,Mocubela,Dezembro,0.0
 2025,Nampula,Mogincual,Outubro,1.0
 2025,Nampula,Mossuril,Março,2.0
@@ -9978,18 +9953,7 @@ Year,Province,District,Month,ATMs_Number
 2025,Nampula,Cidade de Nampula,Março,85.0
 2025,Nampula,Cidade de Nampula,Fevereiro,82.0
 2025,Nampula,Cidade de Nampula,Janeiro,82.0
-2025,Nampula,Nampula,Dezembro,157.0
-2025,Nampula,Nampula,Novembro,161.0
-2025,Nampula,Nampula,Outubro,161.0
-2025,Nampula,Nampula,Setembro,157.0
-2025,Nampula,Nampula,Agosto,157.0
-2025,Nampula,Nampula,Julho,157.0
-2025,Nampula,Nampula,Junho,162.0
-2025,Nampula,Nampula,Maio,162.0
-2025,Nampula,Nampula,Abril,157.0
 2025,Nampula,Cidade de Nampula,Abril,82.0
-2025,Nampula,Nampula,Março,162.0
-2025,Nampula,Nampula,Janeiro,159.0
 2025,Zambézia,Derre,Dezembro,1.0
 2025,Zambézia,Derre,Novembro,1.0
 2025,Zambézia,Derre,Setembro,1.0
@@ -10001,7 +9965,6 @@ Year,Province,District,Month,ATMs_Number
 2025,Nampula,Mossuril,Setembro,2.0
 2025,Nampula,Mossuril,Agosto,2.0
 2025,Nampula,Mossuril,Julho,2.0
-2025,Nampula,Nampula,Fevereiro,159.0
 2025,Zambézia,Luabo,Setembro,0.0
 2025,Nampula,Cidade de Nampula,Maio,85.0
 2025,Nampula,Cidade de Nampula,Julho,82.0
@@ -10253,17 +10216,7 @@ Year,Province,District,Month,ATMs_Number
 2025,Zambézia,Cidade de Quelimane,Março,40.0
 2025,Zambézia,Cidade de Quelimane,Fevereiro,40.0
 2025,Zambézia,Cidade de Quelimane,Janeiro,40.0
-2025,Zambézia,Zambézia,Novembro,92.0
-2025,Zambézia,Zambézia,Outubro,92.0
-2025,Zambézia,Zambézia,Setembro,92.0
-2025,Zambézia,Zambézia,Agosto,92.0
 2025,Zambézia,Cidade de Quelimane,Dezembro,38.0
-2025,Zambézia,Zambézia,Julho,92.0
-2025,Zambézia,Zambézia,Maio,93.0
-2025,Zambézia,Zambézia,Abril,92.0
-2025,Zambézia,Zambézia,Março,93.0
-2025,Zambézia,Zambézia,Fevereiro,92.0
-2025,Zambézia,Zambézia,Janeiro,92.0
 2025,Tete,Marara,Dezembro,0.0
 2025,Tete,Marara,Novembro,1.0
 2025,Tete,Marara,Outubro,1.0
@@ -10271,7 +10224,6 @@ Year,Province,District,Month,ATMs_Number
 2025,Tete,Marara,Agosto,0.0
 2025,Nampula,Nacala-Velha,Julho,4.0
 2025,Zambézia,Cidade de Quelimane,Novembro,39.0
-2025,Zambézia,Zambézia,Junho,94.0
 2025,Cabo Delgado,Meluco,Junho,0.0
 2025,Cabo Delgado,Meluco,Maio,0.0
 2025,Cabo Delgado,Meluco,Abril,0.0
@@ -10399,7 +10351,6 @@ Year,Province,District,Month,ATMs_Number
 2025,Gaza,Bilene-Macia,Dezembro,9.0
 2025,Gaza,Bilene-Macia,Novembro,10.0
 2025,Gaza,Bilene-Macia,Setembro,10.0
-2025,Sofala,Sofala,Dezembro,111.0
 2025,Sofala,Cidade da Beira,Janeiro,80.0
 2025,Sofala,Cidade da Beira,Fevereiro,80.0
 2025,Tete,Angónia,Abril,7.0
@@ -10418,15 +10369,9 @@ Year,Province,District,Month,ATMs_Number
 2025,Tete,Cidade de Tete,Março,48.0
 2025,Tete,Cidade de Tete,Fevereiro,48.0
 2025,Tete,Cidade de Tete,Janeiro,47.0
-2025,Tete,Tete,Dezembro,89.0
-2025,Tete,Tete,Novembro,91.0
 2025,Tete,Cidade de Tete,Novembro,51.0
-2025,Tete,Tete,Outubro,91.0
 2025,Gaza,Chibuto,Abril,4.0
 2025,Gaza,Chibuto,Junho,4.0
-2025,Gaza,Gaza,Junho,70.0
-2025,Gaza,Gaza,Maio,70.0
-2025,Gaza,Gaza,Abril,70.0
 2025,Gaza,Bilene-Macia,Julho,10.0
 2025,Gaza,Chigubo,Março,1.0
 2025,Gaza,Bilene-Macia,Agosto,10.0
@@ -10452,8 +10397,6 @@ Year,Province,District,Month,ATMs_Number
 2025,Gaza,Chibuto,Julho,4.0
 2025,Gaza,Chicualacuala,Julho,2.0
 2025,Tete,Chiuta,Julho,2.0
-2025,Tete,Tete,Setembro,88.0
-2025,Tete,Tete,Julho,86.0
 2025,Tete,Cahora-Bassa,Fevereiro,5.0
 2025,Tete,Cahora-Bassa,Janeiro,5.0
 2025,Tete,Angónia,Dezembro,7.0
@@ -10481,16 +10424,9 @@ Year,Province,District,Month,ATMs_Number
 2025,Manica,Mossurize,Dezembro,2.0
 2025,Manica,Mossurize,Novembro,2.0
 2025,Manica,Sussundenga,Novembro,2.0
-2025,Tete,Tete,Agosto,88.0
 2025,Tete,Cahora-Bassa,Abril,5.0
 2025,Tete,Cahora-Bassa,Junho,5.0
-2025,Tete,Tete,Junho,90.0
-2025,Tete,Tete,Maio,85.0
-2025,Tete,Tete,Abril,85.0
-2025,Tete,Tete,Março,88.0
-2025,Tete,Tete,Fevereiro,88.0
 2025,Tete,Angónia,Maio,7.0
-2025,Tete,Tete,Janeiro,87.0
 2025,Tete,Angónia,Junho,7.0
 2025,Tete,Angónia,Agosto,7.0
 2025,Tete,Changara,Novembro,2.0
@@ -10631,7 +10567,6 @@ Year,Province,District,Month,ATMs_Number
 2025,Manica,Manica,Maio,7.0
 2025,Manica,Manica,Abril,7.0
 2025,Manica,Gondola,Fevereiro,2.0
-2025,Gaza,Gaza,Julho,70.0
 2025,Sofala,Buzi,Agosto,2.0
 2025,Sofala,Buzi,Outubro,2.0
 2025,Tete,Mágoe,Novembro,0.0
@@ -10752,8 +10687,6 @@ Year,Province,District,Month,ATMs_Number
 2025,Sofala,Maringue,Agosto,1.0
 2025,Sofala,Chibabava,Junho,4.0
 2025,Sofala,Nhamatanda,Junho,4.0
-2025,Gaza,Gaza,Agosto,70.0
-2025,Gaza,Gaza,Outubro,70.0
 2025,Inhambane,Panda,Outubro,1.0
 2025,Inhambane,Panda,Setembro,1.0
 2025,Inhambane,Panda,Agosto,1.0
@@ -10810,9 +10743,6 @@ Year,Province,District,Month,ATMs_Number
 2025,Inhambane,Homoine,Outubro,2.0
 2025,Inhambane,Vilankulo,Março,7.0
 2025,Gaza,Mapai,Outubro,1.0
-2025,Sofala,Sofala,Outubro,111.0
-2025,Sofala,Sofala,Setembro,111.0
-2025,Sofala,Sofala,Agosto,111.0
 2025,Inhambane,Inhassoro,Novembro,6.0
 2025,Inhambane,Inhassoro,Outubro,6.0
 2025,Inhambane,Inhassoro,Setembro,5.0
@@ -10843,13 +10773,6 @@ Year,Province,District,Month,ATMs_Number
 2025,Gaza,Limpopo,Dezembro,0.0
 2025,Inhambane,Jangamo,Janeiro,2.0
 2025,Inhambane,Massinga,Novembro,7.0
-2025,Sofala,Sofala,Julho,111.0
-2025,Sofala,Sofala,Junho,115.0
-2025,Sofala,Sofala,Maio,116.0
-2025,Sofala,Sofala,Abril,116.0
-2025,Sofala,Sofala,Março,116.0
-2025,Sofala,Sofala,Fevereiro,116.0
-2025,Sofala,Sofala,Janeiro,116.0
 2025,Inhambane,Zavala (Quissico),Dezembro,4.0
 2025,Inhambane,Zavala (Quissico),Novembro,4.0
 2025,Inhambane,Zavala (Quissico),Outubro,4.0
@@ -10870,9 +10793,6 @@ Year,Province,District,Month,ATMs_Number
 2025,Inhambane,Vilankulo,Junho,7.0
 2025,Gaza,Massangena,Julho,0.0
 2025,Inhambane,Zavala (Quissico),Junho,4.0
-2025,Inhambane,Inhambane,Janeiro,76.0
-2025,Inhambane,Inhambane,Fevereiro,76.0
-2025,Inhambane,Inhambane,Março,76.0
 2025,Inhambane,Cidade de Maxixe,Março,16.0
 2025,Inhambane,Cidade de Maxixe,Fevereiro,16.0
 2025,Inhambane,Cidade de Maxixe,Janeiro,16.0
@@ -10888,9 +10808,6 @@ Year,Province,District,Month,ATMs_Number
 2025,Inhambane,Cidade de Maxixe,Abril,16.0
 2025,Inhambane,Cidade de Inhambane,Março,17.0
 2025,Inhambane,Cidade de Inhambane,Janeiro,17.0
-2025,Inhambane,Inhambane,Dezembro,77.0
-2025,Inhambane,Inhambane,Novembro,77.0
-2025,Inhambane,Inhambane,Outubro,76.0
 2025,Inhambane,Cidade de Inhambane,Outubro,16.0
 2025,Inhambane,Funhaloro,Janeiro,2.0
 2025,Inhambane,Funhaloro,Fevereiro,2.0
@@ -10957,8 +10874,6 @@ Year,Province,District,Month,ATMs_Number
 2025,Inhambane,Homoine,Julho,2.0
 2025,Gaza,Chonguene,Dezembro,0.0
 2025,Gaza,Mapai,Fevereiro,1.0
-2025,Inhambane,Inhambane,Maio,75.0
-2025,Inhambane,Inhambane,Abril,75.0
 2025,Gaza,Massingir,Fevereiro,2.0
 2025,Inhambane,Govuro,Dezembro,2.0
 2025,Gaza,Chonguene,Maio,0.0
@@ -10982,10 +10897,6 @@ Year,Province,District,Month,ATMs_Number
 2025,Inhambane,Funhaloro,Junho,2.0
 2025,Inhambane,Funhaloro,Maio,2.0
 2025,Inhambane,Funhaloro,Abril,2.0
-2025,Inhambane,Inhambane,Setembro,75.0
-2025,Inhambane,Inhambane,Agosto,75.0
-2025,Inhambane,Inhambane,Julho,75.0
-2025,Inhambane,Inhambane,Junho,75.0
 2025,Gaza,Chonguene,Outubro,0.0
 2025,Gaza,Chonguene,Setembro,0.0
 2025,Gaza,Chonguene,Agosto,0.0
@@ -10994,9 +10905,6 @@ Year,Province,District,Month,ATMs_Number
 2025,Inhambane,Jangamo,Maio,2.0
 2025,Inhambane,Massinga,Agosto,6.0
 2025,Província de Maputo,Cidade da Matola,Maio,122.0
-2025,Sofala,Sofala,Novembro,111.0
-2025,Gaza,Gaza,Janeiro,71.0
-2025,Gaza,Gaza,Março,70.0
 2025,Gaza,Guijá,Agosto,1.0
 2025,Gaza,Guijá,Julho,1.0
 2025,Gaza,Guijá,Junho,1.0
@@ -11056,7 +10964,6 @@ Year,Province,District,Month,ATMs_Number
 2025,Gaza,Mabalane,Fevereiro,2.0
 2025,Gaza,Mabalane,Janeiro,2.0
 2025,Gaza,Guijá,Novembro,1.0
-2025,Gaza,Gaza,Fevereiro,70.0
 2025,Gaza,Chigubo,Abril,1.0
 2025,Gaza,Chigubo,Fevereiro,1.0
 2025,Gaza,Bilene-Macia,Junho,10.0
@@ -11077,8 +10984,6 @@ Year,Province,District,Month,ATMs_Number
 2025,Gaza,Cidade de Xai-Xai,Março,31.0
 2025,Gaza,Cidade de Xai-Xai,Fevereiro,31.0
 2025,Gaza,Cidade de Xai-Xai,Janeiro,32.0
-2025,Gaza,Gaza,Dezembro,68.0
-2025,Gaza,Gaza,Novembro,69.0
 2025,Gaza,Cidade de Xai-Xai,Novembro,30.0
 2025,Gaza,Chigubo,Agosto,1.0
 2025,Gaza,Mabalane,Abril,2.0
@@ -11110,7 +11015,6 @@ Year,Province,District,Month,ATMs_Number
 2025,Gaza,Mabalane,Agosto,2.0
 2025,Gaza,Mabalane,Julho,2.0
 2025,Gaza,Manjacaze,Julho,4.0
-2025,Gaza,Gaza,Setembro,70.0
 2025,Niassa,Chimbunhila,Novembro,1.0
 2025,Província de Maputo,Cidade de Maputo,Fevereiro,591.0
 2025,Província de Maputo,Matutuíne,Abril,3.0

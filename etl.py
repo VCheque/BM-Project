@@ -1316,6 +1316,12 @@ def postprocess_csv(path: Path) -> None:
         if "Province" in df.columns:
             maputo_city_mask = (df["Province"] == "Província de Maputo") & (df["District"] == "Maputo")
             df.loc[maputo_city_mask, "District"] = "Cidade de Maputo"
+            if path.name in {"ATM_Infrastructure_2020_2025.csv", "POS_Infrastructure_2020_2025.csv"}:
+                # Remove province-summary rows that leak into district field in infrastructure files.
+                same_name = df["District"].astype(str).str.strip() == df["Province"].astype(str).str.strip()
+                valid_same_name_districts = {"Manica", "Cidade de Maputo"}
+                keep_valid = df["District"].astype(str).isin(valid_same_name_districts)
+                df = df[~(same_name & ~keep_valid)].copy()
 
     # Keep numeric columns non-negative for stock/flow counts.
     num_cols = df.select_dtypes(include=["number"]).columns
