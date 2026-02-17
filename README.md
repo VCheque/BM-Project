@@ -20,6 +20,7 @@ Streamlit dashboard for analyzing Banco de Moçambique electronic banking statis
 - Banco de Moçambique workbooks: `banca-electronica-YYYY.xlsx`
 - INE Census 2017 provincial aggregates (maintained in ETL and exported to `census_2017_provinces.csv`)
 - Banco de Moçambique IME workbook (district depth): `instituições-de-moeda-electrónica-2025.xlsx`
+- INCM Acervo telecom benchmark (Q2 2025): total mobile subscribers by province (`https://acervo.incm.gov.mz/#/public/telecom`)
 
 ## Architecture
 
@@ -148,6 +149,7 @@ Raw Excel (BoM) + Census constants (INE)
 - Forecasting uses model selection across naive/seasonal/linear/quadratic candidates and remains scenario-oriented.
 - Forecasts are statistical projections, not causal estimates. Missing 2023 may affect trend continuity.
 - Mobile Wallet forecasts currently rely on 12 monthly observations (2025); interpretation is short-term oriented. Default IME forecast horizon is 3 months.
+- INCM subscriber totals are used as market baseline context (penetration/capacity/usage intensity), and represent service subscriptions rather than unique individuals.
 - District-level inclusion is not directly observed; in district comparator, inclusion is displayed as province-level context.
 - IME district-level detail is currently available from the official 2025 workbook; 2020-2025 continuity remains national/provincial in base BoM electronic-banking series.
 - Opportunity score is a prioritization heuristic, not a causal impact model.

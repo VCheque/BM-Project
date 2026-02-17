@@ -285,6 +285,24 @@ ime_txn_district_df = clean_ime_district_rows(dataframes.get("ime_transactions_d
 access_points_df = dataframes.get("access_points_district", pd.DataFrame())
 fi_indicators_df = dataframes.get("fi_indicators_2020_2025q3", pd.DataFrame())
 
+INCM_SOURCE_TELECOM_URL = "https://acervo.incm.gov.mz/#/public/telecom"
+BOM_SOURCE_STATS_URL = "https://www.bancomoc.mz/pt/areas-de-actuacao/estatisticas/dominios-e-indicadores-estatisticos/"
+INCM_MOBILE_SUBSCRIBERS_Q2_2025 = pd.DataFrame(
+    [
+        {"Province": "Cabo Delgado", "Mobile_Subscribers": 281_349},
+        {"Province": "Gaza", "Mobile_Subscribers": 311_521},
+        {"Province": "Inhambane", "Mobile_Subscribers": 388_663},
+        {"Province": "Manica", "Mobile_Subscribers": 260_848},
+        # Harmonized to app geography: Maputo Cidade + Maputo Província.
+        {"Province": "Província de Maputo", "Mobile_Subscribers": 1_724_294},
+        {"Province": "Nampula", "Mobile_Subscribers": 624_051},
+        {"Province": "Niassa", "Mobile_Subscribers": 136_983},
+        {"Province": "Sofala", "Mobile_Subscribers": 469_984},
+        {"Province": "Tete", "Mobile_Subscribers": 344_432},
+        {"Province": "Zambézia", "Mobile_Subscribers": 471_814},
+    ]
+)
+
 # ── Sidebar: language toggle + global filters ─────────────────────────────
 lang_col1, lang_col2 = st.sidebar.columns(2)
 with lang_col1:
@@ -443,6 +461,10 @@ def render_page_caveats(extra_notes: list[str] | None = None) -> None:
             st.write("- O detalhe distrital de Carteira Móvel cobre 2025 e é usado como fotografia de profundidade.")
             st.write("- Previsões de Carteira Móvel usam 12 observações mensais (2025), adequadas sobretudo para curto prazo.")
             st.write("- Cidade de Maputo é incluída em Província de Maputo para harmonização geográfica.")
+            st.markdown(
+                f"Fontes oficiais: [INCM Acervo]({INCM_SOURCE_TELECOM_URL}) · "
+                f"[Banco de Moçambique]({BOM_SOURCE_STATS_URL})"
+            )
             if extra_notes:
                 for note in extra_notes:
                     st.write(f"- {note}")
@@ -455,6 +477,10 @@ def render_page_caveats(extra_notes: list[str] | None = None) -> None:
             st.write("- Mobile Wallet district depth currently covers 2025 and is treated as a current-state view.")
             st.write("- Mobile Wallet forecasts use 12 monthly observations (2025), mainly suitable for short-term reading.")
             st.write("- Cidade de Maputo is included under Província de Maputo for harmonized geographic reporting.")
+            st.markdown(
+                f"Official sources: [INCM Acervo]({INCM_SOURCE_TELECOM_URL}) · "
+                f"[Bank of Mozambique]({BOM_SOURCE_STATS_URL})"
+            )
             if extra_notes:
                 for note in extra_notes:
                     st.write(f"- {note}")
@@ -1082,6 +1108,152 @@ with tab_ime:
             f"Pagamentos ({ime_measure})",
             format_compact(tx_totals["Pagamentos"]),
         )
+
+        st.markdown("---")
+        st.subheader(
+            "Baseline de mercado móvel (INCM)"
+            if st.session_state.lang == "PT"
+            else "Mobile market baseline (INCM)",
+            help=(
+                "INCM, 2025 T2: total de subscritores móveis por província. "
+                "Usado como contexto de mercado para leitura de penetração de Carteira Móvel. "
+                "Subscritores representam subscrições de serviço (não pessoas únicas)."
+                if st.session_state.lang == "PT"
+                else "INCM, 2025 Q2: total mobile subscribers by province. "
+                "Used as market context for Mobile Wallet penetration reading. "
+                "Subscribers represent service subscriptions (not unique people)."
+            ),
+        )
+        st.caption(
+            f"[INCM Acervo]({INCM_SOURCE_TELECOM_URL}) · "
+            + (
+                "Período de referência: 2025 T2."
+                if st.session_state.lang == "PT"
+                else "Reference period: 2025 Q2."
+            )
+        )
+
+        incm_scope = INCM_MOBILE_SUBSCRIBERS_Q2_2025.copy()
+        if selected_prov:
+            incm_scope = incm_scope[incm_scope["Province"].isin(selected_prov)]
+        if not incm_scope.empty:
+            fig_incm = px.bar(
+                incm_scope.sort_values("Mobile_Subscribers", ascending=False),
+                x="Province",
+                y="Mobile_Subscribers",
+                text=[format_compact(v) for v in incm_scope.sort_values("Mobile_Subscribers", ascending=False)["Mobile_Subscribers"]],
+                title=(
+                    "Total de subscritores móveis por província (INCM)"
+                    if st.session_state.lang == "PT"
+                    else "Total mobile subscribers by province (INCM)"
+                ),
+            )
+            fig_incm.update_layout(xaxis_tickangle=-20, yaxis=dict(rangemode="tozero"), height=360)
+            plot_chart(fig_incm, use_container_width=True)
+        else:
+            st.info(
+                "Sem dados INCM no recorte geográfico atual."
+                if st.session_state.lang == "PT"
+                else "No INCM data for current geographic scope."
+            )
+
+        ratio_month_ref = "Junho" if "Junho" in available_months else (ime_month if ime_month else (available_months[-1] if available_months else None))
+        if ratio_month_ref is not None:
+            sub_prov_ref = (
+                sub_year[(sub_year["Province"].isin(ime_prov)) & (sub_year["Month"].astype(str) == ratio_month_ref)]
+                .groupby("Province", as_index=False)["Subscribers"]
+                .sum()
+            )
+            ag_prov_ref = (
+                ag_year[(ag_year["Province"].isin(ime_prov)) & (ag_year["Month"].astype(str) == ratio_month_ref)]
+                .groupby("Province", as_index=False)["Agents"]
+                .sum()
+            )
+            tx_prov_ref = (
+                tx_year[(tx_year["Province"].isin(ime_prov)) & (tx_year["Month"].astype(str) == ratio_month_ref)]
+                .groupby("Province", as_index=False)
+                .agg(Tx_Value=("Value", "sum"), Tx_Volume=("Volume", "sum"))
+            )
+            incm_ratio_scope = INCM_MOBILE_SUBSCRIBERS_Q2_2025[INCM_MOBILE_SUBSCRIBERS_Q2_2025["Province"].isin(ime_prov)].copy()
+            ratio_df = (
+                incm_ratio_scope
+                .merge(sub_prov_ref, on="Province", how="left")
+                .merge(ag_prov_ref, on="Province", how="left")
+                .merge(tx_prov_ref, on="Province", how="left")
+            )
+            for col in ["Subscribers", "Agents", "Tx_Value", "Tx_Volume"]:
+                ratio_df[col] = pd.to_numeric(ratio_df[col], errors="coerce").fillna(0.0)
+            ratio_df["Wallet_Penetration"] = ratio_df.apply(
+                lambda r: (r["Subscribers"] / r["Mobile_Subscribers"]) if r["Mobile_Subscribers"] > 0 else 0.0,
+                axis=1,
+            )
+            ratio_df["Agents_per_10k_Mobile"] = ratio_df.apply(
+                lambda r: (r["Agents"] / r["Mobile_Subscribers"] * 10_000) if r["Mobile_Subscribers"] > 0 else 0.0,
+                axis=1,
+            )
+            ratio_df["Tx_Value_per_Mobile"] = ratio_df.apply(
+                lambda r: (r["Tx_Value"] / r["Mobile_Subscribers"]) if r["Mobile_Subscribers"] > 0 else 0.0,
+                axis=1,
+            )
+            ratio_df["Tx_Volume_per_Mobile"] = ratio_df.apply(
+                lambda r: (r["Tx_Volume"] / r["Mobile_Subscribers"]) if r["Mobile_Subscribers"] > 0 else 0.0,
+                axis=1,
+            )
+
+            total_mobile = ratio_df["Mobile_Subscribers"].sum()
+            total_subs_ref = ratio_df["Subscribers"].sum()
+            total_agents_ref = ratio_df["Agents"].sum()
+            total_tx_value_ref = ratio_df["Tx_Value"].sum()
+            total_tx_volume_ref = ratio_df["Tx_Volume"].sum()
+            pen_total = (total_subs_ref / total_mobile) if total_mobile > 0 else 0.0
+            ag_10k_total = (total_agents_ref / total_mobile * 10_000) if total_mobile > 0 else 0.0
+            value_per_mobile_total = (total_tx_value_ref / total_mobile) if total_mobile > 0 else 0.0
+            volume_per_mobile_total = (total_tx_volume_ref / total_mobile) if total_mobile > 0 else 0.0
+
+            st.caption(
+                (
+                    f"Leitura de oportunidade com IME de {localize_month(ratio_month_ref)} {ime_year}, "
+                    "alinhada ao baseline INCM 2025 T2."
+                )
+                if st.session_state.lang == "PT"
+                else (
+                    f"Opportunity lens uses IME data from {localize_month(ratio_month_ref)} {ime_year}, "
+                    "aligned with INCM 2025 Q2 baseline."
+                )
+            )
+            l1, l2, l3, l4 = st.columns(4)
+            l1.metric(
+                "Penetração de Carteira Móvel" if st.session_state.lang == "PT" else "Mobile Wallet penetration",
+                f"{pen_total*100:.1f}%",
+            )
+            l2.metric(
+                "Agentes por 10 mil subscritores móveis" if st.session_state.lang == "PT" else "Agents per 10k mobile subscribers",
+                f"{ag_10k_total:.1f}",
+            )
+            l3.metric(
+                "Valor por subscritor móvel" if st.session_state.lang == "PT" else "Value per mobile subscriber",
+                format_compact(value_per_mobile_total),
+            )
+            l4.metric(
+                "Volume por subscritor móvel" if st.session_state.lang == "PT" else "Volume per mobile subscriber",
+                format_compact(volume_per_mobile_total),
+            )
+
+            pen_plot = ratio_df.sort_values("Wallet_Penetration", ascending=False).copy()
+            pen_plot["Wallet_Penetration_Pct"] = pen_plot["Wallet_Penetration"] * 100
+            fig_pen = px.bar(
+                pen_plot,
+                x="Province",
+                y="Wallet_Penetration_Pct",
+                text=[f"{v:.1f}%" for v in pen_plot["Wallet_Penetration_Pct"]],
+                title=(
+                    "Penetração de Carteira Móvel por província (IME/INCM)"
+                    if st.session_state.lang == "PT"
+                    else "Mobile Wallet penetration by province (IME/INCM)"
+                ),
+            )
+            fig_pen.update_layout(xaxis_tickangle=-20, yaxis=dict(rangemode="tozero"), height=360)
+            plot_chart(fig_pen, use_container_width=True)
 
         c1, c2 = st.columns(2)
         with c1:
@@ -2824,6 +2996,17 @@ with tab_decision:
         else (
             "ℹ️ Definitions: digital momentum = growth of Mobile Wallet subscribers over the year; "
             "infrastructure gap = lower ATM+POS density per 100k population."
+        )
+    )
+    st.caption(
+        (
+            f"Contexto adicional de mercado móvel: [INCM Acervo]({INCM_SOURCE_TELECOM_URL}) (2025 T2). "
+            "Uso contextual; não substitui indicadores oficiais de inclusão do Banco de Moçambique."
+        )
+        if st.session_state.lang == "PT"
+        else (
+            f"Additional mobile-market context: [INCM Acervo]({INCM_SOURCE_TELECOM_URL}) (2025 Q2). "
+            "Context use only; does not replace official Bank of Mozambique inclusion indicators."
         )
     )
 
