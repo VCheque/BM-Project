@@ -1022,7 +1022,8 @@ def render_deterministic_qa_panel(opp_df: pd.DataFrame | None = None, key_prefix
             else "Mobile Banking indicator refers to bank apps, not total mobile-wallet accounts."
         )
     elif q_id == "cross_channel_flow_trend":
-        ime_scope = apply_geo_only(ime_txn_district_df.copy()) if not ime_txn_district_df.empty else pd.DataFrame()
+        # This comparison is intentionally fixed to national multi-year scope for temporal readability.
+        ime_scope = ime_txn_district_df.copy() if not ime_txn_district_df.empty else pd.DataFrame()
 
         if ime_scope.empty:
             answer = (
@@ -1121,9 +1122,9 @@ def render_deterministic_qa_panel(opp_df: pd.DataFrame | None = None, key_prefix
                 extra_charts = [fig_vol, fig_val]
         source = "IME_Transactions_District_2023_2025.csv + Mobile_Banking_2020_2025.csv + Internet_Banking_2020_2025.csv"
         caveat = (
-            "Comparação entre canais com escopos de reporte diferentes; usar como leitura direccional."
+            "Comparação nacional multi-anual (ignora filtros laterais) e com escopos de reporte diferentes; usar como leitura direccional."
             if st.session_state.lang == "PT"
-            else "Cross-channel comparison uses different reporting scopes; treat as directional reading."
+            else "National multi-year comparison (ignores sidebar filters) and uses different reporting scopes; treat as directional reading."
         )
     elif q_id in {"official_accounts_change", "official_cards_change"}:
         indicator = "Contas bancárias (por 100 adultos)" if q_id == "official_accounts_change" else "Cartões bancários (por 100 adultos)"
@@ -1927,7 +1928,7 @@ with tab_overview:
 
         bridge_m1, bridge_m2, bridge_m3 = st.columns(3)
         bridge_m1.metric(
-            "Transferências MB → telemóveis (valor)" if st.session_state.lang == "PT" else "MB transfers → mobile (value)",
+            "Transferências Mobile Banking → telemóveis (valor)" if st.session_state.lang == "PT" else "Mobile Banking transfers → mobile (value)",
             format_compact(float(bridge_row["MB_To_Wallet_Value"])),
         )
         bridge_m2.metric(
@@ -1944,68 +1945,58 @@ with tab_overview:
             "N/A" if math.isnan(cashout_ratio) else f"{cashout_ratio:.2f}x",
         )
 
-        bridge_c1, bridge_c2 = st.columns(2)
-        with bridge_c1:
-            value_long = bridge_annual.melt(
+        bridge_value_opt = "Valor" if st.session_state.lang == "PT" else "Value"
+        bridge_volume_opt = "Volume"
+        bridge_metric_view = single_choice_toggle(
+            "Métrica da série" if st.session_state.lang == "PT" else "Series metric",
+            [bridge_value_opt, bridge_volume_opt],
+            key="overview_bridge_metric_toggle",
+        )
+
+        if bridge_metric_view == bridge_value_opt:
+            bridge_long = bridge_annual.melt(
                 id_vars=["Year"],
                 value_vars=["MB_To_Wallet_Value", "ATM_Wallet_Withdrawals_Value"],
                 var_name="Metric",
                 value_name="Value",
             )
-            value_labels = {
-                "MB_To_Wallet_Value": "MB → telemóveis" if st.session_state.lang == "PT" else "MB → mobile",
+            chart_title = "Série anual (valor)" if st.session_state.lang == "PT" else "Annual series (value)"
+            metric_labels = {
+                "MB_To_Wallet_Value": "Mobile Banking → telemóveis" if st.session_state.lang == "PT" else "Mobile Banking → mobile",
                 "ATM_Wallet_Withdrawals_Value": (
                     "Levantamentos ATM (fundos em telemóveis)"
                     if st.session_state.lang == "PT"
                     else "ATM withdrawals (mobile-wallet funds)"
                 ),
             }
-            value_long["Metric"] = value_long["Metric"].map(value_labels)
-            fig_bridge_value = px.line(
-                value_long,
-                x="Year",
-                y="Value",
-                color="Metric",
-                markers=True,
-                title=(
-                    "Série anual (valor)"
-                    if st.session_state.lang == "PT"
-                    else "Annual series (value)"
-                ),
-            )
-            fig_bridge_value.update_layout(xaxis=dict(dtick=1), yaxis=dict(rangemode="tozero"))
-            plot_chart(fig_bridge_value, use_container_width=True)
-
-        with bridge_c2:
-            vol_long = bridge_annual.melt(
+        else:
+            bridge_long = bridge_annual.melt(
                 id_vars=["Year"],
                 value_vars=["MB_To_Wallet_Volume", "ATM_Wallet_Withdrawals_Volume"],
                 var_name="Metric",
                 value_name="Value",
             )
-            vol_labels = {
-                "MB_To_Wallet_Volume": "MB → telemóveis" if st.session_state.lang == "PT" else "MB → mobile",
+            chart_title = "Série anual (volume)" if st.session_state.lang == "PT" else "Annual series (volume)"
+            metric_labels = {
+                "MB_To_Wallet_Volume": "Mobile Banking → telemóveis" if st.session_state.lang == "PT" else "Mobile Banking → mobile",
                 "ATM_Wallet_Withdrawals_Volume": (
                     "Levantamentos ATM (fundos em telemóveis)"
                     if st.session_state.lang == "PT"
                     else "ATM withdrawals (mobile-wallet funds)"
                 ),
             }
-            vol_long["Metric"] = vol_long["Metric"].map(vol_labels)
-            fig_bridge_vol = px.line(
-                vol_long,
-                x="Year",
-                y="Value",
-                color="Metric",
-                markers=True,
-                title=(
-                    "Série anual (volume)"
-                    if st.session_state.lang == "PT"
-                    else "Annual series (volume)"
-                ),
-            )
-            fig_bridge_vol.update_layout(xaxis=dict(dtick=1), yaxis=dict(rangemode="tozero"))
-            plot_chart(fig_bridge_vol, use_container_width=True)
+
+        bridge_long["Metric"] = bridge_long["Metric"].map(metric_labels)
+        fig_bridge = px.line(
+            bridge_long,
+            x="Year",
+            y="Value",
+            color="Metric",
+            markers=True,
+            title=chart_title,
+        )
+        fig_bridge.update_layout(xaxis=dict(dtick=1), yaxis=dict(rangemode="tozero"), height=460)
+        plot_chart(fig_bridge, use_container_width=True)
 
         st.caption(
             "Nota: a leitura mostra co-movimento estatístico entre séries; não estabelece relação causal."
