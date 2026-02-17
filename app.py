@@ -1116,11 +1116,11 @@ with tab_ime:
             else "Mobile market baseline (INCM)",
             help=(
                 "INCM, 2025 T2: total de subscritores móveis por província. "
-                "Usado como contexto de mercado para leitura de penetração de Carteira Móvel. "
+                "Usado como contexto de mercado para leitura de intensidade relativa IME/INCM. "
                 "Subscritores representam subscrições de serviço (não pessoas únicas)."
                 if st.session_state.lang == "PT"
                 else "INCM, 2025 Q2: total mobile subscribers by province. "
-                "Used as market context for Mobile Wallet penetration reading. "
+                "Used as market context for IME/INCM relative intensity reading. "
                 "Subscribers represent service subscriptions (not unique people)."
             ),
         )
@@ -1187,6 +1187,7 @@ with tab_ime:
                 lambda r: (r["Subscribers"] / r["Mobile_Subscribers"]) if r["Mobile_Subscribers"] > 0 else 0.0,
                 axis=1,
             )
+            ratio_df["IME_INCM_Index_per_100"] = ratio_df["Wallet_Penetration"] * 100
             ratio_df["Agents_per_10k_Mobile"] = ratio_df.apply(
                 lambda r: (r["Agents"] / r["Mobile_Subscribers"] * 10_000) if r["Mobile_Subscribers"] > 0 else 0.0,
                 axis=1,
@@ -1206,6 +1207,7 @@ with tab_ime:
             total_tx_value_ref = ratio_df["Tx_Value"].sum()
             total_tx_volume_ref = ratio_df["Tx_Volume"].sum()
             pen_total = (total_subs_ref / total_mobile) if total_mobile > 0 else 0.0
+            ime_incm_index_total = pen_total * 100
             ag_10k_total = (total_agents_ref / total_mobile * 10_000) if total_mobile > 0 else 0.0
             value_per_mobile_total = (total_tx_value_ref / total_mobile) if total_mobile > 0 else 0.0
             volume_per_mobile_total = (total_tx_volume_ref / total_mobile) if total_mobile > 0 else 0.0
@@ -1223,8 +1225,8 @@ with tab_ime:
             )
             l1, l2, l3, l4 = st.columns(4)
             l1.metric(
-                "Penetração de Carteira Móvel" if st.session_state.lang == "PT" else "Mobile Wallet penetration",
-                f"{pen_total*100:.1f}%",
+                "Índice IME/INCM (por 100)" if st.session_state.lang == "PT" else "IME/INCM index (per 100)",
+                f"{ime_incm_index_total:.1f}",
             )
             l2.metric(
                 "Agentes por 10 mil subscritores móveis" if st.session_state.lang == "PT" else "Agents per 10k mobile subscribers",
@@ -1238,18 +1240,24 @@ with tab_ime:
                 "Volume por subscritor móvel" if st.session_state.lang == "PT" else "Volume per mobile subscriber",
                 format_compact(volume_per_mobile_total),
             )
+            st.caption(
+                "ℹ️ O índice IME/INCM pode exceder 100 porque compara subscrições/reportes de serviço (não pessoas únicas). "
+                "Usar como sinal relativo entre províncias."
+                if st.session_state.lang == "PT"
+                else "ℹ️ The IME/INCM index may exceed 100 because it compares service subscriptions/reporting (not unique people). "
+                "Use it as a relative cross-province signal."
+            )
 
-            pen_plot = ratio_df.sort_values("Wallet_Penetration", ascending=False).copy()
-            pen_plot["Wallet_Penetration_Pct"] = pen_plot["Wallet_Penetration"] * 100
+            pen_plot = ratio_df.sort_values("IME_INCM_Index_per_100", ascending=False).copy()
             fig_pen = px.bar(
                 pen_plot,
                 x="Province",
-                y="Wallet_Penetration_Pct",
-                text=[f"{v:.1f}%" for v in pen_plot["Wallet_Penetration_Pct"]],
+                y="IME_INCM_Index_per_100",
+                text=[f"{v:.1f}" for v in pen_plot["IME_INCM_Index_per_100"]],
                 title=(
-                    "Penetração de Carteira Móvel por província (IME/INCM)"
+                    "Índice IME/INCM por província (subscrições por 100)"
                     if st.session_state.lang == "PT"
-                    else "Mobile Wallet penetration by province (IME/INCM)"
+                    else "IME/INCM index by province (subscriptions per 100)"
                 ),
             )
             fig_pen.update_layout(xaxis_tickangle=-20, yaxis=dict(rangemode="tozero"), height=360)
@@ -3358,6 +3366,8 @@ with tab_decision:
         ("Como evoluiu o indicador oficial de contas por adulto desde 2020?", "official_accounts_change"),
         ("Como evoluiu o indicador oficial de cartões por adulto desde 2020?", "official_cards_change"),
         ("Quais são as 3 províncias com maior pontuação de oportunidade?", "opp_top3"),
+        ("Que província lidera no índice IME/INCM (subscrições por 100)?", "incm_top_index"),
+        ("Que província tem menor capacidade de agentes por 10 mil subscritores móveis?", "incm_low_agent_capacity"),
         ("Qual a quota feminina de contas e cartões no recorte atual?", "gender_shares"),
         ("Qual a quota da faixa 17-21 em contas e cartões no recorte atual?", "age_17_21_shares"),
         ("[Stock] Quantas contas existem no último snapshot?", "stock_accounts"),
@@ -3374,6 +3384,8 @@ with tab_decision:
         ("How has the official accounts-per-adult indicator changed since 2020?", "official_accounts_change"),
         ("How has the official cards-per-adult indicator changed since 2020?", "official_cards_change"),
         ("Which are the top 3 provinces by opportunity score?", "opp_top3"),
+        ("Which province leads the IME/INCM index (subscriptions per 100)?", "incm_top_index"),
+        ("Which province has the lowest agent capacity per 10k mobile subscribers?", "incm_low_agent_capacity"),
         ("What is the female share in accounts and cards for the current scope?", "gender_shares"),
         ("What is the 17-21 age share in accounts and cards for the current scope?", "age_17_21_shares"),
         ("[Stock] How many accounts exist in the latest snapshot?", "stock_accounts"),
@@ -3416,6 +3428,55 @@ with tab_decision:
 
     month_rank = {"Janeiro": 1, "Fevereiro": 2, "Março": 3, "Abril": 4, "Maio": 5, "Junho": 6,
                   "Julho": 7, "Agosto": 8, "Setembro": 9, "Outubro": 10, "Novembro": 11, "Dezembro": 12}
+    incm_benchmark_q = pd.DataFrame()
+    if ime_year_q is not None:
+        month_series = ime_sub_df[ime_sub_df["Year"] == ime_year_q]["Month"].dropna().astype(str).unique().tolist()
+        month_ref_q = "Junho" if "Junho" in month_series else (max(month_series, key=lambda m: month_rank.get(m, 0)) if month_series else None)
+        if month_ref_q is not None:
+            ime_prov_scope_q = sorted(set(selected_prov) & set(INCM_MOBILE_SUBSCRIBERS_Q2_2025["Province"].astype(str).tolist()))
+            sub_prov_q = (
+                ime_sub_df[
+                    (ime_sub_df["Year"] == ime_year_q)
+                    & (ime_sub_df["Month"].astype(str) == month_ref_q)
+                    & (ime_sub_df["Province"].isin(ime_prov_scope_q))
+                ]
+                .groupby("Province", as_index=False)["Subscribers"]
+                .sum()
+            )
+            ag_prov_q = (
+                ime_agents_df[
+                    (ime_agents_df["Year"] == ime_year_q)
+                    & (ime_agents_df["Month"].astype(str) == month_ref_q)
+                    & (ime_agents_df["Province"].isin(ime_prov_scope_q))
+                ]
+                .groupby("Province", as_index=False)["Agents"]
+                .sum()
+            )
+            tx_prov_q = (
+                ime_txn_district_df[
+                    (ime_txn_district_df["Year"] == ime_year_q)
+                    & (ime_txn_district_df["Month"].astype(str) == month_ref_q)
+                    & (ime_txn_district_df["Province"].isin(ime_prov_scope_q))
+                ]
+                .groupby("Province", as_index=False)
+                .agg(Tx_Value=("Value", "sum"))
+            )
+            incm_benchmark_q = (
+                INCM_MOBILE_SUBSCRIBERS_Q2_2025[INCM_MOBILE_SUBSCRIBERS_Q2_2025["Province"].isin(ime_prov_scope_q)]
+                .merge(sub_prov_q, on="Province", how="left")
+                .merge(ag_prov_q, on="Province", how="left")
+                .merge(tx_prov_q, on="Province", how="left")
+            )
+            for col in ["Subscribers", "Agents", "Tx_Value"]:
+                incm_benchmark_q[col] = pd.to_numeric(incm_benchmark_q[col], errors="coerce").fillna(0.0)
+            incm_benchmark_q["IME_INCM_Index_per_100"] = incm_benchmark_q.apply(
+                lambda r: (r["Subscribers"] / r["Mobile_Subscribers"] * 100) if r["Mobile_Subscribers"] > 0 else 0.0,
+                axis=1,
+            )
+            incm_benchmark_q["Agents_per_10k_Mobile"] = incm_benchmark_q.apply(
+                lambda r: (r["Agents"] / r["Mobile_Subscribers"] * 10_000) if r["Mobile_Subscribers"] > 0 else 0.0,
+                axis=1,
+            )
 
     if q_id == "ime_top_value":
         if ime_tx_q.empty:
@@ -3510,6 +3571,48 @@ with tab_decision:
             answer = "Sem dados de oportunidade no recorte atual." if st.session_state.lang == "PT" else "No opportunity data for current scope."
         source = "Opportunity score (derived from Mobile Wallet + stock + infrastructure datasets)"
         caveat = "Pontuação de priorização, não causalidade." if st.session_state.lang == "PT" else "Prioritization score, not causality."
+    elif q_id == "incm_top_index":
+        if incm_benchmark_q.empty:
+            answer = "Sem dados INCM/IME suficientes no recorte atual." if st.session_state.lang == "PT" else "Insufficient INCM/IME data in current scope."
+        else:
+            top = incm_benchmark_q.sort_values("IME_INCM_Index_per_100", ascending=False).head(1)
+            if top.empty:
+                answer = "Sem dados suficientes." if st.session_state.lang == "PT" else "Insufficient data."
+            else:
+                prov = str(top.iloc[0]["Province"])
+                idx = float(top.iloc[0]["IME_INCM_Index_per_100"])
+                answer = (
+                    f"{prov} lidera com índice IME/INCM de {idx:.1f} subscrições por 100 subscritores móveis."
+                    if st.session_state.lang == "PT"
+                    else f"{prov} leads with an IME/INCM index of {idx:.1f} subscriptions per 100 mobile subscribers."
+                )
+        source = "INCM Acervo (Q2 2025) + IME_Subscribers_District_2025.csv"
+        caveat = (
+            "Índice relativo (não representa pessoas únicas) e pode exceder 100."
+            if st.session_state.lang == "PT"
+            else "Relative index (not unique persons) and may exceed 100."
+        )
+    elif q_id == "incm_low_agent_capacity":
+        if incm_benchmark_q.empty:
+            answer = "Sem dados INCM/IME suficientes no recorte atual." if st.session_state.lang == "PT" else "Insufficient INCM/IME data in current scope."
+        else:
+            low = incm_benchmark_q.sort_values("Agents_per_10k_Mobile", ascending=True).head(1)
+            if low.empty:
+                answer = "Sem dados suficientes." if st.session_state.lang == "PT" else "Insufficient data."
+            else:
+                prov = str(low.iloc[0]["Province"])
+                cap = float(low.iloc[0]["Agents_per_10k_Mobile"])
+                answer = (
+                    f"{prov} apresenta a menor capacidade, com {cap:.1f} agentes por 10 mil subscritores móveis."
+                    if st.session_state.lang == "PT"
+                    else f"{prov} has the lowest capacity at {cap:.1f} agents per 10k mobile subscribers."
+                )
+        source = "INCM Acervo (Q2 2025) + IME_Agents_District_2025.csv"
+        caveat = (
+            "Leitura de capacidade relativa; não mede qualidade de serviço."
+            if st.session_state.lang == "PT"
+            else "Relative capacity reading; does not measure service quality."
+        )
     elif q_id == "gender_shares":
         acc_total = f_acc_snap["Total_Accounts"].sum()
         card_total = f_card_snap["Total_Cards"].sum()

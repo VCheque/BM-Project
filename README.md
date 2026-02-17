@@ -149,7 +149,7 @@ Raw Excel (BoM) + Census constants (INE)
 - Forecasting uses model selection across naive/seasonal/linear/quadratic candidates and remains scenario-oriented.
 - Forecasts are statistical projections, not causal estimates. Missing 2023 may affect trend continuity.
 - Mobile Wallet forecasts currently rely on 12 monthly observations (2025); interpretation is short-term oriented. Default IME forecast horizon is 3 months.
-- INCM subscriber totals are used as market baseline context (penetration/capacity/usage intensity), and represent service subscriptions rather than unique individuals.
+- INCM subscriber totals are used as market baseline context (IME/INCM relative index, capacity, and usage intensity), and represent service subscriptions rather than unique individuals.
 - District-level inclusion is not directly observed; in district comparator, inclusion is displayed as province-level context.
 - IME district-level detail is currently available from the official 2025 workbook; 2020-2025 continuity remains national/provincial in base BoM electronic-banking series.
 - Opportunity score is a prioritization heuristic, not a causal impact model.
