@@ -1,13 +1,13 @@
 Year,Quarter,Level,Province,District,Metric,Value
-2025,Q3,Province,Cidade de Maputo,,Agências(1),209.0
-2025,Q3,Province,Cidade de Maputo,,Agências Microbancos e Cooperativas de Crédito,13.0
-2025,Q3,Province,Cidade de Maputo,,Agentes Bancários (2),35.0
-2025,Q3,Province,Cidade de Maputo,,Agentes Não Bancários (IME) (3),62426.0
-2025,Q3,Province,Cidade de Maputo,,Operadores de Microcrédito,1590.0
-2025,Q3,Province,Cidade de Maputo,,Instituições Seguradoras,51.0
-2025,Q3,Province,Cidade de Maputo,,ATM,397.0
-2025,Q3,Province,Cidade de Maputo,,POS,13298.0
-2025,Q3,Province,Cidade de Maputo,,TOTAL,78019.0
+2025,Q3,Province,Cidade de Maputo,nan,Agências(1),209.0
+2025,Q3,Province,Cidade de Maputo,nan,Agências Microbancos e Cooperativas de Crédito,13.0
+2025,Q3,Province,Cidade de Maputo,nan,Agentes Bancários (2),35.0
+2025,Q3,Province,Cidade de Maputo,nan,Agentes Não Bancários (IME) (3),62426.0
+2025,Q3,Province,Cidade de Maputo,nan,Operadores de Microcrédito,1590.0
+2025,Q3,Province,Cidade de Maputo,nan,Instituições Seguradoras,51.0
+2025,Q3,Province,Cidade de Maputo,nan,ATM,397.0
+2025,Q3,Province,Cidade de Maputo,nan,POS,13298.0
+2025,Q3,Province,Cidade de Maputo,nan,TOTAL,78019.0
 2025,Q3,District,Cidade de Maputo,Província de Maputo,Agências(1),68.0
 2025,Q3,District,Cidade de Maputo,Província de Maputo,Agências Microbancos e Cooperativas de Crédito,18.0
 2025,Q3,District,Cidade de Maputo,Província de Maputo,Agentes Bancários (2),39.0
@@ -1169,15 +1169,15 @@ Year,Quarter,Level,Province,District,Metric,Value
 2025,Q3,District,Cidade de Maputo,Liúpo,ATM,0.0
 2025,Q3,District,Cidade de Maputo,Liúpo,POS,0.0
 2025,Q3,District,Cidade de Maputo,Liúpo,TOTAL,80.0
-2025,Q3,District,Cidade de Maputo,Cabo-Delgado,Agências(1),38.0
-2025,Q3,District,Cidade de Maputo,Cabo-Delgado,Agências Microbancos e Cooperativas de Crédito,2.0
-2025,Q3,District,Cidade de Maputo,Cabo-Delgado,Agentes Bancários (2),13.0
-2025,Q3,District,Cidade de Maputo,Cabo-Delgado,Agentes Não Bancários (IME) (3),22991.0
-2025,Q3,District,Cidade de Maputo,Cabo-Delgado,Operadores de Microcrédito,69.0
-2025,Q3,District,Cidade de Maputo,Cabo-Delgado,Instituições Seguradoras,5.0
-2025,Q3,District,Cidade de Maputo,Cabo-Delgado,ATM,79.0
-2025,Q3,District,Cidade de Maputo,Cabo-Delgado,POS,1084.0
-2025,Q3,District,Cidade de Maputo,Cabo-Delgado,TOTAL,24281.0
+2025,Q3,District,Cidade de Maputo,Cabo Delgado,Agências(1),38.0
+2025,Q3,District,Cidade de Maputo,Cabo Delgado,Agências Microbancos e Cooperativas de Crédito,2.0
+2025,Q3,District,Cidade de Maputo,Cabo Delgado,Agentes Bancários (2),13.0
+2025,Q3,District,Cidade de Maputo,Cabo Delgado,Agentes Não Bancários (IME) (3),22991.0
+2025,Q3,District,Cidade de Maputo,Cabo Delgado,Operadores de Microcrédito,69.0
+2025,Q3,District,Cidade de Maputo,Cabo Delgado,Instituições Seguradoras,5.0
+2025,Q3,District,Cidade de Maputo,Cabo Delgado,ATM,79.0
+2025,Q3,District,Cidade de Maputo,Cabo Delgado,POS,1084.0
+2025,Q3,District,Cidade de Maputo,Cabo Delgado,TOTAL,24281.0
 2025,Q3,District,Cidade de Maputo,Pemba,Agências(1),18.0
 2025,Q3,District,Cidade de Maputo,Pemba,Agências Microbancos e Cooperativas de Crédito,2.0
 2025,Q3,District,Cidade de Maputo,Pemba,Agentes Bancários (2),10.0
