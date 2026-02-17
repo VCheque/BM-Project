@@ -457,8 +457,8 @@ def render_page_caveats(extra_notes: list[str] | None = None) -> None:
         with st.expander("Pressupostos e limitações"):
             st.write("- A leitura é feita ao nível do sistema; não há dados por banco/provedor.")
             st.write("- O denominador de inclusão usa extrapolação por coorte com base no Censo 2017.")
-            st.write("- O detalhe distrital de Carteira Móvel cobre actualmente os anos de 2023 e 2025.")
-            st.write("- A leitura distrital de Carteira Móvel cobre apenas os distritos presentes no ficheiro oficial de 2025 reportado pelo Banco de Moçambique.")
+            st.write("- O detalhe distrital de Carteira Móvel cobre actualmente os anos de 2023, 2024 e 2025.")
+            st.write("- A leitura distrital de Carteira Móvel cobre apenas os distritos presentes nos ficheiros oficiais reportados pelo Banco de Moçambique para os anos disponíveis.")
             st.write("- Previsões de Carteira Móvel usam 12 observações mensais (2025), adequadas sobretudo para curto prazo.")
             st.write("- Cidade de Maputo é incluída em Província de Maputo para harmonização geográfica.")
             st.markdown(
@@ -473,8 +473,8 @@ def render_page_caveats(extra_notes: list[str] | None = None) -> None:
         with st.expander("Assumptions and limitations"):
             st.write("- Interpretation is at system level; no bank/provider-level dataset is available.")
             st.write("- Inclusion denominator uses Census 2017 cohort extrapolation.")
-            st.write("- Mobile Wallet district depth currently covers years 2023 and 2025.")
-            st.write("- District-level Mobile Wallet reading covers only districts present in the official 2025 file reported by Banco de Moçambique.")
+            st.write("- Mobile Wallet district depth currently covers years 2023, 2024 and 2025.")
+            st.write("- District-level Mobile Wallet reading covers only districts present in official files reported by Banco de Moçambique for available years.")
             st.write("- Mobile Wallet forecasts use 12 monthly observations (2025), mainly suitable for short-term reading.")
             st.write("- Cidade de Maputo is included under Província de Maputo for harmonized geographic reporting.")
             st.markdown(
@@ -1931,13 +1931,25 @@ with tab_ime:
             else "Mobile Wallet files not found. Run: python etl.py --export-ime"
         )
     else:
-        ime_year = int(pd.to_numeric(ime_sub_df["Year"], errors="coerce").dropna().max())
+        sub_years = set(pd.to_numeric(ime_sub_df["Year"], errors="coerce").dropna().astype(int).tolist())
+        ag_years = set(pd.to_numeric(ime_agents_df["Year"], errors="coerce").dropna().astype(int).tolist())
+        tx_years = set(pd.to_numeric(ime_txn_district_df["Year"], errors="coerce").dropna().astype(int).tolist())
+        ime_year_options = sorted(sub_years & ag_years & tx_years)
+        if not ime_year_options:
+            ime_year_options = sorted(sub_years or ag_years or tx_years)
+        ime_default_year = selected_year if selected_year in ime_year_options else ime_year_options[-1]
+        ime_year = st.selectbox(
+            "Ano (Carteira Móvel)" if st.session_state.lang == "PT" else "Year (Mobile Wallet)",
+            ime_year_options,
+            index=ime_year_options.index(ime_default_year),
+            key="ime_page_year",
+        )
         st.caption(
-            f"ℹ️ Série distrital de Carteira Móvel disponível para {ime_year}. "
+            f"ℹ️ Série distrital de Carteira Móvel disponível para {ime_year_options[0]}-{ime_year_options[-1]}. "
             + (
-                f"A visualização usa {ime_year} independentemente do filtro global de ano."
+                f"A visualização usa o ano seleccionado na página ({ime_year})."
                 if st.session_state.lang == "PT"
-                else f"View uses {ime_year} regardless of the global year filter."
+                else f"The view uses the page-selected year ({ime_year})."
             )
         )
 
@@ -2473,11 +2485,11 @@ with tab_ime:
                         )
         render_page_caveats(
             [
-                "A leitura distrital de Carteira Móvel cobre apenas os distritos presentes no ficheiro oficial de 2025.",
+                "A leitura distrital de Carteira Móvel cobre os distritos presentes nos ficheiros oficiais dos anos disponíveis.",
             ]
             if st.session_state.lang == "PT"
             else [
-                "Mobile Wallet district view only covers districts present in the official 2025 file.",
+                "Mobile Wallet district view only covers districts present in official files for available years.",
             ]
         )
 

@@ -45,9 +45,8 @@ The app combines banking system indicators, mobile wallet district data, and dem
 
 ## Main Caveats
 
-- Mobile Wallet district detail currently includes years 2023 and 2025.
-- District-level Mobile Wallet reading covers only districts present in the official 2025 file reported by Banco de Moçambique.
-- The 2024 IME source file is rights-protected and is not included in the current data extraction.
+- Mobile Wallet district detail currently includes years 2023, 2024 and 2025.
+- District-level Mobile Wallet reading covers only districts present in official files reported by Banco de Moçambique for available years.
 - Official and fallback denominator logic can produce different inclusion levels.
 - Subscriber-based metrics can include multi-SIM/multi-service effects.
 
