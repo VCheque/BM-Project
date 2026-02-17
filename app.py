@@ -1326,8 +1326,8 @@ def render_deterministic_qa_panel(opp_df: pd.DataFrame | None = None, key_prefix
         plot_chart(chart, use_container_width=True)
     if caveat:
         st.caption(("Nota: " if st.session_state.lang == "PT" else "Caveat: ") + caveat)
-    if source:
-        st.caption(("Fonte: " if st.session_state.lang == "PT" else "Source: ") + source)
+    # Keep source internally mapped in the logic, but do not display source tags in the UI.
+    _ = source
 
 
 # ── Dashboard tabs ──────────────────────────────────────────────────────────
