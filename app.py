@@ -720,7 +720,7 @@ def render_deterministic_qa_panel(opp_df: pd.DataFrame | None = None, key_prefix
 
     question_bank_pt = [
         ("Qual distrito lidera em valor de transacções de Carteira Móvel no último mês disponível?", "ime_top_value"),
-        ("Qual distrito tem maior rácio de subscritores por agente de Carteira Móvel?", "ime_top_subs_per_agent"),
+        ("Qual distrito tem maior rácio de subscrições por agente de Carteira Móvel?", "ime_top_subs_per_agent"),
         ("Mobile Banking cresce mais em valor do que Internet Banking (YoY)?", "mobile_vs_internet_yoy"),
         ("Levantamentos ATM de fundos em telemóveis estão a aumentar ao longo dos anos?", "atm_wallet_withdrawals_trend"),
         ("No Mobile Banking, como evoluem as transferências para telemóveis (valor e volume)?", "mb_to_wallet_trend"),
@@ -729,7 +729,7 @@ def render_deterministic_qa_panel(opp_df: pd.DataFrame | None = None, key_prefix
         ("Como evoluiu o indicador oficial de cartões por adulto desde 2020?", "official_cards_change"),
         ("Quais são as 3 províncias com maior pontuação de oportunidade?", "opp_top3"),
         ("Que província lidera no índice IME/INCM (subscrições por 100)?", "incm_top_index"),
-        ("Que província tem menor capacidade de agentes por 10 mil subscritores móveis?", "incm_low_agent_capacity"),
+        ("Que província tem menor capacidade de agentes por 10 mil subscrições móveis?", "incm_low_agent_capacity"),
         ("Qual a quota feminina de contas e cartões no recorte actual?", "gender_shares"),
         ("Qual a quota da faixa 17-21 em contas e cartões no recorte actual?", "age_17_21_shares"),
         ("[Stock] Quantas contas existem no snapshot de Dezembro?", "stock_accounts"),
@@ -739,7 +739,7 @@ def render_deterministic_qa_panel(opp_df: pd.DataFrame | None = None, key_prefix
     ]
     question_bank_en = [
         ("Which district leads Mobile Wallet transaction value in the latest available month?", "ime_top_value"),
-        ("Which district has the highest Mobile Wallet subscribers-per-agent ratio?", "ime_top_subs_per_agent"),
+        ("Which district has the highest Mobile Wallet subscriptions-per-agent ratio?", "ime_top_subs_per_agent"),
         ("Is Mobile Banking value growing faster YoY than Internet Banking?", "mobile_vs_internet_yoy"),
         ("Are ATM withdrawals of mobile-wallet funds increasing over time?", "atm_wallet_withdrawals_trend"),
         ("How are Mobile Banking transfers to mobile numbers evolving (value and volume)?", "mb_to_wallet_trend"),
@@ -748,7 +748,7 @@ def render_deterministic_qa_panel(opp_df: pd.DataFrame | None = None, key_prefix
         ("How has the official cards-per-adult indicator changed since 2020?", "official_cards_change"),
         ("Which are the top 3 provinces by opportunity score?", "opp_top3"),
         ("Which province leads the IME/INCM index (subscriptions per 100)?", "incm_top_index"),
-        ("Which province has the lowest agent capacity per 10k mobile subscribers?", "incm_low_agent_capacity"),
+        ("Which province has the lowest agent capacity per 10k mobile subscriptions?", "incm_low_agent_capacity"),
         ("What is the female share in accounts and cards for the current scope?", "gender_shares"),
         ("What is the 17-21 age share in accounts and cards for the current scope?", "age_17_21_shares"),
         ("[Stock] How many accounts exist in the December snapshot?", "stock_accounts"),
@@ -880,9 +880,9 @@ def render_deterministic_qa_panel(opp_df: pd.DataFrame | None = None, key_prefix
                 answer = "Sem dados suficientes." if st.session_state.lang == "PT" else "Insufficient data."
             else:
                 answer = (
-                    f"{top.iloc[0]['District']} tem o maior rácio, com {top.iloc[0]['Ratio']:.1f} subscritores por agente."
+                    f"{top.iloc[0]['District']} tem o maior rácio, com {top.iloc[0]['Ratio']:.1f} subscrições por agente."
                     if st.session_state.lang == "PT"
-                    else f"{top.iloc[0]['District']} has the highest ratio at {top.iloc[0]['Ratio']:.1f} subscribers per agent."
+                    else f"{top.iloc[0]['District']} has the highest ratio at {top.iloc[0]['Ratio']:.1f} subscriptions per agent."
                 )
                 chart = px.bar(
                     top,
@@ -890,9 +890,9 @@ def render_deterministic_qa_panel(opp_df: pd.DataFrame | None = None, key_prefix
                     y="Ratio",
                     text=[f"{v:.1f}" for v in top["Ratio"]],
                     title=(
-                        "Top 10 distritos por subscritores por agente"
+                        "Top 10 distritos por subscrições por agente"
                         if st.session_state.lang == "PT"
-                        else "Top 10 districts by subscribers per agent"
+                        else "Top 10 districts by subscriptions per agent"
                     ),
                 )
                 chart.update_layout(xaxis_tickangle=-25, yaxis=dict(rangemode="tozero"))
@@ -1224,9 +1224,9 @@ def render_deterministic_qa_panel(opp_df: pd.DataFrame | None = None, key_prefix
             prov = str(top.iloc[0]["Province"])
             idx = float(top.iloc[0]["IME_INCM_Index_per_100"])
             answer = (
-                f"{prov} lidera com índice IME/INCM de {idx:.1f} subscrições por 100 subscritores móveis."
+                f"{prov} lidera com índice IME/INCM de {idx:.1f} subscrições por 100 subscrições móveis."
                 if st.session_state.lang == "PT"
-                else f"{prov} leads with an IME/INCM index of {idx:.1f} subscriptions per 100 mobile subscribers."
+                else f"{prov} leads with an IME/INCM index of {idx:.1f} subscriptions per 100 mobile subscriptions."
             )
             chart = px.bar(
                 top,
@@ -1254,9 +1254,9 @@ def render_deterministic_qa_panel(opp_df: pd.DataFrame | None = None, key_prefix
             prov = str(low.iloc[0]["Province"])
             cap = float(low.iloc[0]["Agents_per_10k_Mobile"])
             answer = (
-                f"{prov} apresenta a menor capacidade, com {cap:.1f} agentes por 10 mil subscritores móveis."
+                f"{prov} apresenta a menor capacidade, com {cap:.1f} agentes por 10 mil subscrições móveis."
                 if st.session_state.lang == "PT"
-                else f"{prov} has the lowest capacity at {cap:.1f} agents per 10k mobile subscribers."
+                else f"{prov} has the lowest capacity at {cap:.1f} agents per 10k mobile subscriptions."
             )
             chart = px.bar(
                 low,
@@ -1264,9 +1264,9 @@ def render_deterministic_qa_panel(opp_df: pd.DataFrame | None = None, key_prefix
                 y="Agents_per_10k_Mobile",
                 text=[f"{v:.1f}" for v in low["Agents_per_10k_Mobile"]],
                 title=(
-                    "Capacidade de agentes por 10 mil subscritores móveis"
+                    "Capacidade de agentes por 10 mil subscrições móveis"
                     if st.session_state.lang == "PT"
-                    else "Agent capacity per 10k mobile subscribers"
+                    else "Agent capacity per 10k mobile subscriptions"
                 ),
             )
             chart.update_layout(yaxis=dict(rangemode="tozero"), xaxis_tickangle=-20)
@@ -1847,10 +1847,10 @@ with tab_overview:
     ov4, ov5, ov6 = st.columns(3)
     metric_with_help(
         ov1,
-        "Subscritores de Carteira Móvel" if st.session_state.lang == "PT" else "Mobile Wallet subscribers",
+        "Subscrições de Carteira Móvel" if st.session_state.lang == "PT" else "Mobile Wallet subscriptions",
         "N/A" if wallet_subs_total is None else format_compact(wallet_subs_total),
-        help_pt="Total de subscritores reportados no recorte seleccionado.",
-        help_en="Total reported subscribers in the selected scope.",
+        help_pt="Total de subscrições reportadas no recorte seleccionado.",
+        help_en="Total reported subscriptions in the selected scope.",
     )
     metric_with_help(
         ov2,
@@ -2286,19 +2286,19 @@ with tab_ime:
     
             if stock_month_ref is None:
                 st.info(
-                    "Sem dados de Dezembro para indicadores de stock (Subscritores/Agentes)."
+                    "Sem dados de Dezembro para indicadores de stock (Subscrições/Agentes)."
                     if st.session_state.lang == "PT"
-                    else "No December data found for stock indicators (Subscribers/Agents)."
+                    else "No December data found for stock indicators (Subscriptions/Agents)."
                 )
     
             k1, k2, k3 = st.columns(3)
             k4, k5, k6 = st.columns(3)
             metric_with_help(
                 k1,
-                "Subscritores" if st.session_state.lang == "PT" else "Subscribers",
+                "Subscrições" if st.session_state.lang == "PT" else "Subscriptions",
                 format_compact(subs_total),
-                help_pt="Número de subscritores de Carteira Móvel reportados no período.",
-                help_en="Number of Mobile Wallet subscribers reported in the period.",
+                help_pt="Número de subscrições de Carteira Móvel reportadas no período.",
+                help_en="Number of Mobile Wallet subscriptions reported in the period.",
             )
             metric_with_help(
                 k2,
@@ -2313,15 +2313,15 @@ with tab_ime:
             _metric_with_optional_help(k6, "Pagamentos")
             st.caption(
                 (
-                    f"ℹ️ Subscritores e Agentes (stock) usam o valor reportado em {localize_month(stock_month_ref)}."
+                    f"ℹ️ Subscrições e Agentes (stock) usam o valor reportado em {localize_month(stock_month_ref)}."
                     if stock_month_ref is not None
-                    else "ℹ️ Subscritores e Agentes (stock) sem mês de referência disponível."
+                    else "ℹ️ Subscrições e Agentes (stock) sem mês de referência disponível."
                 )
                 if st.session_state.lang == "PT"
                 else (
-                    f"ℹ️ Subscribers and Agents (stock) use the reported value from {localize_month(stock_month_ref)}."
+                    f"ℹ️ Subscriptions and Agents (stock) use the reported value from {localize_month(stock_month_ref)}."
                     if stock_month_ref is not None
-                    else "ℹ️ Subscribers and Agents (stock) have no reference month available."
+                    else "ℹ️ Subscriptions and Agents (stock) have no reference month available."
                 )
             )
     
@@ -2331,13 +2331,13 @@ with tab_ime:
                 if st.session_state.lang == "PT"
                 else "Mobile market baseline (INCM)",
                 help=(
-                    "INCM, 2025 T2: total de subscritores móveis por província. "
+                    "INCM, 2025 T2: total de subscrições móveis por província. "
                     "Usado como contexto de mercado para leitura de intensidade relativa IME/INCM. "
-                    "Subscritores representam subscrições de serviço (não pessoas únicas)."
+                    "Subscrições representam subscrições de serviço (não pessoas únicas)."
                     if st.session_state.lang == "PT"
-                    else "INCM, 2025 Q2: total mobile subscribers by province. "
+                    else "INCM, 2025 Q2: total mobile subscriptions by province. "
                     "Used as market context for IME/INCM relative intensity reading. "
-                    "Subscribers represent service subscriptions (not unique people)."
+                    "Reported totals represent service subscriptions (not unique people)."
                 ),
             )
             st.caption(
@@ -2359,9 +2359,9 @@ with tab_ime:
                     y="Mobile_Subscribers",
                     text=[format_compact(v) for v in incm_scope.sort_values("Mobile_Subscribers", ascending=False)["Mobile_Subscribers"]],
                     title=(
-                        "Total de subscritores móveis por província (INCM)"
+                        "Total de subscrições móveis por província (INCM)"
                         if st.session_state.lang == "PT"
-                        else "Total mobile subscribers by province (INCM)"
+                        else "Total mobile subscriptions by province (INCM)"
                     ),
                 )
                 fig_incm.update_layout(xaxis_tickangle=-20, yaxis=dict(rangemode="tozero"), height=360)
@@ -2445,15 +2445,15 @@ with tab_ime:
                     f"{ime_incm_index_total:.1f}",
                 )
                 l2.metric(
-                    "Agentes por 10 mil subscritores móveis" if st.session_state.lang == "PT" else "Agents per 10k mobile subscribers",
+                    "Agentes por 10 mil subscrições móveis" if st.session_state.lang == "PT" else "Agents per 10k mobile subscriptions",
                     f"{ag_10k_total:.1f}",
                 )
                 l3.metric(
-                    "Valor por subscritor móvel" if st.session_state.lang == "PT" else "Value per mobile subscriber",
+                    "Valor por subscrição móvel" if st.session_state.lang == "PT" else "Value per mobile subscription",
                     format_compact(value_per_mobile_total),
                 )
                 l4.metric(
-                    "Volume por subscritor móvel" if st.session_state.lang == "PT" else "Volume per mobile subscriber",
+                    "Volume por subscrição móvel" if st.session_state.lang == "PT" else "Volume per mobile subscription",
                     format_compact(volume_per_mobile_total),
                 )
                 st.caption(
@@ -2507,7 +2507,7 @@ with tab_ime:
                         if st.session_state.lang == "PT"
                         else ("District" if use_district_axis else "Province")
                     )
-                    ratio_label = "Subscritores por agente" if st.session_state.lang == "PT" else "Subscribers per agent"
+                    ratio_label = "Subscrições por agente" if st.session_state.lang == "PT" else "Subscriptions per agent"
                     eff_show_plot = eff_show.rename(columns={group_axis: geo_label}).copy()
                     eff_show_plot[ratio_label] = eff_show_plot["Subscribers_per_Agent"]
                     fig_eff = px.bar(
@@ -2516,9 +2516,9 @@ with tab_ime:
                         y=ratio_label,
                         text=[f"{v:.1f}" for v in eff_show_plot[ratio_label]],
                         title=(
-                            ("Subscritores por Agente por Distrito" if use_district_axis else "Subscritores por Agente por Província")
+                            ("Subscrições por Agente por Distrito" if use_district_axis else "Subscrições por Agente por Província")
                             if st.session_state.lang == "PT"
-                            else ("Subscribers per Agent by District" if use_district_axis else "Subscribers per Agent by Province")
+                            else ("Subscriptions per Agent by District" if use_district_axis else "Subscriptions per Agent by Province")
                         ),
                     )
                     fig_eff.update_layout(height=420)
@@ -2527,7 +2527,7 @@ with tab_ime:
             with c2:
                 metric_options = (
                     [
-                        "Subscritores",
+                        "Subscrições",
                         "Agentes",
                         f"Depósitos ({ime_measure})",
                         f"Levantamentos ({ime_measure})",
@@ -2536,7 +2536,7 @@ with tab_ime:
                     ]
                     if st.session_state.lang == "PT"
                     else [
-                        "Subscribers",
+                        "Subscriptions",
                         "Agents",
                         f"Deposits ({ime_measure})",
                         f"Withdrawals ({ime_measure})",
@@ -2549,7 +2549,7 @@ with tab_ime:
                     metric_options,
                     key="ime_top_metric",
                 )
-                if top_metric in ["Subscritores", "Subscribers"]:
+                if top_metric in ["Subscrições", "Subscriptions"]:
                     top_df = sub_stock.groupby("District", as_index=False)["Subscribers"].sum().rename(columns={"Subscribers": "Total"})
                 elif top_metric in ["Agentes", "Agents"]:
                     top_df = ag_stock.groupby("District", as_index=False)["Agents"].sum().rename(columns={"Agents": "Total"})
@@ -2688,7 +2688,7 @@ with tab_ime:
                                 gender_split,
                                 values="Subscribers",
                                 names="Gender",
-                                title="Subscritores de Carteira Móvel por género" if st.session_state.lang == "PT" else "Mobile Wallet subscribers by gender",
+                                title="Subscrições de Carteira Móvel por género" if st.session_state.lang == "PT" else "Mobile Wallet subscriptions by gender",
                                 hole=0.45,
                             )
                             fig_gender.update_layout(height=380)
@@ -2714,7 +2714,7 @@ with tab_ime:
                                 x="_AgeLabel",
                                 y="Subscribers",
                                 text=[format_compact(v) for v in age_split["Subscribers"]],
-                                title="Subscritores de Carteira Móvel por faixa etária" if st.session_state.lang == "PT" else "Mobile Wallet subscribers by age group",
+                                title="Subscrições de Carteira Móvel por faixa etária" if st.session_state.lang == "PT" else "Mobile Wallet subscriptions by age group",
                             )
                             fig_age.update_layout(height=380)
                             plot_chart(fig_age, use_container_width=True)
@@ -4123,7 +4123,7 @@ with tab_decision:
 
             metric_rows: list[dict[str, object]] = []
             for label, values in [
-                ("Subscritores de Carteira Móvel", _dist_sum(sub_cmp, "Subscribers")),
+                ("Subscrições de Carteira Móvel", _dist_sum(sub_cmp, "Subscribers")),
                 ("Agentes de Carteira Móvel", _dist_sum(ag_cmp, "Agents")),
                 ("Contas Bancárias", _dist_sum(acc_cmp, "Total_Accounts")),
                 ("Cartões Bancários", _dist_sum(card_cmp, "Total_Cards")),
@@ -4176,7 +4176,7 @@ with tab_decision:
                 "Carteiras Móveis - Pagamentos (Valor)",
             ]
             core_metric_order = [
-                "Subscritores de Carteira Móvel",
+                "Subscrições de Carteira Móvel",
                 "Agentes de Carteira Móvel",
                 "Contas Bancárias",
                 "Cartões Bancários",
@@ -4248,12 +4248,12 @@ with tab_decision:
     )
     st.caption(
         (
-            "ℹ️ Definições: momento digital = crescimento de subscritores de Carteira Móvel ao longo do ano; "
+            "ℹ️ Definições: momento digital = crescimento de subscrições de Carteira Móvel ao longo do ano; "
             "lacuna de infraestrutura = menor densidade de ATM+POS por 100 mil habitantes."
         )
         if st.session_state.lang == "PT"
         else (
-            "ℹ️ Definitions: digital momentum = growth of Mobile Wallet subscribers over the year; "
+            "ℹ️ Definitions: digital momentum = growth of Mobile Wallet subscriptions over the year; "
             "infrastructure gap = lower ATM+POS density per 100k population."
         )
     )
@@ -4322,15 +4322,15 @@ with tab_decision:
         component_defs = (
             {
                 "Procura": "Menor penetração de contas por população elegível = maior espaço de expansão.",
-                "Digital": "Crescimento de subscritores de Carteira Móvel ao longo do ano.",
-                "Monetização": "Maior valor transaccionado por subscritor de Carteira Móvel.",
+                "Digital": "Crescimento de subscrições de Carteira Móvel ao longo do ano.",
+                "Monetização": "Maior valor transaccionado por subscrição de Carteira Móvel.",
                 "Lacuna de Infraestrutura": "Menor densidade de ATM+POS por 100 mil habitantes.",
             }
             if st.session_state.lang == "PT"
             else {
                 "Demand": "Lower account penetration vs eligible population = higher expansion room.",
-                "Digital": "Growth of Mobile Wallet subscribers over the year.",
-                "Monetization": "Higher transaction value per Mobile Wallet subscriber.",
+                "Digital": "Growth of Mobile Wallet subscriptions over the year.",
+                "Monetization": "Higher transaction value per Mobile Wallet subscription.",
                 "Infrastructure Gap": "Lower ATM+POS density per 100k population.",
             }
         )

@@ -16,7 +16,7 @@ The app combines banking system indicators, mobile wallet district data, and dem
 - Banco de Moçambique (electronic banking statistics):
   - https://www.bancomoc.mz/pt/areas-de-actuacao/estatisticas/dominios-e-indicadores-estatisticos/
 - INE Census 2017 (demographic baseline)
-- INCM Acervo telecom (mobile subscribers benchmark):
+- INCM Acervo telecom (mobile subscriptions benchmark):
   - https://acervo.incm.gov.mz/#/public/telecom
 
 ## Current Dashboard Structure
@@ -48,7 +48,7 @@ The app combines banking system indicators, mobile wallet district data, and dem
 - Mobile Wallet district detail currently includes years 2023, 2024 and 2025.
 - District-level Mobile Wallet reading covers only districts present in official files reported by Banco de Moçambique for available years.
 - Official and fallback denominator logic can produce different inclusion levels.
-- Subscriber-based metrics can include multi-SIM/multi-service effects.
+- Subscription-based metrics can include multi-SIM/multi-service effects.
 
 ## Run
 

@@ -125,8 +125,8 @@ _TRANSLATIONS = {
         "EN": "ℹ️ Snapshot of key signals plus deterministic Q&A with dynamic chart for fast reading."
     },
     "caption_ime": {
-        "PT": "ℹ️ Rede de carteiras móveis por província e distrito, com foco em subscritores, agentes e transacções por tipo.",
-        "EN": "ℹ️ Mobile wallet network by province and district, focused on subscribers, agents, and transaction types."
+        "PT": "ℹ️ Rede de carteiras móveis por província e distrito, com foco em subscrições, agentes e transacções por tipo.",
+        "EN": "ℹ️ Mobile wallet network by province and district, focused on subscriptions, agents, and transaction types."
     },
     "caption_accounts": {
         "PT": "ℹ️ Detalhes sobre contas bancárias: tendência mensal, distribuição por faixa etária e moeda. Filtrado pelo ano e províncias seleccionadas.",
