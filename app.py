@@ -1509,10 +1509,31 @@ with tab_home:
     )
 
     h1, h2, h3 = st.columns(3)
-    h1.metric("Período base" if st.session_state.lang == "PT" else "Core period", core_span)
-    h2.metric(
-        "Carteira Móvel distrital" if st.session_state.lang == "PT" else "District Mobile Wallet",
+    metric_with_help(
+        h1,
+        "Período de Dados da Banca Electrónica" if st.session_state.lang == "PT" else "Electronic Banking Data Period",
+        core_span,
+        help_pt=(
+            "Dados da banca tradicional reportados pelo Banco de Moçambique: contas, cartões, transacções em ATM/POS, "
+            "Internet Banking e Mobile Banking."
+        ),
+        help_en=(
+            "Traditional banking-system data reported by Banco de Moçambique: accounts, cards, ATM/POS transactions, "
+            "Internet Banking, and Mobile Banking."
+        ),
+    )
+    metric_with_help(
+        h2,
+        "Período de Dados de Carteira Móvel" if st.session_state.lang == "PT" else "Mobile Wallet Data Period",
         wallet_span,
+        help_pt=(
+            "Dados reportados por serviços de Carteira Móvel em Moçambique (M-Pesa, e-Mola, mKesh e Conta Móvel), "
+            "incluindo subscrições, agentes, transferências, depósitos, levantamentos e pagamentos."
+        ),
+        help_en=(
+            "Data reported by Mobile Wallet services in Mozambique (M-Pesa, e-Mola, mKesh, and Conta Móvel), "
+            "including subscriptions, agents, transfers, deposits, withdrawals, and payments."
+        ),
     )
     h3.metric("Cobertura geográfica actual" if st.session_state.lang == "PT" else "Current geographic scope", geo_scope)
 
@@ -1616,6 +1637,11 @@ with tab_home:
             if st.session_state.lang == "PT"
             else "The 15+/18+/21+ scenario changes the denominator used in inclusion ratios."
         )
+    st.caption(
+        "Valor = montante financeiro envolvido nas transacções | Volume = número de transacções."
+        if st.session_state.lang == "PT"
+        else "Value = amount involved in transactions | Volume = number of transactions."
+    )
 
     st.markdown("### " + ("Pressupostos e limitações principais" if st.session_state.lang == "PT" else "Key assumptions and limitations"))
     if st.session_state.lang == "PT":
