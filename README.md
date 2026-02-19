@@ -1,6 +1,8 @@
-# Mozambique Electronic Banking Dashboard
+# Mozambique Electronic Banking and Mobile Wallet Dashboard
 
 Interactive Streamlit dashboard for analysing electronic banking and mobile wallet usage in Mozambique using official public data.
+
+Live app: https://moz-electronic-banking.streamlit.app/
 
 ## Scope
 

@@ -16,6 +16,7 @@ _TRANSLATIONS = {
     "help_prov": {"PT": "Seleccione as províncias que deseja visualizar.", "EN": "Select the provinces you wish to view."},
     "help_dist": {"PT": "Opcional: refine a análise ao nível distrital.", "EN": "Optional: drill down to district level."},
     # Tab names
+    "tab_home": {"PT": "🏠 Início", "EN": "🏠 Home"},
     "tab_demo": {"PT": "🗺️ Contexto Demográfico", "EN": "🗺️ Demographic Context"},
     "tab_overview": {"PT": "📊 Visão Geral + Q&A", "EN": "📊 Overview + Q&A"},
     "tab_ime": {"PT": "📱 Carteiras Móveis", "EN": "📱 Mobile Wallets"},
@@ -29,8 +30,12 @@ _TRANSLATIONS = {
     "tab_forecast": {"PT": "🔮 Previsões", "EN": "🔮 Forecasts"},
     "tab_decision": {"PT": "🎯 Insights Estratégicos / Oportunidades", "EN": "🎯 Strategic Insights / Opportunities"},
     # Page titles
+    "title_home": {
+        "PT": "Dashboard de Banca Electrónica e Carteiras Móveis de Moçambique",
+        "EN": "Mozambique Electronic Banking and Mobile Wallet Dashboard",
+    },
     "title_demo": {"PT": "Contexto Demográfico de Moçambique", "EN": "Mozambique Demographic Context"},
-    "title_overview": {"PT": "Overview + Q&A", "EN": "Overview + Q&A"},
+    "title_overview": {"PT": "Visão Geral + Q&A", "EN": "Overview + Q&A"},
     "title_ime": {"PT": "Carteiras Móveis", "EN": "Mobile Wallets"},
     "title_accounts": {"PT": "Análise Detalhada de Contas", "EN": "Detailed Account Analysis"},
     "title_cards": {"PT": "Análise Detalhada de Cartões", "EN": "Detailed Card Analysis"},
@@ -123,6 +128,10 @@ _TRANSLATIONS = {
     "caption_overview": {
         "PT": "ℹ️ Síntese dos principais sinais e respostas determinísticas com visual dinâmico para leitura rápida.",
         "EN": "ℹ️ Snapshot of key signals plus deterministic Q&A with dynamic chart for fast reading."
+    },
+    "caption_home": {
+        "PT": "ℹ️ Guia rápido sobre dados, metodologia e perguntas que cada página responde.",
+        "EN": "ℹ️ Quick guide to data, methodology, and the key question each page answers."
     },
     "caption_ime": {
         "PT": "ℹ️ Rede de carteiras móveis por província e distrito, com foco em subscrições, agentes e transacções por tipo.",

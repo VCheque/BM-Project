@@ -1,6 +1,6 @@
 """
-Mozambique Electronic Banking Dashboard
-========================================
+Mozambique Electronic Banking and Mobile Wallet Dashboard
+=========================================================
 Interactive Streamlit dashboard for visualising electronic banking data
 from the Banco de Moçambique (Central Bank of Mozambique).
 
@@ -48,7 +48,7 @@ from dashboard.scenarios import (
 from dashboard.translations import translate
 
 # ── Page config ─────────────────────────────────────────────────────────────
-st.set_page_config(page_title="Dashboard Bancário de Moçambique", layout="wide")
+st.set_page_config(page_title="Mozambique Electronic Banking and Mobile Wallet Dashboard", layout="wide")
 
 # ── Language toggle (PT default, EN available) ──────────────────────────────
 if "lang" not in st.session_state:
@@ -1468,8 +1468,9 @@ def render_deterministic_qa_panel(opp_df: pd.DataFrame | None = None, key_prefix
 
 
 # ── Dashboard tabs ──────────────────────────────────────────────────────────
-tab_overview, tab_ime, tab_decision, tab_demo, tab_channels, tab_accounts_cards, tab_infra, tab_trends, tab_forecast = st.tabs(
+tab_home, tab_overview, tab_ime, tab_decision, tab_demo, tab_channels, tab_accounts_cards, tab_infra, tab_trends, tab_forecast = st.tabs(
     [
+        T("tab_home"),
         T("tab_overview"),
         T("tab_ime"),
         T("tab_decision"),
@@ -1481,6 +1482,170 @@ tab_overview, tab_ime, tab_decision, tab_demo, tab_channels, tab_accounts_cards,
         T("tab_forecast"),
     ]
 )
+
+# ==========================================
+# PAGE 0: HOME
+# ==========================================
+with tab_home:
+    st.title(T("title_home"))
+    st.caption(T("caption_home"))
+
+    core_years = sorted(int(y) for y in all_years)
+    core_span = f"{core_years[0]}-{core_years[-1]}" if core_years else "N/A"
+    wallet_years = (
+        sorted(pd.to_numeric(ime_txn_district_df["Year"], errors="coerce").dropna().astype(int).unique().tolist())
+        if not ime_txn_district_df.empty and "Year" in ime_txn_district_df.columns
+        else []
+    )
+    wallet_span = (
+        f"{wallet_years[0]}-{wallet_years[-1]}"
+        if len(wallet_years) > 1
+        else (str(wallet_years[0]) if len(wallet_years) == 1 else "N/A")
+    )
+    geo_scope = (
+        f"{len(selected_prov)} províncias"
+        if st.session_state.lang == "PT"
+        else f"{len(selected_prov)} provinces"
+    )
+
+    h1, h2, h3 = st.columns(3)
+    h1.metric("Período base" if st.session_state.lang == "PT" else "Core period", core_span)
+    h2.metric(
+        "Carteira Móvel distrital" if st.session_state.lang == "PT" else "District Mobile Wallet",
+        wallet_span,
+    )
+    h3.metric("Cobertura geográfica actual" if st.session_state.lang == "PT" else "Current geographic scope", geo_scope)
+
+    st.markdown("### " + ("O que pode ser explorado" if st.session_state.lang == "PT" else "What you can explore"))
+    e1, e2, e3 = st.columns(3)
+    e1.info(
+        "**Tendências de finanças digitais**\n\n"
+        "Evolução de transacções, canais e intensidade de uso."
+        if st.session_state.lang == "PT"
+        else "**Digital finance trends**\n\nTrack transaction, channel, and usage intensity evolution."
+    )
+    e2.info(
+        "**Comparação territorial**\n\n"
+        "Leituras por província e distrito para priorização."
+        if st.session_state.lang == "PT"
+        else "**Territorial comparison**\n\nCompare provinces and districts for prioritization."
+    )
+    e3.info(
+        "**Leitura de cenários**\n\n"
+        "Projecções de curto prazo para apoiar planeamento."
+        if st.session_state.lang == "PT"
+        else "**Scenario reading**\n\nUse short-term projections to support planning."
+    )
+
+    st.markdown("### " + ("Páginas e perguntas principais" if st.session_state.lang == "PT" else "Pages and key questions"))
+    page_rows = (
+        [
+            (T("tab_overview"), "Quais são os sinais mais importantes no recorte actual?"),
+            (T("tab_ime"), "Como as Carteiras Móveis são usadas por território e tipo de operação?"),
+            (T("tab_decision"), "Onde estão as prioridades e como comparar distritos para investimento?"),
+            (T("tab_demo"), "Qual é o contexto demográfico e de inclusão financeira?"),
+            (f"{T('tab_digital')} + {T('tab_txn')}", "Como evoluem canais digitais e transacções por valor e volume?"),
+            (f"{T('tab_accounts')} + {T('tab_cards')}", "Como evoluem contas e cartões por perfil e geografia?"),
+            (T("tab_infra"), "Como evolui a infraestrutura física de ATM/POS?"),
+            (T("tab_trends"), "Quais são as tendências estruturais no período histórico?"),
+            (T("tab_forecast"), "Qual é a trajectória esperada de curto prazo para indicadores de fluxo?"),
+        ]
+        if st.session_state.lang == "PT"
+        else [
+            (T("tab_overview"), "What are the most important signals in the current scope?"),
+            (T("tab_ime"), "How are Mobile Wallets used by territory and operation type?"),
+            (T("tab_decision"), "Where are priorities and how can districts be compared for investment?"),
+            (T("tab_demo"), "What is the demographic and financial-inclusion context?"),
+            (f"{T('tab_digital')} + {T('tab_txn')}", "How do digital channels and transactions evolve by value and volume?"),
+            (f"{T('tab_accounts')} + {T('tab_cards')}", "How do accounts and cards evolve by profile and geography?"),
+            (T("tab_infra"), "How does ATM/POS physical infrastructure evolve?"),
+            (T("tab_trends"), "What structural trends matter in the historical period?"),
+            (T("tab_forecast"), "What is the expected short-term path for flow indicators?"),
+        ]
+    )
+    page_df = pd.DataFrame(
+        page_rows,
+        columns=[
+            "Página" if st.session_state.lang == "PT" else "Page",
+            "Pergunta principal" if st.session_state.lang == "PT" else "Main question",
+        ],
+    )
+    st.dataframe(page_df, use_container_width=True, hide_index=True)
+
+    st.markdown("### " + ("Como ler este dashboard" if st.session_state.lang == "PT" else "How to read this dashboard"))
+    r1, r2, r3 = st.columns(3)
+    with r1:
+        st.subheader(
+            "Stock vs Fluxo" if st.session_state.lang == "PT" else "Stock vs Flow",
+            help=(
+                "Stock usa valor reportado em Dezembro; fluxo usa agregação do período."
+                if st.session_state.lang == "PT"
+                else "Stock uses December reported value; flow uses period aggregation."
+            ),
+        )
+        st.caption(
+            "Contas, cartões, ATM e POS são stock; transacções são fluxo."
+            if st.session_state.lang == "PT"
+            else "Accounts, cards, ATM and POS are stock; transactions are flow."
+        )
+    with r2:
+        st.subheader(
+            "Subscrições vs pessoas" if st.session_state.lang == "PT" else "Subscriptions vs people",
+            help=(
+                "Uma pessoa pode ter mais de uma conta/serviço; subscrições não equivalem a pessoas únicas."
+                if st.session_state.lang == "PT"
+                else "One person can hold multiple services; subscriptions are not unique people."
+            ),
+        )
+        st.caption(
+            "Usar os indicadores de subscrições como sinal de intensidade relativa."
+            if st.session_state.lang == "PT"
+            else "Use subscription indicators as a relative intensity signal."
+        )
+    with r3:
+        st.subheader(
+            "Inclusão oficial + fallback" if st.session_state.lang == "PT" else "Official inclusion + fallback",
+            help=(
+                "Prioriza-se o indicador oficial; na ausência, usa-se extrapolação do Censo 2017."
+                if st.session_state.lang == "PT"
+                else "Official indicators are prioritized; when missing, Census 2017 extrapolation is used."
+            ),
+        )
+        st.caption(
+            "O cenário 15+/18+/21+ afecta o denominador dos rácios de inclusão."
+            if st.session_state.lang == "PT"
+            else "The 15+/18+/21+ scenario changes the denominator used in inclusion ratios."
+        )
+
+    st.markdown("### " + ("Pressupostos e limitações principais" if st.session_state.lang == "PT" else "Key assumptions and limitations"))
+    if st.session_state.lang == "PT":
+        st.write("- Cidade de Maputo é incluída em Província de Maputo para harmonização geográfica.")
+        st.write("- O detalhe distrital de Carteira Móvel cobre apenas distritos presentes nos ficheiros oficiais.")
+        st.write("- Quando indicador oficial de inclusão não está disponível, aplica-se extrapolação do Censo 2017 por coorte.")
+    else:
+        st.write("- Cidade de Maputo is included under Província de Maputo for geographic harmonization.")
+        st.write("- District-level Mobile Wallet detail covers only districts present in official files.")
+        st.write("- When official inclusion indicators are unavailable, Census 2017 cohort extrapolation is applied.")
+
+    st.markdown("### " + ("Fontes" if st.session_state.lang == "PT" else "Sources"))
+    st.markdown(
+        f"- [Banco de Moçambique — Domínios e Indicadores]({BOM_SOURCE_STATS_URL})\n"
+        f"- [INCM Acervo — Telecom]({INCM_SOURCE_TELECOM_URL})"
+    )
+
+    st.markdown("### " + ("Percurso sugerido" if st.session_state.lang == "PT" else "Suggested path"))
+    if st.session_state.lang == "PT":
+        st.write("1. Visão Geral + Q&A")
+        st.write("2. Carteiras Móveis")
+        st.write("3. Insights Estratégicos / Oportunidades")
+        st.write("4. Previsões")
+    else:
+        st.write("1. Overview + Q&A")
+        st.write("2. Mobile Wallets")
+        st.write("3. Strategic Insights / Opportunities")
+        st.write("4. Forecasts")
+
+    render_page_caveats()
 
 # ==========================================
 # PAGE 1: CONTEXTO DEMOGRÁFICO (CENSUS)
