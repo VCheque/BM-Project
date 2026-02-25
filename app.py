@@ -669,7 +669,7 @@ def build_wallet_bridge_annual() -> pd.DataFrame:
     mb_wallet_val = (
         mob_df[
             mob_df["Metric"].astype(str).str.contains(
-                "Valor das transferências efectuadas para telemóveis", case=False, na=False
+                r"Valor das transferências efectuadas para .*telemóveis", case=False, na=False, regex=True
             )
         ]
         .groupby("Year", as_index=False)["Value"]
@@ -679,7 +679,7 @@ def build_wallet_bridge_annual() -> pd.DataFrame:
     mb_wallet_vol = (
         mob_df[
             mob_df["Metric"].astype(str).str.contains(
-                "Volume das transferências efectuadas para telemóveis", case=False, na=False
+                r"Volume das transferências efectuadas para .*telemóveis", case=False, na=False, regex=True
             )
         ]
         .groupby("Year", as_index=False)["Value"]

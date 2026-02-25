@@ -461,6 +461,25 @@ def _canonicalize_atm_metric_sub(metric_label: str | None, sub_label: str | None
     return metric_txt, sub_txt
 
 
+def _canonicalize_digital_channel_metric(category: str, metric_label: str | None) -> str:
+    """Normalize digital-channel metric labels across workbook wording variants."""
+    metric_txt = str(metric_label).strip() if metric_label is not None else ""
+    if not metric_txt:
+        return metric_txt
+
+    metric_txt = " ".join(metric_txt.split())
+    metric_cf = metric_txt.casefold()
+
+    if category == "Mobile_Banking":
+        if "para contas para telemóveis" in metric_cf or "para contas para telemoveis" in metric_cf:
+            if metric_cf.startswith("valor"):
+                return "Valor das transferências efectuadas para telemóveis"
+            if metric_cf.startswith("volume"):
+                return "Volume das transferências efectuadas para telemóveis"
+
+    return metric_txt
+
+
 def _extract_geo_stock_section(
     df: pd.DataFrame,
     start_row: int,
@@ -570,7 +589,7 @@ def _extract_flat_metric_block(
         metric_raw = row.iloc[0]
         if pd.isna(metric_raw):
             continue
-        metric = str(metric_raw).strip()
+        metric = _canonicalize_digital_channel_metric(category, metric_raw)
         if not metric or metric.lower() == "nan":
             continue
         for col, month in month_cols:
@@ -1378,6 +1397,9 @@ def postprocess_csv(path: Path) -> None:
         metric_sub.columns = ["Metric", "Sub_Metric"]
         df["Metric"] = metric_sub["Metric"]
         df["Sub_Metric"] = metric_sub["Sub_Metric"]
+    if path.name in {"Mobile_Banking_2020_2025.csv", "Internet_Banking_2020_2025.csv"} and "Metric" in df.columns:
+        category = "Mobile_Banking" if path.name == "Mobile_Banking_2020_2025.csv" else "Internet_Banking"
+        df["Metric"] = df["Metric"].apply(lambda v: _canonicalize_digital_channel_metric(category, v))
 
     # Keep numeric columns non-negative for stock/flow counts.
     num_cols = df.select_dtypes(include=["number"]).columns
