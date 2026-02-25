@@ -153,11 +153,41 @@ def last_month_snapshot_all_years(df: pd.DataFrame) -> pd.DataFrame:
 def normalize_atm_txn(df: pd.DataFrame) -> pd.DataFrame:
     """Normalize ATM transaction naming to a consistent taxonomy across years."""
     df = df.copy()
-    df.loc[df["Metric"] == "Transferências para", "Metric"] = "Transferências"
-    df.loc[df["Sub_Metric"] == "contas bancárias", "Sub_Metric"] = "para Contas Bancárias"
-    mask_tel = df["Metric"].isin(["telemóveis", "para telemóveis"])
-    df.loc[mask_tel, "Sub_Metric"] = "para telemóveis"
-    df.loc[mask_tel, "Metric"] = "Transferências"
+    if not {"Metric", "Sub_Metric"}.issubset(df.columns):
+        return df
+
+    metric_raw = df["Metric"].fillna("").astype(str).str.strip()
+    sub_raw = df["Sub_Metric"].fillna("").astype(str).str.strip()
+    metric_cf = metric_raw.str.casefold()
+    sub_cf = sub_raw.str.casefold()
+    combined = metric_cf + " " + sub_cf
+    mobile_mask = combined.str.contains(r"telemov|telemóv", na=False)
+
+    transfer_mask = (
+        combined.str.contains("transfer", na=False)
+        | metric_cf.isin(["telemóveis", "telemoveis", "para telemóveis", "para telemoveis"])
+    )
+    levant_mask = combined.str.contains("levant", na=False)
+    payment_mask = combined.str.contains("pagament", na=False)
+
+    transfer_to_mobile = transfer_mask & mobile_mask
+    transfer_to_account = transfer_mask & combined.str.contains("conta", na=False)
+    levant_from_mobile = levant_mask & mobile_mask & combined.str.contains("fundo", na=False)
+    levant_cards = levant_mask & combined.str.contains("cart", na=False)
+
+    df.loc[transfer_mask, "Metric"] = "Transferências"
+    df.loc[transfer_to_mobile, "Sub_Metric"] = "para telemóveis"
+    df.loc[transfer_to_account, "Sub_Metric"] = "para Contas Bancárias"
+
+    df.loc[levant_mask, "Metric"] = "Levantamentos"
+    df.loc[levant_from_mobile, "Sub_Metric"] = "de fundos depositados em telemóveis"
+    df.loc[levant_cards, "Sub_Metric"] = "com cartões bancários"
+
+    df.loc[payment_mask, "Metric"] = "Pagamentos de Serviços"
+    df.loc[payment_mask, "Sub_Metric"] = pd.NA
+
+    df["Metric"] = df["Metric"].astype(str).str.strip()
+    df["Sub_Metric"] = df["Sub_Metric"].replace("", pd.NA)
     return df
 
 

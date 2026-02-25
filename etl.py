@@ -26,6 +26,7 @@ SECTOR_GROWTH_OUTPUT = Path("Sectoral_Growth_Rates_2020_2025.csv")
 GDP_EXPENDITURE_SOURCE = Path("variação-anual-do-pib_óptica-da-despesa.xls")
 GDP_EXPENDITURE_OUTPUT = Path("GDP_Expenditure_Annual_Variation_2020_2025.csv")
 BANKING_SOURCE_2023 = Path("banca-electronica-2023.xlsx")
+BANKING_SOURCES_2020_2025 = {year: Path(f"banca-electronica-{year}.xlsx") for year in range(2020, 2026)}
 IME_SOURCE_TEMPLATE = "instituições-de-moeda-electrónica-{year}.xlsx"
 
 IME_SUBSCRIBERS_2023_2025_OUTPUT = Path("IME_Subscribers_District_2023_2025.csv")
@@ -427,6 +428,39 @@ def _find_label_row(df: pd.DataFrame, label: str, start_at: int = 0, exact: bool
     return int(candidates[0])
 
 
+def _canonicalize_atm_metric_sub(metric_label: str | None, sub_label: str | None) -> tuple[str, str | None]:
+    """Normalize ATM transaction taxonomy across workbook layout variants."""
+    metric_txt = str(metric_label).strip() if metric_label is not None else ""
+    sub_txt = str(sub_label).strip() if sub_label is not None else None
+
+    metric_cf = metric_txt.casefold()
+    sub_cf = sub_txt.casefold() if sub_txt else ""
+    combined = f"{metric_cf} {sub_cf}".strip()
+    has_mobile = ("telemov" in combined) or ("telemóv" in combined)
+
+    if "levant" in combined:
+        metric_txt = "Levantamentos"
+        if has_mobile and "fundo" in combined:
+            sub_txt = "de fundos depositados em telemóveis"
+        elif "cart" in combined:
+            sub_txt = "com cartões bancários"
+        elif "conta" in combined:
+            sub_txt = "para Contas Bancárias"
+    elif "transfer" in combined or metric_cf in {"telemóveis", "telemoveis", "para telemóveis", "para telemoveis"}:
+        metric_txt = "Transferências"
+        if has_mobile:
+            sub_txt = "para telemóveis"
+        elif "conta" in combined:
+            sub_txt = "para Contas Bancárias"
+    elif "pagament" in combined:
+        metric_txt = "Pagamentos de Serviços"
+        sub_txt = None
+
+    if sub_txt is not None:
+        sub_txt = sub_txt.strip() or None
+    return metric_txt, sub_txt
+
+
 def _extract_geo_stock_section(
     df: pd.DataFrame,
     start_row: int,
@@ -481,6 +515,7 @@ def _extract_atm_transaction_block(
     ]
     records: list[dict] = []
     current_parent: str | None = None
+
     for i in range(len(table)):
         label_raw = table.at[i, 0]
         if pd.isna(label_raw):
@@ -505,6 +540,7 @@ def _extract_atm_transaction_block(
             if current_parent is None:
                 continue
             metric, sub_metric = current_parent, label
+        metric, sub_metric = _canonicalize_atm_metric_sub(metric, sub_metric)
         for col, month in month_cols:
             records.append(
                 {
@@ -771,6 +807,14 @@ def export_banking_year_into_core_csvs(source_path: Path = BANKING_SOURCE_2023, 
         out_df = _upsert_year(Path(path_str), year, df)
         counts[path_str] = len(out_df[out_df["Year"] == year])
     return counts
+
+
+def export_banking_2020_2025_into_core_csvs() -> dict[int, dict[str, int]]:
+    """Extract each banca-electronica workbook from 2020-2025 into core CSV outputs."""
+    all_counts: dict[int, dict[str, int]] = {}
+    for year, source in BANKING_SOURCES_2020_2025.items():
+        all_counts[year] = export_banking_year_into_core_csvs(source, year=year)
+    return all_counts
 
 
 def _extract_ime_volume_value_sheet(
@@ -1322,6 +1366,18 @@ def postprocess_csv(path: Path) -> None:
                 valid_same_name_districts = {"Manica", "Cidade de Maputo"}
                 keep_valid = df["District"].astype(str).isin(valid_same_name_districts)
                 df = df[~(same_name & ~keep_valid)].copy()
+    if path.name in {"transactions_vol_2020_2025.csv", "transactions_val_2020_2025.csv"} and {
+        "Metric",
+        "Sub_Metric",
+    }.issubset(df.columns):
+        metric_sub = df.apply(
+            lambda row: _canonicalize_atm_metric_sub(row.get("Metric"), row.get("Sub_Metric")),
+            axis=1,
+            result_type="expand",
+        )
+        metric_sub.columns = ["Metric", "Sub_Metric"]
+        df["Metric"] = metric_sub["Metric"]
+        df["Sub_Metric"] = metric_sub["Sub_Metric"]
 
     # Keep numeric columns non-negative for stock/flow counts.
     num_cols = df.select_dtypes(include=["number"]).columns
@@ -1363,6 +1419,11 @@ def parse_args() -> argparse.Namespace:
         help="Extract banca-electronica-2023.xlsx and upsert Year=2023 into core 2020_2025 CSV outputs.",
     )
     parser.add_argument(
+        "--export-banking-2020-2025",
+        action="store_true",
+        help="Extract banca-electronica-2020..2025.xlsx and upsert into core 2020_2025 CSV outputs.",
+    )
+    parser.add_argument(
         "--export-bom-context",
         action="store_true",
         help="Extract additional BoM context datasets (access points, inclusion indicators, macro xls raw).",
@@ -1383,6 +1444,7 @@ def main() -> None:
         and not args.export_ime
         and not args.export_ime_2023_2025
         and not args.export_banking_2023
+        and not args.export_banking_2020_2025
         and not args.export_bom_context
     )
 
@@ -1411,6 +1473,12 @@ def main() -> None:
         counts = export_banking_year_into_core_csvs(BANKING_SOURCE_2023, year=2023)
         for output, nrows in counts.items():
             print(f"Upserted Year=2023 into {output} ({nrows} rows for 2023)")
+
+    if args.export_banking_2020_2025:
+        all_counts = export_banking_2020_2025_into_core_csvs()
+        for year, counts in sorted(all_counts.items()):
+            for output, nrows in counts.items():
+                print(f"Upserted Year={year} into {output} ({nrows} rows for {year})")
 
     if args.export_bom_context or run_all:
         counts = export_bom_context_csvs()

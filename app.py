@@ -645,20 +645,23 @@ def build_wallet_bridge_annual() -> pd.DataFrame:
     atm_val = normalize_atm_txn(val_df)
     atm_vol = normalize_atm_txn(vol_df)
 
+    atm_withdraw_mask_val = (
+        atm_val["Metric"].astype(str).str.casefold().str.contains("levant", na=False)
+        & atm_val["Sub_Metric"].astype(str).str.casefold().str.contains("fundos depositados em telemóveis", na=False)
+    )
+    atm_withdraw_mask_vol = (
+        atm_vol["Metric"].astype(str).str.casefold().str.contains("levant", na=False)
+        & atm_vol["Sub_Metric"].astype(str).str.casefold().str.contains("fundos depositados em telemóveis", na=False)
+    )
+
     atm_wallet_val = (
-        atm_val[
-            (atm_val["Metric"].astype(str) == "Levantamentos")
-            & (atm_val["Sub_Metric"].astype(str) == "de fundos depositados em telemóveis")
-        ]
+        atm_val[atm_withdraw_mask_val]
         .groupby("Year", as_index=False)["Transactions_Amount"]
         .sum()
         .rename(columns={"Transactions_Amount": "ATM_Wallet_Withdrawals_Value"})
     )
     atm_wallet_vol = (
-        atm_vol[
-            (atm_vol["Metric"].astype(str) == "Levantamentos")
-            & (atm_vol["Sub_Metric"].astype(str) == "de fundos depositados em telemóveis")
-        ]
+        atm_vol[atm_withdraw_mask_vol]
         .groupby("Year", as_index=False)["Total_Transactions"]
         .sum()
         .rename(columns={"Total_Transactions": "ATM_Wallet_Withdrawals_Volume"})
