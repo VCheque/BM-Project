@@ -292,8 +292,30 @@ def load_data(cache_version: str = CACHE_VERSION):
     return load_dataframes()
 
 
+@st.cache_data
+def load_census_districts(path: str = "census_2017_districts.csv") -> pd.DataFrame:
+    """Load district-level census denominators used for district IME ratios."""
+    if not pd.io.common.file_exists(path):
+        return pd.DataFrame(columns=["Province", "District", "Pop_Total_2017", "Pop_15plus_2017"])
+    ddf = pd.read_csv(path)
+    required = {"Province", "District", "Pop_Total_2017", "Pop_15plus_2017"}
+    if not required.issubset(ddf.columns):
+        return pd.DataFrame(columns=["Province", "District", "Pop_Total_2017", "Pop_15plus_2017"])
+    ddf = ddf[list(required)].copy()
+    ddf["Province"] = ddf["Province"].astype(str).str.strip().replace({"Cidade de Maputo": "Província de Maputo"})
+    ddf["District"] = ddf["District"].astype(str).str.strip()
+    ddf["Pop_Total_2017"] = pd.to_numeric(ddf["Pop_Total_2017"], errors="coerce").fillna(0.0)
+    ddf["Pop_15plus_2017"] = pd.to_numeric(ddf["Pop_15plus_2017"], errors="coerce").fillna(0.0)
+    ddf = ddf[(ddf["Pop_Total_2017"] > 0) & (ddf["Pop_15plus_2017"] > 0)].copy()
+    return ddf
+
+
 # Unpack into friendly short names used throughout the dashboard
 dataframes, census_df = load_data()
+census_district_df = load_census_districts()
+if not census_district_df.empty:
+    census_district_df["_Province_Norm"] = census_district_df["Province"].astype(str).apply(_norm_key)
+    census_district_df["_District_Norm"] = census_district_df["District"].astype(str).apply(_norm_key)
 regions_map = REGIONS
 acc_df, card_df, atm_df, vol_df, pos_df, val_df, mob_df, net_df, pos_txn_df = (
     dataframes["accounts"], dataframes["cards"], dataframes["atm"],
@@ -325,6 +347,96 @@ INCM_MOBILE_SUBSCRIBERS_Q2_2025 = pd.DataFrame(
         {"Province": "Zambézia", "Mobile_Subscribers": 471_814},
     ]
 )
+
+
+def validate_required_series() -> list[str]:
+    """Validate critical series so missing data does not silently produce empty charts."""
+    errors: list[str] = []
+    if census_district_df.empty:
+        errors.append("Missing or invalid census_2017_districts.csv (required for district denominator logic).")
+
+    expected_years = set(pd.to_numeric(acc_df.get("Year", pd.Series(dtype=float)), errors="coerce").dropna().astype(int).tolist())
+    if not expected_years:
+        errors.append("Accounts dataset has no valid Year values.")
+        return errors
+
+    def _check_year_coverage(df: pd.DataFrame, label: str) -> None:
+        years = set(pd.to_numeric(df.get("Year", pd.Series(dtype=float)), errors="coerce").dropna().astype(int).tolist())
+        missing = sorted(expected_years - years)
+        if missing:
+            errors.append(f"{label} is missing years: {', '.join(map(str, missing))}.")
+
+    mb_val = mob_df[
+        mob_df["Metric"].astype(str).str.contains(
+            r"Valor das transferências efectuadas para .*telemóveis",
+            case=False,
+            na=False,
+            regex=True,
+        )
+    ].copy()
+    mb_vol = mob_df[
+        mob_df["Metric"].astype(str).str.contains(
+            r"Volume das transferências efectuadas para .*telemóveis",
+            case=False,
+            na=False,
+            regex=True,
+        )
+    ].copy()
+    if mb_val.empty:
+        errors.append("Mobile Banking transfer-to-mobile value series is missing.")
+    else:
+        _check_year_coverage(mb_val, "Mobile Banking transfer-to-mobile value series")
+    if mb_vol.empty:
+        errors.append("Mobile Banking transfer-to-mobile volume series is missing.")
+    else:
+        _check_year_coverage(mb_vol, "Mobile Banking transfer-to-mobile volume series")
+
+    atm_val_norm = normalize_atm_txn(val_df)
+    atm_vol_norm = normalize_atm_txn(vol_df)
+    atm_withdraw_val = atm_val_norm[
+        atm_val_norm["Metric"].astype(str).str.contains("levant", case=False, na=False)
+        & atm_val_norm["Sub_Metric"].astype(str).str.contains("fundos depositados em telemóveis", case=False, na=False)
+    ].copy()
+    atm_withdraw_vol = atm_vol_norm[
+        atm_vol_norm["Metric"].astype(str).str.contains("levant", case=False, na=False)
+        & atm_vol_norm["Sub_Metric"].astype(str).str.contains("fundos depositados em telemóveis", case=False, na=False)
+    ].copy()
+    atm_transfer_val = atm_val_norm[
+        atm_val_norm["Metric"].astype(str).str.contains("transfer", case=False, na=False)
+        & atm_val_norm["Sub_Metric"].astype(str).str.contains("telem", case=False, na=False)
+    ].copy()
+    atm_transfer_vol = atm_vol_norm[
+        atm_vol_norm["Metric"].astype(str).str.contains("transfer", case=False, na=False)
+        & atm_vol_norm["Sub_Metric"].astype(str).str.contains("telem", case=False, na=False)
+    ].copy()
+    if atm_withdraw_val.empty:
+        errors.append("ATM withdrawals-from-mobile-wallet value series is missing.")
+    else:
+        _check_year_coverage(atm_withdraw_val, "ATM withdrawals-from-mobile-wallet value series")
+    if atm_withdraw_vol.empty:
+        errors.append("ATM withdrawals-from-mobile-wallet volume series is missing.")
+    else:
+        _check_year_coverage(atm_withdraw_vol, "ATM withdrawals-from-mobile-wallet volume series")
+    if atm_transfer_val.empty:
+        errors.append("ATM transfer-to-mobile value series is missing.")
+    else:
+        _check_year_coverage(atm_transfer_val, "ATM transfer-to-mobile value series")
+    if atm_transfer_vol.empty:
+        errors.append("ATM transfer-to-mobile volume series is missing.")
+    else:
+        _check_year_coverage(atm_transfer_vol, "ATM transfer-to-mobile volume series")
+    return errors
+
+
+contract_errors = validate_required_series()
+if contract_errors:
+    if st.session_state.lang == "PT":
+        st.error("Falha de validação de dados: séries obrigatórias ausentes/incompletas. Corrigir os ficheiros antes de usar o dashboard.")
+    else:
+        st.error("Data validation failed: required series are missing/incomplete. Fix the files before using the dashboard.")
+    for err in contract_errors:
+        st.write(f"- {err}")
+    st.stop()
 
 # ── Sidebar: language toggle + global filters ─────────────────────────────
 lang_col1, lang_col2 = st.sidebar.columns(2)
@@ -454,6 +566,95 @@ def row_denominator_population(row: pd.Series, year: int) -> float:
     return est if est > 0 else fallback_total
 
 
+def province_15plus_scale_map(year: int) -> dict[str, float]:
+    """Province-level scale from 15+ census baseline to selected eligibility denominator."""
+    scales: dict[str, float] = {}
+    if census_df.empty:
+        return scales
+    for _, row in census_df.iterrows():
+        prov = str(row.get("Province", "")).strip()
+        p15 = float(pd.to_numeric(row.get("Population_15plus_2017", 0), errors="coerce"))
+        if p15 <= 0:
+            scales[prov] = 1.0
+            continue
+        target = row_denominator_population(row, year)
+        scales[prov] = (target / p15) if p15 > 0 else 1.0
+    return scales
+
+
+def district_row_denominator_population(row: pd.Series, year: int, prov_scale: dict[str, float] | None = None) -> float:
+    """District-level denominator aligned to selected inclusion scenario."""
+    label = st.session_state.get("fi_denominator", denominator_options[0])
+    pop_total = float(pd.to_numeric(row.get("Pop_Total_2017", 0), errors="coerce"))
+    if "legacy" in label.lower() or "legado" in label.lower():
+        return max(pop_total, 0.0)
+
+    pop_15 = float(pd.to_numeric(row.get("Pop_15plus_2017", 0), errors="coerce"))
+    if pop_15 <= 0:
+        return max(pop_total, 0.0)
+
+    if prov_scale is None:
+        prov_scale = province_15plus_scale_map(year)
+    prov = str(row.get("Province", "")).strip()
+    scale = float(prov_scale.get(prov, 1.0))
+    return max(pop_15 * max(scale, 0.0), 0.0)
+
+
+def district_denominator_population(census_slice: pd.DataFrame, year: int) -> float:
+    """Aggregate district denominator for the selected inclusion scenario."""
+    if census_slice.empty:
+        return 0.0
+    prov_scale = province_15plus_scale_map(year)
+    vals = census_slice.apply(lambda r: district_row_denominator_population(r, year, prov_scale), axis=1)
+    return float(pd.to_numeric(vals, errors="coerce").fillna(0.0).sum())
+
+
+def build_census_district_denominator_df(
+    year: int,
+    provinces: list[str] | None = None,
+    districts: list[str] | None = None,
+) -> pd.DataFrame:
+    """Return district denominators for a scope and selected inclusion scenario."""
+    if census_district_df.empty:
+        return pd.DataFrame(columns=["Province", "District", "Eligible_Population"])
+    scoped = census_district_df.copy()
+    if provinces:
+        scoped = scoped[scoped["Province"].isin(provinces)]
+    if districts:
+        scoped = scoped[scoped["District"].isin(districts)]
+    if scoped.empty:
+        return pd.DataFrame(columns=["Province", "District", "Eligible_Population"])
+    prov_scale = province_15plus_scale_map(year)
+    scoped["Eligible_Population"] = scoped.apply(
+        lambda r: district_row_denominator_population(r, year, prov_scale),
+        axis=1,
+    )
+    return scoped[["Province", "District", "Eligible_Population"]].copy()
+
+
+def lookup_district_denominator(province: str, district: str, year: int) -> float:
+    """Lookup district denominator by province/district with normalized matching."""
+    if census_district_df.empty:
+        return 0.0
+    p_norm = _norm_key(province)
+    d_norm = _norm_key(district)
+    if {"_Province_Norm", "_District_Norm"}.issubset(census_district_df.columns):
+        hit = census_district_df[
+            (census_district_df["_Province_Norm"] == p_norm)
+            & (census_district_df["_District_Norm"] == d_norm)
+        ]
+    else:
+        tmp = census_district_df.copy()
+        mask = (
+            tmp["Province"].astype(str).apply(_norm_key).eq(p_norm)
+            & tmp["District"].astype(str).apply(_norm_key).eq(d_norm)
+        )
+        hit = tmp[mask]
+    if hit.empty:
+        return 0.0
+    return district_denominator_population(hit, year)
+
+
 def inclusion_method_note(year: int) -> str:
     label = st.session_state.get("fi_denominator", denominator_options[0])
     if st.session_state.lang == "PT":
@@ -519,6 +720,20 @@ def _pick_latest_period_value(df: pd.DataFrame) -> tuple[float | None, str | Non
         return float(row["Value"]), str(row.get("Period", ""))
     q_order = {"Q1": 1, "Q2": 2, "Q3": 3, "Q4": 4}
     tmp = df.copy()
+    tmp["Q_Ord"] = tmp["Quarter"].astype(str).map(q_order).fillna(0)
+    tmp = tmp.sort_values("Q_Ord")
+    row = tmp.iloc[-1]
+    return float(row["Value"]), str(row.get("Period", ""))
+
+
+def _pick_latest_quarter_value(df: pd.DataFrame) -> tuple[float | None, str | None]:
+    """Pick latest available quarter only (do not mix annual and quarterly rows)."""
+    if df.empty or "Quarter" not in df.columns:
+        return None, None
+    q_order = {"Q1": 1, "Q2": 2, "Q3": 3, "Q4": 4}
+    tmp = df[df["Quarter"].notna()].copy()
+    if tmp.empty:
+        return None, None
     tmp["Q_Ord"] = tmp["Quarter"].astype(str).map(q_order).fillna(0)
     tmp = tmp.sort_values("Q_Ord")
     row = tmp.iloc[-1]
@@ -610,18 +825,30 @@ def build_scope_opportunity_df(year: int) -> pd.DataFrame:
     atm_opp = last_month_snapshot(apply_geo_only(atm_df[atm_df["Year"] == year]))
     pos_opp = last_month_snapshot(apply_geo_only(pos_df[pos_df["Year"] == year]))
 
-    census_scope = census_df[census_df["Province"].isin(selected_prov)].copy()
-    if census_scope.empty:
-        census_scope = census_df.copy()
-    pop_rows = []
-    for _, row in census_scope.iterrows():
-        pop_rows.append(
-            {
-                "Province": row["Province"],
-                "Population": row_denominator_population(row, year),
-            }
+    district_scope = build_census_district_denominator_df(
+        year,
+        provinces=selected_prov if selected_prov else None,
+        districts=selected_dist if selected_dist else None,
+    )
+    if district_scope.empty:
+        census_scope = census_df[census_df["Province"].isin(selected_prov)].copy()
+        if census_scope.empty:
+            census_scope = census_df.copy()
+        pop_rows = []
+        for _, row in census_scope.iterrows():
+            pop_rows.append(
+                {
+                    "Province": row["Province"],
+                    "Population": row_denominator_population(row, year),
+                }
+            )
+        pop_df = pd.DataFrame(pop_rows)
+    else:
+        pop_df = (
+            district_scope.groupby("Province", as_index=False)["Eligible_Population"]
+            .sum()
+            .rename(columns={"Eligible_Population": "Population"})
         )
-    pop_df = pd.DataFrame(pop_rows)
 
     ime_sub_opp = apply_geo_only(ime_sub_df.copy()) if not ime_sub_df.empty else pd.DataFrame()
     ime_agents_opp = apply_geo_only(ime_agents_df.copy()) if not ime_agents_df.empty else pd.DataFrame()
@@ -1158,14 +1385,20 @@ def render_deterministic_qa_panel(opp_df: pd.DataFrame | None = None, key_prefix
         v2020, plast = None, None
         vlast = None
         if not idf.empty:
-            d2020 = idf[pd.to_numeric(idf["Year"], errors="coerce") == 2020]
-            dlast = idf[pd.to_numeric(idf["Year"], errors="coerce") == pd.to_numeric(idf["Year"], errors="coerce").max()]
-            v2020, _ = _pick_latest_period_value(d2020)
-            vlast, plast = _pick_latest_period_value(dlast)
+            idf_q = idf[idf["Quarter"].notna()].copy() if "Quarter" in idf.columns else idf.iloc[0:0].copy()
+            d2020 = idf_q[pd.to_numeric(idf_q["Year"], errors="coerce") == 2020]
+            latest_year_in_q = pd.to_numeric(idf_q["Year"], errors="coerce").max() if not idf_q.empty else None
+            dlast = (
+                idf_q[pd.to_numeric(idf_q["Year"], errors="coerce") == latest_year_in_q]
+                if latest_year_in_q is not None
+                else pd.DataFrame()
+            )
+            v2020, _ = _pick_latest_quarter_value(d2020)
+            vlast, plast = _pick_latest_quarter_value(dlast)
             series_rows = []
-            for y in sorted(pd.to_numeric(idf["Year"], errors="coerce").dropna().astype(int).unique().tolist()):
-                y_df = idf[pd.to_numeric(idf["Year"], errors="coerce") == y]
-                y_val, _ = _pick_latest_period_value(y_df)
+            for y in sorted(pd.to_numeric(idf_q["Year"], errors="coerce").dropna().astype(int).unique().tolist()):
+                y_df = idf_q[pd.to_numeric(idf_q["Year"], errors="coerce") == y]
+                y_val, _ = _pick_latest_quarter_value(y_df)
                 if y_val is not None:
                     series_rows.append({"Year": y, "Value": y_val})
             if series_rows:
@@ -1176,9 +1409,9 @@ def render_deterministic_qa_panel(opp_df: pd.DataFrame | None = None, key_prefix
                     y="Value",
                     markers=True,
                     title=(
-                        "Evolução oficial do indicador"
+                        "Evolução oficial do indicador (último trimestre do ano)"
                         if st.session_state.lang == "PT"
-                        else "Official indicator evolution"
+                        else "Official indicator evolution (latest quarter by year)"
                     ),
                 )
                 chart.update_layout(xaxis=dict(dtick=1), yaxis=dict(rangemode="tozero"))
@@ -1193,7 +1426,11 @@ def render_deterministic_qa_panel(opp_df: pd.DataFrame | None = None, key_prefix
                 else f"The indicator moved from {v2020:.2f} to {vlast:.2f} ({pct:+.1f}%) up to {plast}."
             )
         source = "Financial_Inclusion_Indicators_2020_2025Q3.csv"
-        caveat = "Indicador oficial nacional por 100 adultos." if st.session_state.lang == "PT" else "Official national indicator per 100 adults."
+        caveat = (
+            "Série trimestral oficial: leitura construída apenas com o último trimestre disponível de cada ano (sem mistura com linhas anuais)."
+            if st.session_state.lang == "PT"
+            else "Official quarterly series: built only from the latest available quarter of each year (no annual+quarter mixing)."
+        )
     elif q_id == "opp_top3":
         if not opp_df.empty:
             top3 = opp_df.head(3)
@@ -2285,11 +2522,22 @@ with tab_ime:
         "uma mesma pessoa pode ter registo em mais de uma plataforma."
     )
     mobile_context_en = (
-        "ℹ️ Methodological context (Mozambique): the Mobile Banking indicator may include users from "
+        "ℹ️ Methodological context (Mozambique): Mobile Wallet indicators include users from "
         "M-Pesa, mKesh, e-Mola, and Conta Móvel. As platforms are counted by account/service, "
         "the same person may be registered in more than one platform."
     )
     st.info(mobile_context_pt if st.session_state.lang == "PT" else mobile_context_en)
+    st.caption(
+        (
+            "ℹ️ Base de denominador (quando aplicável): Censo distrital 2017 (15+) com extrapolação por coorte a partir da estrutura provincial; "
+            "Cidade de Maputo está harmonizada em Província de Maputo; subscrições representam serviços (não pessoas únicas)."
+        )
+        if st.session_state.lang == "PT"
+        else (
+            "ℹ️ Denominator basis (when applicable): district Census 2017 (15+) with cohort extrapolation from province age structure; "
+            "Cidade de Maputo is harmonized under Província de Maputo; subscriptions represent services (not unique people)."
+        )
+    )
 
     if ime_sub_df.empty or ime_agents_df.empty or ime_txn_district_df.empty:
         st.warning(
@@ -2443,6 +2691,17 @@ with tab_ime:
     
             subs_total = sub_stock["Subscribers"].sum() if "Subscribers" in sub_stock.columns else 0
             agents_total = ag_stock["Agents"].sum() if "Agents" in ag_stock.columns else 0
+            denom_scope_df = build_census_district_denominator_df(
+                ime_year,
+                provinces=ime_prov if ime_prov else None,
+                districts=ime_dist if ime_dist else None,
+            )
+            eligible_scope_total = float(
+                pd.to_numeric(denom_scope_df.get("Eligible_Population", pd.Series(dtype=float)), errors="coerce")
+                .fillna(0.0)
+                .sum()
+            )
+            wallet_pen_scope = ((subs_total / eligible_scope_total) * 100) if eligible_scope_total > 0 else math.nan
             tx_types = ["Depósitos", "Levantamentos", "Transferências", "Pagamentos"]
             tx_totals = {
                 t: float(tx_month.loc[tx_month["Transaction_Type"] == t, tx_metric_col].sum()) for t in tx_types
@@ -2516,6 +2775,19 @@ with tab_ime:
                     f"ℹ️ Subscriptions and Agents (stock) use the reported value from {localize_month(stock_month_ref)}."
                     if stock_month_ref is not None
                     else "ℹ️ Subscriptions and Agents (stock) have no reference month available."
+                )
+            )
+            st.caption(
+                (
+                    f"ℹ️ Penetração no recorte (subscrições por 100 elegíveis): {wallet_pen_scope:.1f}."
+                    if not math.isnan(wallet_pen_scope)
+                    else "ℹ️ Penetração no recorte indisponível (denominador distrital ausente para os filtros)."
+                )
+                if st.session_state.lang == "PT"
+                else (
+                    f"ℹ️ In-scope penetration (subscriptions per 100 eligible): {wallet_pen_scope:.1f}."
+                    if not math.isnan(wallet_pen_scope)
+                    else "ℹ️ In-scope penetration unavailable (district denominator missing for current filters)."
                 )
             )
     
@@ -2723,6 +2995,7 @@ with tab_ime:
                     [
                         "Subscrições",
                         "Agentes",
+                        "Penetração (subscrições por 100 elegíveis)",
                         f"Depósitos ({ime_measure})",
                         f"Levantamentos ({ime_measure})",
                         f"Transferências ({ime_measure})",
@@ -2732,6 +3005,7 @@ with tab_ime:
                     else [
                         "Subscriptions",
                         "Agents",
+                        "Penetration (subscriptions per 100 eligible)",
                         f"Deposits ({ime_measure})",
                         f"Withdrawals ({ime_measure})",
                         f"Transfers ({ime_measure})",
@@ -2747,6 +3021,22 @@ with tab_ime:
                     top_df = sub_stock.groupby("District", as_index=False)["Subscribers"].sum().rename(columns={"Subscribers": "Total"})
                 elif top_metric in ["Agentes", "Agents"]:
                     top_df = ag_stock.groupby("District", as_index=False)["Agents"].sum().rename(columns={"Agents": "Total"})
+                elif top_metric in [
+                    "Penetração (subscrições por 100 elegíveis)",
+                    "Penetration (subscriptions per 100 eligible)",
+                ]:
+                    sub_pen = sub_stock.groupby("District", as_index=False)["Subscribers"].sum()
+                    pop_pen = (
+                        denom_scope_df.groupby("District", as_index=False)["Eligible_Population"].sum()
+                        if not denom_scope_df.empty
+                        else pd.DataFrame(columns=["District", "Eligible_Population"])
+                    )
+                    top_df = sub_pen.merge(pop_pen, on="District", how="left")
+                    top_df["Eligible_Population"] = pd.to_numeric(top_df["Eligible_Population"], errors="coerce").fillna(0.0)
+                    top_df["Total"] = top_df.apply(
+                        lambda r: (r["Subscribers"] / r["Eligible_Population"] * 100) if r["Eligible_Population"] > 0 else 0.0,
+                        axis=1,
+                    )
                 else:
                     tx_label_map = {
                         f"Depósitos ({ime_measure})": "Depósitos",
@@ -2775,12 +3065,19 @@ with tab_ime:
                     top_show = top_df.sort_values("Total", ascending=False).head(10).sort_values("Total", ascending=True)
                     district_axis = "Distrito" if st.session_state.lang == "PT" else "District"
                     top_show_plot = top_show.rename(columns={"District": district_axis}).copy()
+                    is_pen_metric = top_metric in [
+                        "Penetração (subscrições por 100 elegíveis)",
+                        "Penetration (subscriptions per 100 eligible)",
+                    ]
                     fig_top = px.bar(
                         top_show_plot,
                         y=district_axis,
                         x="Total",
                         orientation="h",
-                        text=[format_compact(v) for v in top_show_plot["Total"]],
+                        text=[
+                            (f"{v:.1f}" if is_pen_metric else format_compact(v))
+                            for v in top_show_plot["Total"]
+                        ],
                         title=(
                             f"Top 10 distritos — {top_metric}"
                             if st.session_state.lang == "PT"
@@ -4344,17 +4641,16 @@ with tab_decision:
                     ]
                 )
 
-            prov_accounts = acc_cmp.groupby("Province", as_index=False)["Total_Accounts"].sum() if not acc_cmp.empty else pd.DataFrame()
             inclusion_context = {}
-            for lbl, prov in [(label_a, province_a), (label_b, province_b)]:
-                prov_acc = float(prov_accounts.loc[prov_accounts["Province"] == prov, "Total_Accounts"].sum()) if not prov_accounts.empty else 0.0
-                c_row = census_df[census_df["Province"] == prov]
-                prov_pop = denominator_population(c_row, stock_year) if not c_row.empty else 0.0
-                inclusion_context[lbl] = (prov_acc / prov_pop) if prov_pop > 0 else 0.0
+            acc_dist_values = _dist_sum(acc_cmp, "Total_Accounts")
+            for lbl, pair in [(label_a, pair_a), (label_b, pair_b)]:
+                dist_acc = float(acc_dist_values.get(lbl, 0.0))
+                dist_pop = lookup_district_denominator(pair[0], pair[1], stock_year)
+                inclusion_context[lbl] = (dist_acc / dist_pop) if dist_pop > 0 else 0.0
             metric_rows.extend(
                 [
-                    {"Metric": "Inclusão (contas por pessoa elegível, contexto provincial)", "District": label_a, "Value": inclusion_context[label_a]},
-                    {"Metric": "Inclusão (contas por pessoa elegível, contexto provincial)", "District": label_b, "Value": inclusion_context[label_b]},
+                    {"Metric": "Inclusão (contas por pessoa elegível, contexto distrital)", "District": label_a, "Value": inclusion_context[label_a]},
+                    {"Metric": "Inclusão (contas por pessoa elegível, contexto distrital)", "District": label_b, "Value": inclusion_context[label_b]},
                 ]
             )
 
@@ -4376,7 +4672,7 @@ with tab_decision:
                 "Cartões Bancários",
                 "ATM",
                 "POS",
-                "Inclusão (contas por pessoa elegível, contexto provincial)",
+                "Inclusão (contas por pessoa elegível, contexto distrital)",
             ]
             metric_order = flow_metric_order + core_metric_order
             order_map = {m: i for i, m in enumerate(metric_order)}
@@ -4384,7 +4680,7 @@ with tab_decision:
             flow_chart_df = cmp_df[
                 ~cmp_df["Metric"].isin(
                     {
-                        "Inclusão (contas por pessoa elegível, contexto provincial)",
+                        "Inclusão (contas por pessoa elegível, contexto distrital)",
                         "ATM",
                         "POS",
                         "Contas Bancárias",
@@ -4767,11 +5063,11 @@ with tab_decision:
     )
     render_page_caveats(
         [
-            "A métrica de inclusão no comparador distrital é apresentada como contexto provincial.",
+            "A métrica de inclusão no comparador distrital usa denominador distrital (Censo 2017 ajustado ao cenário de elegibilidade).",
         ]
         if st.session_state.lang == "PT"
         else [
-            "Inclusion metric in the district comparator is shown as province-level context.",
+            "Inclusion metric in the district comparator uses a district denominator (Census 2017 adjusted to the selected eligibility scenario).",
         ]
     )
 
