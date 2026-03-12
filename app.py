@@ -48,7 +48,126 @@ from dashboard.scenarios import (
 from dashboard.translations import translate
 
 # ── Page config ─────────────────────────────────────────────────────────────
-st.set_page_config(page_title="Mozambique Electronic Banking and Mobile Wallet Dashboard", layout="wide")
+st.set_page_config(
+    page_title="MOZ Banking Dashboard",
+    page_icon="🏦",
+    layout="wide",
+)
+
+# ── Global dark-navy theme overrides ────────────────────────────────────────
+st.markdown("""
+<style>
+/* ── Inter font ──────────────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+html, body, [class*="css"] {
+    font-family: 'Inter', system-ui, sans-serif !important;
+}
+
+/* ── Plotly: transparent canvas ──────────────────────────────────────────── */
+.js-plotly-plot .plotly,
+.js-plotly-plot .plotly .plot-container { background: transparent !important; }
+.js-plotly-plot .bg { fill: transparent !important; }
+
+/* ── Tabs ─────────────────────────────────────────────────────────────────── */
+.stTabs [data-baseweb="tab-list"] {
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.stTabs [data-baseweb="tab"] {
+    color: #9BAAB8;
+    font-weight: 500;
+    font-size: 0.88rem;
+    letter-spacing: 0.01em;
+}
+.stTabs [data-baseweb="tab"][aria-selected="true"] {
+    color: #60A5FA !important;
+    border-bottom: 2px solid #60A5FA !important;
+    font-weight: 700;
+}
+.stTabs [data-baseweb="tab"]:hover { color: #E8EDF2; }
+
+/* ── Metric cards ─────────────────────────────────────────────────────────── */
+[data-testid="stMetric"] {
+    background-color: #1A2B3C;
+    border: 1px solid rgba(96,165,250,0.15);
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+}
+[data-testid="stMetricValue"] {
+    color: #60A5FA !important;
+    font-weight: 700 !important;
+    font-size: 1.6rem !important;
+}
+[data-testid="stMetricLabel"] {
+    color: #9BAAB8 !important;
+    font-size: 0.78rem !important;
+    font-weight: 500 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* ── Section headers (st.markdown "###") ─────────────────────────────────── */
+h3 {
+    border-left: 3px solid #60A5FA;
+    padding-left: 0.75rem;
+    color: #E8EDF2 !important;
+    font-size: 1.05rem !important;
+    font-weight: 700 !important;
+    margin-top: 1.75rem !important;
+}
+h4, h5, h6 { color: #9BAAB8 !important; font-weight: 600 !important; }
+
+/* ── Callout boxes ────────────────────────────────────────────────────────── */
+.stInfo    { background-color: #1A2B3C !important; border-left: 4px solid #60A5FA !important; color: #E8EDF2 !important; }
+.stWarning { background-color: #1A2B3C !important; border-left: 4px solid #f97316 !important; color: #E8EDF2 !important; }
+.stSuccess { background-color: #1A2B3C !important; border-left: 4px solid #22c55e !important; color: #E8EDF2 !important; }
+.stError   { background-color: #1A2B3C !important; border-left: 4px solid #ef4444 !important; color: #E8EDF2 !important; }
+
+/* ── Sidebar ──────────────────────────────────────────────────────────────── */
+[data-testid="stSidebar"] {
+    background-color: #1A2B3C !important;
+    border-right: 1px solid rgba(255,255,255,0.06);
+}
+[data-testid="stSidebar"] label,
+[data-testid="stSidebar"] .stCaption { color: #9BAAB8 !important; font-size: 0.8rem; }
+
+/* ── Horizontal rules ─────────────────────────────────────────────────────── */
+hr { border: none; border-top: 1px solid rgba(96,165,250,0.1); margin: 1.5rem 0; }
+
+/* ── Buttons ──────────────────────────────────────────────────────────────── */
+.stButton [data-testid="baseButton-primary"] {
+    background-color: #60A5FA !important;
+    color: #0D1B2A !important;
+    border: none !important;
+    font-weight: 700;
+    border-radius: 6px;
+}
+.stButton [data-testid="baseButton-secondary"] {
+    background-color: transparent !important;
+    color: #9BAAB8 !important;
+    border: 1px solid rgba(255,255,255,0.15) !important;
+    border-radius: 6px;
+}
+.stButton [data-testid="baseButton-secondary"]:hover {
+    border-color: rgba(96,165,250,0.5) !important;
+    color: #60A5FA !important;
+}
+
+/* ── Links ────────────────────────────────────────────────────────────────── */
+a, .stMarkdown a { color: #60A5FA !important; }
+a:hover, .stMarkdown a:hover { color: #3B82F6 !important; }
+
+/* ── Selectbox / multiselect chrome ──────────────────────────────────────── */
+[data-baseweb="select"] > div {
+    background-color: #1A2B3C !important;
+    border-color: rgba(255,255,255,0.12) !important;
+    color: #E8EDF2 !important;
+    border-radius: 6px;
+}
+
+/* ── DataFrame / table ────────────────────────────────────────────────────── */
+[data-testid="stDataFrame"] { border-radius: 8px; overflow: hidden; }
+</style>
+""", unsafe_allow_html=True)
 
 # ── Language toggle (PT default, EN available) ──────────────────────────────
 if "lang" not in st.session_state:
@@ -253,11 +372,28 @@ def t_to_period_label(t_value: float) -> str:
     return f"{month_name} {year}"
 
 
+# ── Chart palette ─────────────────────────────────────────────────────────
+_C_NAVY  = "#0D1B2A"
+_C_SLATE = "#1A2B3C"
+_C_TEXT  = "#E8EDF2"
+_C_GRID  = "rgba(232,237,242,0.08)"
+
+
 def plot_chart(fig, **kwargs):
-    """Render Plotly chart with clean axis titles for line/bar visuals."""
+    """Render Plotly chart with dark-navy theme and clean axis titles."""
     trace_types = {getattr(trace, "type", "") for trace in getattr(fig, "data", [])}
     if trace_types.intersection({"bar", "scatter"}):
         fig.update_layout(xaxis_title=None, yaxis_title=None)
+    _axis = dict(gridcolor=_C_GRID, linecolor=_C_GRID, tickcolor=_C_GRID, zerolinecolor=_C_GRID)
+    fig.update_layout(
+        paper_bgcolor=_C_SLATE,
+        plot_bgcolor=_C_NAVY,
+        font=dict(color=_C_TEXT, family="Inter, system-ui, sans-serif"),
+        xaxis=_axis,
+        yaxis=_axis,
+        yaxis2=dict(**_axis),
+        legend=dict(bgcolor="rgba(0,0,0,0)", font=dict(color=_C_TEXT)),
+    )
     if "use_container_width" not in kwargs:
         kwargs["use_container_width"] = True
     st.plotly_chart(fig, **kwargs)
@@ -439,6 +575,12 @@ if contract_errors:
     st.stop()
 
 # ── Sidebar: language toggle + global filters ─────────────────────────────
+st.sidebar.markdown("""
+<div style='background:linear-gradient(90deg,#009A44 0%,#000000 50%,#CE1126 100%);
+height:3px;margin-bottom:1rem;border-radius:2px;'></div>
+<div style='font-size:0.7rem;font-weight:700;color:#60A5FA;letter-spacing:0.12em;
+text-transform:uppercase;margin-bottom:1.25rem;'>🇲🇿 MOZ Banking Dashboard</div>
+""", unsafe_allow_html=True)
 lang_col1, lang_col2 = st.sidebar.columns(2)
 with lang_col1:
     if st.button("🇲🇿 PT", use_container_width=True,
@@ -446,7 +588,7 @@ with lang_col1:
         st.session_state.lang = "PT"
         st.rerun()
 with lang_col2:
-    if st.button("🇬🇧 EN", use_container_width=True,
+    if st.button("🇺🇸 EN", use_container_width=True,
                  type="primary" if st.session_state.lang == "EN" else "secondary"):
         st.session_state.lang = "EN"
         st.rerun()
@@ -1188,7 +1330,7 @@ def render_deterministic_qa_panel(opp_df: pd.DataFrame | None = None, key_prefix
                 x=bridge["Year"],
                 y=bridge[v_col],
                 name="Valor" if st.session_state.lang == "PT" else "Value",
-                marker_color="#2563eb",
+                marker_color="#60A5FA",
             )
             fig.add_scatter(
                 x=bridge["Year"],
@@ -1196,7 +1338,7 @@ def render_deterministic_qa_panel(opp_df: pd.DataFrame | None = None, key_prefix
                 name="Volume",
                 mode="lines+markers",
                 yaxis="y2",
-                line=dict(color="#16a34a", width=3),
+                line=dict(color="#34D399", width=3),
             )
             fig.update_layout(
                 title=(
@@ -1246,7 +1388,7 @@ def render_deterministic_qa_panel(opp_df: pd.DataFrame | None = None, key_prefix
                 x=bridge["Year"],
                 y=bridge[q_col],
                 name="Volume",
-                marker_color="#2563eb",
+                marker_color="#60A5FA",
             )
             fig.add_scatter(
                 x=bridge["Year"],
@@ -1254,7 +1396,7 @@ def render_deterministic_qa_panel(opp_df: pd.DataFrame | None = None, key_prefix
                 name="Valor" if st.session_state.lang == "PT" else "Value",
                 mode="lines+markers",
                 yaxis="y2",
-                line=dict(color="#f97316", width=3),
+                line=dict(color="#38BDF8", width=3),
             )
             fig.update_layout(
                 title=(
@@ -3137,7 +3279,7 @@ with tab_ime:
                             x=year_mix["Year"],
                             y=year_mix["Volume"],
                             name="Volume",
-                            marker_color="#2563eb",
+                            marker_color="#60A5FA",
                         )
                     )
                     fig_mix.add_trace(
@@ -3147,7 +3289,7 @@ with tab_ime:
                             name="Valor" if st.session_state.lang == "PT" else "Value",
                             mode="lines+markers",
                             yaxis="y2",
-                            line=dict(color="#f97316", width=3),
+                            line=dict(color="#38BDF8", width=3),
                         )
                     )
                     fig_mix.update_layout(
@@ -3659,12 +3801,12 @@ with tab_channels:
             fig_annual = go.Figure()
             fig_annual.add_trace(go.Bar(
                 x=annual_merged[T("year")], y=annual_merged[T("volume")],
-                name=T("volume"), yaxis='y', marker_color='#636EFA',
+                name=T("volume"), yaxis='y', marker_color='#60A5FA',
                 text=[format_compact(v) for v in annual_merged[T("volume")]], textposition='outside'))
             fig_annual.add_trace(go.Scatter(
                 x=annual_merged[T("year")], y=annual_merged[T("value")],
                 name=f"{T('value')} (MZN)", yaxis='y2', mode='lines+markers',
-                marker_color='#EF553B', line=dict(width=3)))
+                marker_color='#F87171', line=dict(width=3)))
             fig_annual.update_layout(
                 title=f"{T('annual_evol_title')} — {txn_title}",
                 xaxis=dict(title=T("year"), dtick=1),
@@ -4085,7 +4227,7 @@ with tab_forecast:
                     fig_fc = go.Figure()
                     fig_fc.add_trace(go.Bar(
                         x=hist_yr['Ano'], y=hist_yr['Valor'],
-                        name=hist_label, marker_color='#636EFA',
+                        name=hist_label, marker_color='#60A5FA',
                         text=[format_compact(v) for v in hist_yr['Valor']],
                         textposition='outside'
                     ))
@@ -4099,13 +4241,13 @@ with tab_forecast:
                         fig_fc.add_trace(go.Scatter(
                             x=pred_yr['Ano'], y=pred_yr['Lower'],
                             mode='lines', line=dict(width=0),
-                            fill='tonexty', fillcolor='rgba(239,85,59,0.15)',
+                            fill='tonexty', fillcolor='rgba(248,113,113,0.15)',
                             showlegend=False, hoverinfo='skip'
                         ))
                         fig_fc.add_trace(go.Scatter(
                             x=pred_yr['Ano'], y=pred_yr['Valor'],
                             mode='lines+markers', name=pred_label,
-                            marker_color='#EF553B', line=dict(width=3, dash='dash'),
+                            marker_color='#F87171', line=dict(width=3, dash='dash'),
                             text=[format_compact(v) for v in pred_yr['Valor']],
                             textposition='top center'
                         ))
@@ -4968,7 +5110,7 @@ with tab_decision:
                     y=hist_base["Valor"],
                     mode="lines+markers",
                     name=T("historic"),
-                    line=dict(color="#636EFA", width=3),
+                    line=dict(color="#60A5FA", width=3),
                 )
             )
         fig_sc.update_layout(xaxis=dict(dtick=1), yaxis=dict(rangemode="tozero"))
@@ -5076,7 +5218,7 @@ with tab_decision:
 # ==========================================
 st.markdown("---")
 st.markdown(
-    "<div style='text-align: center; color: grey; padding: 1rem 0;'>"
+    "<div style='text-align: center; color: #9BAAB8; padding: 1rem 0; font-size: 0.8rem;'>"
     f"{T('footer')} · "
     "<a href='mailto:valtercheque@gmail.com'>valtercheque@gmail.com</a>"
     "</div>",
