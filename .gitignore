@@ -19,6 +19,15 @@
 # Allow deployment/runtime manifests
 !requirements.txt
 !*.geojson
+!vercel.json
+
+# Allow landing page
+!landing/
+!landing/*
+
+# Allow Streamlit theme config
+!.streamlit/
+!.streamlit/config.toml
 
 # Allow .gitignore file
 !.gitignore
