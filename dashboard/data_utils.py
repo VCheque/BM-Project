@@ -222,7 +222,9 @@ def sanitize_census_df(df: pd.DataFrame) -> pd.DataFrame:
         ]
 
         def _agg_group(g: pd.DataFrame) -> pd.Series:
-            out: dict[str, float | str] = {"Province": g["Province"].iloc[0]}
+            # pandas >=2.2 excludes the groupby key from g; Province is re-added
+            # by as_index=False on the outer groupby call, so we don't set it here.
+            out: dict[str, float | str] = {}
             pop = pd.to_numeric(g.get("Population_Total", 0), errors="coerce").fillna(0)
             pop_sum = float(pop.sum())
             for col in sum_cols:
@@ -235,7 +237,7 @@ def sanitize_census_df(df: pd.DataFrame) -> pd.DataFrame:
                     out[col] = float(vals.mean()) if not vals.empty else 0.0
             return pd.Series(out)
 
-        df = df.groupby("Province", as_index=False).apply(_agg_group).reset_index(drop=True)
+        df = df.groupby("Province", as_index=False).apply(_agg_group, include_groups=False).reset_index(drop=True)
 
     if {"Population_Total", "Population_Urban", "Population_Rural"}.issubset(df.columns):
         over_urban = df["Population_Urban"] > df["Population_Total"]
